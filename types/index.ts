@@ -10,9 +10,21 @@ export interface Product {
     _id: string;
     name: string;
     slug: string;
+    brand: string;
     description?: string;
     price: number;
     discountPrice?: number;
+    createdBy: string;
+    createdAt: string;
+    fabric?: string;
+    occasion?: string;
+    ratingDistribution?: {
+        1: number;
+        2: number;
+        3: number;
+        4: number;
+        5: number;
+    };
     category: string;
     sizes?: string[];
     colors?: string[];

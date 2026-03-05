@@ -19,7 +19,8 @@ import {
     ChevronRight,
     ChevronLeft,
     Bell,
-    Download
+    Download,
+    ChevronDown
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { cn } from '@/utils/lib';
@@ -55,142 +56,205 @@ export default function AdminOrders() {
         }
     };
 
+    const handleProcessReturn = async (id: string, status: 'returned' | 'delivered') => {
+        try {
+            await adminService.processReturn(id, status);
+            toast.success(status === 'returned' ? 'Return Approved' : 'Return Rejected');
+            fetchOrders();
+        } catch (error) {
+            toast.error('Failed to process return');
+        }
+    };
+
     const filteredOrders = orders.filter(o =>
         o._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (o.user as any)?.name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-10">
 
             {/* Header / Title & Primary Actions */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
                 <div>
-                    <h1 className="text-4xl font-black tracking-tight text-gray-900">Orders Management</h1>
-                    <p className="text-sm font-bold text-gray-400 mt-2">View and manage all customer transactions.</p>
+                    <div className="flex items-center gap-3 mb-3">
+                        <span className="h-2 w-10 bg-gradient-to-r from-[#FF2C79] to-purple-600 rounded-full" />
+                        <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Transaction Hub</p>
+                    </div>
+                    <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 leading-[0.8]">ORDER <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">LEDGER</span></h1>
+                    <p className="text-xs font-bold text-gray-400 mt-4 uppercase tracking-[0.1em]">Processing global fashion deliveries and revenue flow.</p>
                 </div>
-                <div className="flex items-center gap-4">
-                    <button className="flex items-center gap-2 px-6 py-3 rounded-xl border border-gray-100 text-sm font-black text-gray-900 hover:bg-gray-50 transition-all shadow-sm">
+                <div className="flex items-center gap-4 w-full sm:w-auto">
+                    <button className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-8 py-5 rounded-[1.5rem] border border-gray-100 bg-white text-[11px] font-black text-gray-900 hover:bg-gray-50 transition-all shadow-sm uppercase tracking-widest">
                         <Download className="h-4 w-4" />
-                        <span>Export Data</span>
+                        <span>Export CSV</span>
                     </button>
-                    <button className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#2563EB] text-sm font-black text-white shadow-lg shadow-blue-500/20 hover:bg-blue-600 transition-all active:scale-95">
-                        <Plus className="h-5 w-5" />
-                        <span>Create Order</span>
+                    <button className="flex-1 sm:flex-none flex items-center justify-center gap-3 px-8 py-5 rounded-[1.5rem] bg-gray-900 text-[11px] font-black text-white shadow-2xl shadow-gray-200 hover:bg-[#FF2C79] transition-all active:scale-95 uppercase tracking-widest">
+                        <Plus className="h-4 w-4" />
+                        <span>Manual Entry</span>
                     </button>
                 </div>
             </div>
 
             {/* Filter Card */}
-            <div className="rounded-[1.5rem] border border-gray-100 bg-white p-8 shadow-sm">
+            <div className="rounded-[2.5rem] border border-gray-100 bg-white p-6 md:p-8 shadow-sm transition-all hover:shadow-md">
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end">
-                    <div className="md:col-span-5 space-y-3">
-                        <label className="text-xs font-black text-gray-900">Date Range</label>
-                        <div className="relative">
-                            <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <div className="md:col-span-4 space-y-4">
+                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#FF2C79] ml-1">Temporal Window</label>
+                        <div className="relative group">
+                            <Calendar className="absolute left-6 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-hover:text-[#FF2C79] transition-colors" />
                             <input
                                 type="text"
-                                placeholder="Oct 01, 2023 - Oct 31, 2023"
-                                className="w-full bg-[#F8FAFC] border-none rounded-xl py-3.5 pl-12 pr-4 text-sm font-bold focus:ring-2 focus:ring-blue-500/10 transition-all"
+                                placeholder="SELECT DATE RANGE..."
+                                className="w-full bg-[#F8FAFC] border-none rounded-2xl py-4 pl-14 pr-6 text-[11px] font-black uppercase tracking-widest focus:ring-2 focus:ring-pink-500/10 transition-all placeholder:text-gray-300"
                             />
                         </div>
                     </div>
-                    <div className="md:col-span-4 space-y-3">
-                        <label className="text-xs font-black text-gray-900">Order Status</label>
-                        <select className="w-full bg-[#F8FAFC] border-none rounded-xl py-3.5 px-5 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-blue-500/10 appearance-none cursor-pointer">
-                            <option>All Statuses</option>
-                            <option>Paid</option>
-                            <option>Processing</option>
-                            <option>Shipped</option>
-                            <option>Delivered</option>
-                            <option>Cancelled</option>
-                            <option>Refunded</option>
-                        </select>
+                    <div className="md:col-span-3 space-y-4">
+                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#FF2C79] ml-1">Lifecycle State</label>
+                        <div className="relative group">
+                            <select className="w-full bg-[#F8FAFC] border-none rounded-2xl py-4 px-6 text-[11px] font-black uppercase tracking-widest text-gray-900 focus:ring-2 focus:ring-pink-500/10 appearance-none cursor-pointer">
+                                <option>ALL PHASES</option>
+                                <option>Paid</option>
+                                <option>Processing</option>
+                                <option>Shipped</option>
+                                <option>Delivered</option>
+                                <option>Cancelled</option>
+                            </select>
+                            <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none group-hover:text-[#FF2C79] transition-colors" />
+                        </div>
                     </div>
-                    <div className="md:col-span-3">
-                        <button className="w-full bg-[#F8FAFC] text-gray-900 rounded-xl py-3.5 text-sm font-black hover:bg-gray-100 transition-all">
-                            Reset Filters
+                    <div className="md:col-span-3 space-y-4">
+                        <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#FF2C79] ml-1">Identifier Scan</label>
+                        <div className="relative group">
+                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-hover:text-[#FF2C79] transition-colors" />
+                            <input
+                                type="text"
+                                placeholder="REF / CUSTOMER..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="w-full bg-[#F8FAFC] border-none rounded-2xl py-4 pl-14 pr-6 text-[11px] font-black uppercase tracking-widest focus:ring-2 focus:ring-pink-500/10 transition-all placeholder:text-gray-300"
+                            />
+                        </div>
+                    </div>
+                    <div className="md:col-span-2">
+                        <button className="w-full bg-[#F8FAFC] text-gray-400 rounded-2xl py-4 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-pink-50 hover:text-[#FF2C79] transition-all">
+                            RESET
                         </button>
                     </div>
                 </div>
             </div>
 
             {/* Orders Table */}
-            <div className="rounded-[1.5rem] border border-gray-100 bg-white shadow-sm overflow-hidden mt-6">
+            <div className="rounded-[3rem] border border-gray-100 bg-white shadow-sm overflow-hidden p-2">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    <table className="w-full min-w-[1000px]">
                         <thead>
-                            <tr className="text-[10px] font-black uppercase text-gray-400 tracking-widest border-b border-gray-50 bg-[#F8FAFC]/50">
-                                <th className="py-5 px-8">Order ID</th>
-                                <th className="py-5 px-6">Customer</th>
-                                <th className="py-5 px-6">Amount</th>
-                                <th className="py-5 px-6">Payment Status</th>
-                                <th className="py-5 px-6">Order Status</th>
-                                <th className="py-5 px-8 text-right">Action</th>
+                            <tr className="text-[10px] font-black uppercase text-gray-400 tracking-[0.2em] border-b border-gray-50 bg-[#F8FAFC]/30">
+                                <th className="py-8 px-10">MANIFEST ID</th>
+                                <th className="py-8 px-8">CONSAGNEE</th>
+                                <th className="py-8 px-8">EQUIVALENT</th>
+                                <th className="py-8 px-8">SETTLEMENT</th>
+                                <th className="py-8 px-8">TRANSIT</th>
+                                <th className="py-8 px-10 text-right">PROTOCOL</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
                             {loading ? (
                                 Array(5).fill(0).map((_, i) => (
                                     <tr key={i} className="animate-pulse">
-                                        <td colSpan={6} className="py-8 px-8 h-24 bg-gray-50/20"></td>
+                                        <td colSpan={6} className="py-12 px-10">
+                                            <div className="h-16 bg-gray-50 rounded-[1.5rem]" />
+                                        </td>
                                     </tr>
                                 ))
                             ) : filteredOrders.length === 0 ? (
                                 <tr>
-                                    <td colSpan={6} className="py-20 text-center">
-                                        <ShoppingBag className="mx-auto h-12 w-12 text-gray-200 mb-4" />
-                                        <p className="text-sm font-bold text-gray-400">No orders found matching your search.</p>
+                                    <td colSpan={6} className="py-32 text-center">
+                                        <div className="bg-gray-50 h-20 w-20 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                                            <ShoppingBag className="h-8 w-8 text-gray-200" />
+                                        </div>
+                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Zero Matching Entities</p>
                                     </td>
                                 </tr>
                             ) : filteredOrders.map((order) => (
-                                <tr key={order._id} className="group hover:bg-[#F8FAFC] transition-all">
-                                    <td className="py-6 px-8">
-                                        <span className="text-sm font-black text-[#2563EB]">#ORD-{order._id.slice(-4).toUpperCase()}</span>
+                                <tr key={order._id} className="group hover:bg-pink-50/10 transition-all duration-300">
+                                    <td className="py-8 px-10">
+                                        <span className="text-[11px] font-black text-gray-900 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100 uppercase tracking-tight">#{order._id.slice(-8).toUpperCase()}</span>
                                     </td>
-                                    <td className="py-6 px-6">
-                                        <div className="flex items-center gap-4">
-                                            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border border-gray-100 bg-gray-50">
+                                    <td className="py-8 px-8">
+                                        <div className="flex items-center gap-5">
+                                            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-2xl border-2 border-white bg-gray-50 shadow-sm transition-transform group-hover:rotate-6">
                                                 <Image
-                                                    src={`https://i.pravatar.cc/150?u=${(order.user as any)?._id || order._id}`}
+                                                    src={`https://ui-avatars.com/api/?name=${(order.user as any)?.name || 'Guest'}&background=FF2C79&color=fff&bold=true`}
                                                     alt={(order.user as any)?.name || 'Guest'}
                                                     fill
                                                     className="object-cover"
                                                 />
                                             </div>
                                             <div>
-                                                <p className="text-[14px] font-black text-gray-900 group-hover:text-[#2563EB] transition-colors">{(order.user as any)?.name || 'Guest User'}</p>
-                                                <p className="text-[11px] font-bold text-gray-400 mt-1 lowercase italic">{(order.user as any)?.email || 'guest@example.com'}</p>
+                                                <p className="text-xs font-black text-gray-900 transition-colors group-hover:text-[#FF2C79] uppercase tracking-tight">{(order.user as any)?.name || 'Guest Entity'}</p>
+                                                <p className="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-widest">{new Date(order.createdAt).toLocaleDateString()}</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="py-6 px-6">
-                                        <span className="text-[14px] font-black text-gray-900">${order.totalPrice.toFixed(2)}</span>
+                                    <td className="py-8 px-8">
+                                        <span className="text-sm font-black text-gray-900 tracking-tight">₹{order.totalPrice.toLocaleString()}</span>
                                     </td>
-                                    <td className="py-6 px-6">
+                                    <td className="py-8 px-8">
                                         <span className={cn(
-                                            "inline-flex items-center rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-wider",
-                                            order.orderStatus === 'delivered' ? "bg-green-100 text-green-600" :
-                                                order.orderStatus === 'pending' ? "bg-orange-100 text-orange-600" : "bg-red-100 text-red-600"
+                                            "inline-flex items-center rounded-xl px-4 py-2 text-[9px] font-black uppercase tracking-[0.2em] shadow-sm",
+                                            order.orderStatus === 'delivered' ? "bg-emerald-50 text-emerald-600 border border-emerald-100" :
+                                                order.orderStatus === 'pending' ? "bg-orange-50 text-orange-600 border border-orange-100" : "bg-red-50 text-red-600 border border-red-100"
                                         )}>
-                                            {order.orderStatus === 'delivered' ? 'Paid' : order.orderStatus === 'cancelled' ? 'Refunded' : 'Pending'}
+                                            {order.orderStatus === 'delivered' ? 'Settled' : 
+                                             order.orderStatus === 'cancelled' ? 'Voided' : 
+                                             order.orderStatus === 'returned' ? 'Returned' :
+                                             order.orderStatus === 'return_requested' ? 'Action Required' : 'Escrow'}
                                         </span>
                                     </td>
-                                    <td className="py-6 px-6">
-                                        <span className={cn(
-                                            "inline-flex items-center rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-wider",
-                                            order.orderStatus === 'pending' ? "bg-blue-50 text-blue-400" :
-                                                order.orderStatus === 'shipped' ? "bg-blue-100 text-blue-600" :
-                                                    order.orderStatus === 'delivered' ? "bg-green-100 text-green-600" :
-                                                        "bg-red-100 text-red-600"
-                                        )}>
-                                            {order.orderStatus === 'pending' ? 'Processing' : order.orderStatus}
-                                        </span>
+                                    <td className="py-8 px-8">
+                                        <div className="flex items-center gap-3">
+                                            <div className={cn(
+                                                "h-2 w-2 rounded-full",
+                                                order.orderStatus === 'pending' ? "bg-blue-400 animate-pulse" :
+                                                    order.orderStatus === 'shipped' ? "bg-purple-500" :
+                                                        order.orderStatus === 'delivered' ? "bg-emerald-500" : 
+                                                        order.orderStatus === 'return_requested' ? "bg-orange-500 animate-bounce" : "bg-red-500"
+                                            )} />
+                                            <span className={cn(
+                                                "text-[10px] font-black uppercase tracking-widest",
+                                                order.orderStatus === 'pending' ? "text-blue-400" :
+                                                    order.orderStatus === 'shipped' ? "text-purple-500" :
+                                                        order.orderStatus === 'delivered' ? "text-emerald-500" : "text-red-500"
+                                            )}>
+                                                {order.orderStatus}
+                                            </span>
+                                        </div>
                                     </td>
-                                    <td className="py-6 px-8 text-right">
-                                        <button className="px-6 py-2 rounded-lg bg-[#2563EB] text-white text-[11px] font-black uppercase tracking-widest shadow-lg shadow-blue-500/20 hover:bg-blue-600 transition-all active:scale-95">
-                                            View Details
-                                        </button>
+                                    <td className="py-8 px-10 text-right">
+                                        <div className="flex justify-end gap-2">
+                                            {order.orderStatus === 'return_requested' ? (
+                                                <>
+                                                    <button 
+                                                        onClick={() => handleProcessReturn(order._id, 'returned')}
+                                                        className="px-4 py-2 rounded-xl bg-emerald-500 text-white text-[9px] font-black uppercase tracking-wider hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-100"
+                                                    >
+                                                        Approve
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => handleProcessReturn(order._id, 'delivered')}
+                                                        className="px-4 py-2 rounded-xl bg-red-500 text-white text-[9px] font-black uppercase tracking-wider hover:bg-red-600 transition-all shadow-lg shadow-red-100"
+                                                    >
+                                                        Reject
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <button className="px-6 py-3 rounded-2xl bg-gray-900 text-white text-[10px] font-black uppercase tracking-[0.2em] transition-all hover:bg-[#FF2C79] hover:shadow-lg hover:shadow-pink-100 shadow-sm active:scale-95">
+                                                    Inspect
+                                                </button>
+                                            )}
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -199,19 +263,18 @@ export default function AdminOrders() {
                 </div>
 
                 {/* Pagination */}
-                <div className="bg-white px-8 py-5 border-t border-gray-50 flex items-center justify-between">
-                    <p className="text-[12px] font-bold text-gray-400">
-                        Showing <span className="text-gray-900 font-black">1-10</span> of <span className="text-gray-900 font-black">{orders.length}</span> entries
+                <div className="bg-white px-10 py-8 border-t border-gray-50 flex flex-col sm:flex-row items-center justify-between gap-6">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
+                        DATASET RANGE <span className="text-gray-900">01 — 10</span> OF {orders.length}
                     </p>
-                    <div className="flex items-center gap-2">
-                        <button className="h-9 w-9 flex items-center justify-center rounded-lg border border-gray-100 text-gray-400 hover:bg-gray-50 transition-all">
-                            <ChevronLeft className="h-4 w-4" />
+                    <div className="flex items-center gap-3">
+                        <button className="h-12 w-12 flex items-center justify-center rounded-2xl border border-gray-100 text-gray-400 hover:bg-gray-50 hover:text-gray-900 transition-all">
+                            <ChevronLeft className="h-5 w-5" />
                         </button>
-                        <button className="h-9 w-9 flex items-center justify-center rounded-lg bg-[#2563EB] text-white text-xs font-black shadow-lg shadow-blue-500/20">1</button>
-                        <button className="h-9 w-9 flex items-center justify-center rounded-lg border border-gray-100 text-gray-600 text-xs font-black hover:bg-gray-50">2</button>
-                        <button className="h-9 w-9 flex items-center justify-center rounded-lg border border-gray-100 text-gray-600 text-xs font-black hover:bg-gray-50">3</button>
-                        <button className="h-9 w-9 flex items-center justify-center rounded-lg border border-gray-100 text-gray-400 hover:bg-gray-50 transition-all">
-                            <ChevronRight className="h-4 w-4" />
+                        <button className="h-12 w-12 flex items-center justify-center rounded-2xl bg-gray-900 text-white text-[11px] font-black shadow-xl shadow-gray-200">01</button>
+                        <button className="h-12 w-12 flex items-center justify-center rounded-2xl border border-gray-100 text-gray-400 hover:bg-gray-50 hover:text-gray-900 text-[11px] font-black">02</button>
+                        <button className="h-12 w-12 flex items-center justify-center rounded-2xl border border-gray-100 text-gray-400 hover:bg-gray-50 hover:text-gray-900 transition-all">
+                            <ChevronRight className="h-5 w-5" />
                         </button>
                     </div>
                 </div>

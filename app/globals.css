@@ -1,25 +1,45 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700;800;900&display=swap');
 
 @theme {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-heading: 'Inter', system-ui, -apple-system, sans-serif;
-  --color-primary: #2563EB;
-  --color-secondary: #64748B;
-  --color-accent: #EF4444;
-  /* For Sale badge */
+  --font-heading: 'Poppins', sans-serif;
+
+  --color-primary: #FF3F6C;
+  /* Vibrant Pink */
+  --color-secondary: #F5F5F6;
+  --color-accent: #FFAD00;
+  /* Vibrant Orange */
+  --color-vital: #8C52FF;
+  /* Vibrant Purple */
+  --color-success: #03A685;
+  --color-error: #FF5722;
+
+  --spacing-8: 8px;
+
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 9999px;
+
+  --shadow-marketplace: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 8px 24px rgba(255, 63, 108, 0.15);
 }
 
 :root {
   --background: #ffffff;
-  --foreground: #000000;
-  --card: #F9FAFB;
-  --border: #E5E7EB;
+  --foreground: #282C3F;
+  --card: #ffffff;
+  --border: #eaeaec;
+
+  --gradient-primary: linear-gradient(90deg, #FF3F6C 0%, #FF6D3F 100%);
+  --gradient-vibrant: linear-gradient(135deg, #8C52FF 0%, #FF3F6C 100%);
+
+  --transition-vibrant: all 0.3s ease;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #ffffff;
-    /* Keeping it light per screenshot */
     --foreground: #000000;
   }
 }
@@ -29,6 +49,7 @@ body {
   color: var(--foreground);
   background: var(--background);
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 h1,
@@ -37,6 +58,39 @@ h3,
 h4,
 h5,
 h6 {
+  font-family: var(--font-heading);
   font-weight: 800;
-  letter-spacing: -0.025em;
+  color: #282C3F;
+  text-transform: none;
+  letter-spacing: -0.01em;
+}
+
+.bg-gradient-primary {
+  background: var(--gradient-primary);
+}
+
+.bg-gradient-vibrant {
+  background: var(--gradient-vibrant);
+}
+
+.transition-vibrant {
+  transition: var(--transition-vibrant);
+}
+
+/* Custom Scrollbar for Premium Feel */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d1d5db;
 }

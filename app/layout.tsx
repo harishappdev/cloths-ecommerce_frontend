@@ -3,6 +3,7 @@ import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
+import { WishlistProvider } from "@/context/WishlistContext";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { Toaster } from "react-hot-toast";
@@ -30,20 +31,24 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
 };
 
+// MobileBottomNav import removed from here as it's moved to (store)/layout.tsx
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${poppins.variable} antialiased min-h-screen flex flex-col`}
       >
         <AuthProvider>
           <CartProvider>
-            <Toaster position="top-center" />
-            {children}
+            <WishlistProvider>
+              <Toaster position="top-center" />
+              {children}
+            </WishlistProvider>
           </CartProvider>
         </AuthProvider>
       </body>

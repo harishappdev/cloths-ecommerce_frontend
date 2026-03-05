@@ -7,6 +7,8 @@ export interface DashboardStats {
     totalOrders: number;
     totalProducts: number;
     totalUsers: number;
+    totalReviews: number;
+    totalCoupons: number;
     recentOrders: Order[];
 }
 
@@ -16,6 +18,11 @@ export const adminService = {
      */
     async getStats() {
         const response = await api.get<ApiResponse<DashboardStats>>('/admin/stats');
+        return response.data;
+    },
+
+    async getDailyAnalytics() {
+        const response = await api.get<ApiResponse<{ analytics: { _id: string; revenue: number }[] }>>('/admin/analytics/daily');
         return response.data;
     },
 
@@ -73,6 +80,11 @@ export const adminService = {
 
     async updateOrderStatus(id: string, statusData: any) {
         const response = await api.patch<ApiResponse<{ order: Order }>>(`/orders/${id}/status`, statusData);
+        return response.data;
+    },
+
+    async processReturn(id: string, status: 'returned' | 'delivered') {
+        const response = await api.patch<ApiResponse<{ order: Order }>>(`/orders/${id}/process-return`, { status });
         return response.data;
     },
 

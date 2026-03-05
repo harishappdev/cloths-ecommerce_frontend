@@ -6,29 +6,37 @@ export function useProducts(query: string = '') {
     const [products, setProducts] = useState<Product[]>([]);
     const [results, setResults] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [isFetchingMore, setIsFetchingMore] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchProducts = useCallback(async () => {
-        setLoading(true);
+    const fetchProducts = useCallback(async (isAppend: boolean = false) => {
+        if (isAppend) setIsFetchingMore(true);
+        else setLoading(true);
+
         try {
             const response = await productService.getAllProducts(query);
-            console.log('useProducts: SUCCESS', response.data.products?.length, 'products');
-            setProducts(response.data.products || []);
+            if (isAppend) {
+                setProducts(prev => [...prev, ...(response.data.products || [])]);
+            } else {
+                setProducts(response.data.products || []);
+            }
             setResults(response.results || 0);
             setError(null);
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to fetch products');
-            console.error(err);
         } finally {
             setLoading(false);
+            setIsFetchingMore(false);
         }
     }, [query]);
 
     useEffect(() => {
-        fetchProducts();
-    }, [fetchProducts]);
+        // If query has page=1 or no page, it's a new search/filter
+        const isNewSearch = !query.includes('page=') || query.includes('page=1');
+        fetchProducts(!isNewSearch && products.length > 0);
+    }, [query]);
 
-    return { products, results, loading, error, refetch: fetchProducts };
+    return { products, results, loading, isFetchingMore, error, refetch: fetchProducts };
 }
 
 export function useProduct(slug: string) {

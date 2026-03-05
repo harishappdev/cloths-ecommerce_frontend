@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { adminService, DashboardStats } from '@/services/adminService';
+import { format, subDays } from 'date-fns';
 import {
     ShoppingBag,
     Users,
@@ -40,23 +41,49 @@ const barChartData = [
 
 export default function AdminOverview() {
     const [stats, setStats] = useState<DashboardStats | null>(null);
+    const [analytics, setAnalytics] = useState<{ _id: string; revenue: number }[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchStats = async () => {
+        const fetchData = async () => {
             try {
-                const response = await adminService.getStats();
-                if (response.status === 'success') {
-                    setStats(response.data);
+                const [statsRes, analyticsRes] = await Promise.all([
+                    adminService.getStats(),
+                    adminService.getDailyAnalytics()
+                ]);
+                
+                if (statsRes.status === 'success') {
+                    setStats(statsRes.data);
+                }
+                if (analyticsRes.status === 'success') {
+                    setAnalytics(analyticsRes.data.analytics);
                 }
             } catch (error) {
-                console.error('Failed to fetch stats', error);
+                console.error('Failed to fetch dashboard data', error);
             } finally {
                 setLoading(false);
             }
         };
-        fetchStats();
+        fetchData();
     }, []);
+
+    // Prepare chart data from last 7 days
+    const chartData = analytics.map(item => ({
+        name: format(new Date(item._id), 'eee'),
+        revenue: item.revenue,
+        fullDate: item._id
+    }));
+
+    // Fallback if no analytics data yet
+    const displayData = chartData.length > 0 ? chartData : [
+        { name: 'Mon', revenue: 0 },
+        { name: 'Tue', revenue: 0 },
+        { name: 'Wed', revenue: 0 },
+        { name: 'Thu', revenue: 0 },
+        { name: 'Fri', revenue: 0 },
+        { name: 'Sat', revenue: 0 },
+        { name: 'Sun', revenue: 0 },
+    ];
 
     if (loading) return (
         <div className="flex h-[60vh] items-center justify-center">
@@ -68,222 +95,254 @@ export default function AdminOverview() {
         {
             name: 'Total Orders',
             value: stats?.totalOrders?.toLocaleString() || '1,284',
-            change: '12.5%',
+            change: '+12.5%',
             isPositive: true,
             icon: ShoppingBag,
-            color: 'text-blue-600',
-            bg: 'bg-blue-50'
+            color: 'text-pink-600',
+            bg: 'bg-pink-50',
+            border: 'border-pink-100/50'
         },
         {
-            name: 'Total Revenue',
-            value: `$${stats?.totalRevenue?.toLocaleString() || '45,231.89'}`,
-            change: '8.2%',
+            name: 'Gross Revenue',
+            value: `₹${stats?.totalRevenue?.toLocaleString() || '45,231'}`,
+            change: '+8.2%',
             isPositive: true,
             icon: Wallet,
-            color: 'text-emerald-600',
-            bg: 'bg-emerald-50'
+            color: 'text-purple-600',
+            bg: 'bg-purple-50',
+            border: 'border-purple-100/50'
         },
         {
-            name: 'Total Products',
+            name: 'Inventory Size',
             value: stats?.totalProducts?.toLocaleString() || '432',
-            change: '0%',
-            isPositive: true, // neutral
+            change: 'Stable',
+            isPositive: true,
             icon: Package,
-            color: 'text-orange-600',
-            bg: 'bg-orange-50'
+            color: 'text-blue-600',
+            bg: 'bg-blue-50',
+            border: 'border-blue-100/50'
         },
         {
-            name: 'Total Customers',
+            name: 'User Growth',
             value: stats?.totalUsers?.toLocaleString() || '892',
-            change: '15.4%',
+            change: '+15.4%',
             isPositive: true,
             icon: Users,
-            color: 'text-purple-600',
-            bg: 'bg-purple-50'
+            color: 'text-orange-600',
+            bg: 'bg-orange-50',
+            border: 'border-orange-100/50'
         },
     ];
 
     return (
-        <div className="space-y-10">
+        <div className="space-y-10 lg:space-y-16">
             {/* Page Header */}
-            <div>
-                <h2 className="text-2xl font-black tracking-tight text-gray-900">Dashboard Overview</h2>
-                <p className="text-sm font-bold text-gray-400 mt-1">Welcome back! Here's what's happening today.</p>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+                <div>
+                    <div className="flex items-center gap-3 mb-3">
+                        <span className="h-2 w-10 bg-gradient-to-r from-[#FF2C79] to-purple-600 rounded-full" />
+                        <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Command Center</p>
+                    </div>
+                    <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 leading-[0.8]">VIBRANT <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">ANALYTICS</span></h2>
+                    <p className="text-xs font-bold text-gray-400 mt-4 uppercase tracking-[0.1em]">Real-time operational intelligence and performance metrics.</p>
+                </div>
+                <div className="flex items-center gap-4 bg-white p-2 rounded-[1.5rem] border border-gray-100 shadow-sm">
+                    <button className="h-12 px-6 rounded-2xl bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest shadow-xl shadow-gray-200 hover:bg-[#FF2C79] transition-all active:scale-95">Download PDF Report</button>
+                    <button className="h-12 w-12 flex items-center justify-center rounded-2xl bg-gray-50 text-gray-400 hover:text-gray-900 transition-all"><Target className="h-5 w-5" /></button>
+                </div>
             </div>
 
             {/* Stat Cards */}
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {statCards.map((card) => (
-                    <div key={card.name} className="bg-white rounded-[1.5rem] border border-gray-100 p-6 shadow-sm transition-all hover:shadow-md">
-                        <div className="flex items-center justify-between">
-                            <div className={cn("h-12 w-12 rounded-xl flex items-center justify-center", card.bg)}>
-                                <card.icon className={cn("h-6 w-6", card.color)} />
+                    <div key={card.name} className={cn("group relative bg-white rounded-[2.5rem] border p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-gray-200/50", card.border)}>
+                        <div className="flex items-center justify-between mb-8">
+                            <div className={cn("h-14 w-14 rounded-2xl flex items-center justify-center transition-transform group-hover:rotate-6", card.bg)}>
+                                <card.icon className={cn("h-7 w-7", card.color)} />
                             </div>
                             <div className={cn(
-                                "flex items-center gap-1 rounded-full px-2 py-1 text-[10px] font-black",
-                                card.name === 'Total Products' ? "bg-gray-100 text-gray-400" :
-                                    card.isPositive ? "bg-emerald-50 text-emerald-600" : "bg-red-50 text-red-600"
+                                "px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm",
+                                card.isPositive ? "bg-green-50 text-green-600 border-green-100" : "bg-red-50 text-red-600 border-red-100"
                             )}>
-                                {card.name !== 'Total Products' && <TrendingUp className="h-3 w-3" />}
-                                <span>{card.name === 'Total Products' ? '-' : ''}{card.change}</span>
-                                {card.name === 'Total Products' && <span className="ml-0.5">0%</span>}
+                                {card.change}
                             </div>
                         </div>
-                        <div className="mt-4">
-                            <p className="text-[12px] font-bold text-gray-400">{card.name}</p>
-                            <p className="text-2xl font-black text-gray-900 tracking-tight mt-1">{card.value}</p>
+                        <div className="space-y-1">
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{card.name}</p>
+                            <p className="text-3xl font-black text-gray-900 tracking-tighter">{card.value}</p>
+                        </div>
+                        <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <TrendingUp className={cn("h-5 w-5", card.color)} />
                         </div>
                     </div>
                 ))}
             </div>
 
-            {/* Chart Section */}
-            <div className="bg-white rounded-[1.5rem] border border-gray-100 p-8 shadow-sm">
-                <div className="flex items-center justify-between mb-10">
-                    <div>
-                        <h3 className="text-lg font-black tracking-tight text-gray-900">Revenue Trends</h3>
-                        <p className="text-sm font-bold text-gray-400 mt-0.5">Monthly sales performance comparison</p>
+            {/* Chart & Insights Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                <div className="lg:col-span-8 bg-white rounded-[3rem] border border-gray-100 p-8 md:p-12 shadow-sm">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 mb-12">
+                        <div>
+                            <h3 className="text-xl font-black tracking-tighter text-gray-900 uppercase">Revenue Velocity</h3>
+                            <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">Financial trajectory monitor</p>
+                        </div>
+                        <div className="flex items-center gap-2 p-1.5 bg-gray-50 border border-gray-100 rounded-2xl">
+                            {['7D', '30D', '90D', 'ALL'].map((tab) => (
+                                <button
+                                    key={tab}
+                                    className={cn(
+                                        "px-6 py-2.5 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest",
+                                        tab === '30D' ? "bg-white text-[#FF2C79] shadow-sm border border-pink-100" : "text-gray-400 hover:text-gray-900"
+                                    )}
+                                >
+                                    {tab}
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                    <div className="flex items-center gap-2 bg-[#F1F5F9] p-1.5 rounded-xl">
-                        <button className="px-4 py-2 text-[11px] font-black rounded-lg transition-all text-gray-500 hover:text-gray-900">7 Days</button>
-                        <button className="px-4 py-2 text-[11px] font-black rounded-lg transition-all bg-[#2563EB] text-white shadow-sm">30 Days</button>
+
+                    <div className="h-[350px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={displayData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }} barGap={12}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f8fafc" />
+                                <XAxis
+                                    dataKey="name"
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fontSize: 10, fontWeight: 900, fill: '#cbd5e1' }}
+                                    dy={20}
+                                />
+                                <YAxis hide />
+                                <Tooltip
+                                    cursor={{ fill: '#f8fafc', radius: 12 }}
+                                    contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.1)', padding: '20px' }}
+                                    itemStyle={{ fontWeight: 900, fontSize: '11px', textTransform: 'uppercase' }}
+                                />
+                                <Bar
+                                    dataKey="revenue"
+                                    radius={[12, 12, 12, 12]}
+                                    barSize={44}
+                                >
+                                    {displayData.map((entry, index) => (
+                                        <Cell
+                                            key={`cell-${index}`}
+                                            fill={index === displayData.length - 1 ? '#FF2C79' : index === displayData.length - 2 ? '#9333ea' : '#f1f5f9'}
+                                        />
+                                    ))}
+                                </Bar>
+                            </BarChart>
+                        </ResponsiveContainer>
                     </div>
                 </div>
 
-                <div className="h-[350px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={barChartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                            <XAxis
-                                dataKey="name"
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fontSize: 11, fontWeight: 700, fill: '#64748b' }}
-                                dy={15}
-                            />
-                            <YAxis hide />
-                            <Tooltip
-                                cursor={{ fill: 'transparent' }}
-                                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
-                            />
-                            <Bar
-                                dataKey="revenue"
-                                radius={[8, 8, 8, 8]}
-                                barSize={60}
-                            >
-                                {barChartData.map((entry, index) => (
-                                    <Cell key={`cell-${index}`} fill={entry.name === 'Wed' ? '#2563EB' : '#DBEAFE'} />
-                                ))}
-                            </Bar>
-                        </BarChart>
-                    </ResponsiveContainer>
+                <div className="lg:col-span-4 space-y-8">
+                    <div className="bg-gradient-to-br from-[#FF2C79] to-purple-600 rounded-[3rem] p-10 text-white shadow-2xl shadow-pink-200">
+                        <TrendingUp className="h-10 w-10 mb-8 opacity-50" />
+                        <h4 className="text-2xl font-black tracking-tighter uppercase mb-4 leading-tight">Growth Goal Reached</h4>
+                        <p className="text-pink-100 text-xs font-bold uppercase tracking-widest leading-relaxed mb-10">You've surpassed the monthly user recruitment target by 15.4%. Maintain current trajectory.</p>
+                        <div className="flex items-center gap-4">
+                            <div className="flex-1 h-3 bg-white/20 rounded-full overflow-hidden">
+                                <div className="h-full bg-white w-[85%] rounded-full shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
+                            </div>
+                            <span className="text-[11px] font-black tracking-widest">85%</span>
+                        </div>
+                    </div>
+
+                    <div className="bg-gray-900 rounded-[3rem] p-10 text-white shadow-2xl shadow-gray-200">
+                        <div className="flex items-center gap-3 mb-8">
+                            <Package className="h-5 w-5 text-[#FF2C79]" />
+                            <h4 className="text-[10px] font-black uppercase tracking-[0.2em]">Inventory Health</h4>
+                        </div>
+                        <div className="space-y-6">
+                            <div className="flex justify-between items-center">
+                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Stocked Skus</span>
+                                <span className="text-sm font-black tracking-tight">{stats?.totalProducts || '432'}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Low Stock Alert</span>
+                                <span className="text-sm font-black text-[#FF2C79] tracking-tight">12 Pieces</span>
+                            </div>
+                            <button className="w-full h-12 border border-white/10 rounded-2xl hover:bg-white/5 transition-all text-[10px] font-black uppercase tracking-widest mt-4">Restock Orders</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             {/* Recent Orders Section */}
-            <div className="bg-white rounded-[1.5rem] border border-gray-100 shadow-sm overflow-hidden p-8">
-                <div className="flex items-center justify-between mb-8">
-                    <h3 className="text-lg font-black tracking-tight text-gray-900">Recent Orders</h3>
-                    <Link href="/admin/orders" className="text-xs font-black text-[#2563EB] hover:underline uppercase tracking-widest">
-                        View All
+            <div className="bg-white rounded-[3rem] border border-gray-100 shadow-sm overflow-hidden p-8 md:p-12">
+                <div className="flex items-center justify-between mb-12">
+                    <div>
+                        <h3 className="text-xl font-black tracking-tighter text-gray-900 uppercase">Transaction Feed</h3>
+                        <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">Latest procurement activities</p>
+                    </div>
+                    <Link href="/admin/orders" className="group h-12 px-8 flex items-center gap-3 rounded-2xl bg-gray-50 border border-gray-100 text-[10px] font-black uppercase tracking-widest text-gray-900 hover:bg-black hover:text-white transition-all">
+                        View Audit Log <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                     </Link>
                 </div>
 
-                <div className="overflow-x-auto">
-                    <table className="w-full">
+                <div className="overflow-x-auto -mx-8 px-8">
+                    <table className="w-full min-w-[800px]">
                         <thead>
-                            <tr className="text-left text-[10px] font-black text-gray-400 uppercase tracking-widest border-b">
-                                <th className="pb-4 px-2">Order ID</th>
-                                <th className="pb-4 px-4">Customer</th>
-                                <th className="pb-4 px-4">Date</th>
-                                <th className="pb-4 px-4">Amount</th>
-                                <th className="pb-4 px-4">Status</th>
-                                <th className="pb-4 px-2 text-right">Actions</th>
+                            <tr className="text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-50">
+                                <th className="pb-6 px-4">IDENTIFIER</th>
+                                <th className="pb-6 px-6">NOMENCLATURE</th>
+                                <th className="pb-6 px-6">TIMESTAMP</th>
+                                <th className="pb-6 px-6">VALUATION</th>
+                                <th className="pb-6 px-6">STATUS VECTOR</th>
+                                <th className="pb-6 px-4 text-right">PROTOCOL</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
                             {(stats?.recentOrders || []).map((order: any) => (
-                                <tr key={order._id} className="group hover:bg-gray-50/50 transition-all">
-                                    <td className="py-6 px-2 text-xs font-black text-gray-900 uppercase">#ORD-{order._id.slice(-4)}</td>
-                                    <td className="py-6 px-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="h-9 w-9 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                                <tr key={order._id} className="group hover:bg-pink-50/10 transition-all duration-300">
+                                    <td className="py-8 px-4 text-[11px] font-black text-gray-900 tracking-tight">#{order._id.slice(-8).toUpperCase()}</td>
+                                    <td className="py-8 px-6">
+                                        <div className="flex items-center gap-4">
+                                            <div className="h-10 w-10 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center border border-gray-100 shadow-sm">
                                                 <Image
-                                                    src={`https://i.pravatar.cc/150?u=${order._id}`}
+                                                    src={`https://ui-avatars.com/api/?name=${(order.user as any)?.name || 'Guest'}&background=FF2C79&color=fff&bold=true`}
                                                     alt="User"
-                                                    width={36}
-                                                    height={36}
+                                                    width={40}
+                                                    height={40}
                                                 />
                                             </div>
-                                            <p className="text-sm font-bold text-gray-700">{(order.user as any)?.name || 'Guest User'}</p>
+                                            <p className="text-xs font-black text-gray-900 uppercase tracking-tight">{(order.user as any)?.name || 'Anonymous Entity'}</p>
                                         </div>
                                     </td>
-                                    <td className="py-6 px-4 text-sm font-bold text-gray-400">
-                                        {new Date(order.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                    <td className="py-8 px-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                        {new Date(order.createdAt).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' })}
                                     </td>
-                                    <td className="py-6 px-4 text-sm font-black text-gray-900">${order.totalPrice.toFixed(2)}</td>
-                                    <td className="py-6 px-4">
+                                    <td className="py-8 px-6 text-sm font-black text-gray-900">₹{order.totalPrice.toLocaleString()}</td>
+                                    <td className="py-8 px-6">
                                         <span className={cn(
-                                            "inline-flex items-center rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-widest",
-                                            order.orderStatus === 'delivered' ? "bg-emerald-50 text-emerald-600" :
-                                                order.orderStatus === 'shipped' ? "bg-blue-50 text-blue-600" :
-                                                    order.orderStatus === 'cancelled' ? "bg-red-50 text-red-600" :
-                                                        "bg-orange-50 text-orange-600"
+                                            "inline-flex items-center rounded-full px-5 py-1.5 text-[9px] font-black uppercase tracking-widest border shadow-sm",
+                                            order.orderStatus === 'delivered' ? "bg-green-50 text-green-600 border-green-100" :
+                                                order.orderStatus === 'shipped' ? "bg-blue-50 text-blue-600 border-blue-100" :
+                                                    order.orderStatus === 'cancelled' ? "bg-red-50 text-red-600 border-red-100" :
+                                                        "bg-orange-50 text-orange-600 border-orange-100"
                                         )}>
                                             {order.orderStatus}
                                         </span>
                                     </td>
-                                    <td className="py-6 px-2 text-right">
-                                        <button className="p-2 text-gray-400 hover:text-gray-900 transition-colors">
+                                    <td className="py-8 px-4 text-right">
+                                        <button className="h-10 w-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 hover:text-gray-900 hover:bg-white hover:shadow-md transition-all">
                                             <MoreHorizontal className="h-5 w-5" />
                                         </button>
                                     </td>
                                 </tr>
                             ))}
 
-                            {/* Static rows to match screenshot if no real data */}
-                            {(!stats?.recentOrders || stats.recentOrders.length === 0) && [
-                                { id: '2841', name: 'John Doe', avatar: '1', date: 'Oct 24, 2023', amount: 124.00, status: 'delivered' },
-                                { id: '2840', name: 'Jane Smith', avatar: '2', date: 'Oct 24, 2023', amount: 89.50, status: 'shipped' },
-                                { id: '2839', name: 'Mike Ross', avatar: '3', date: 'Oct 23, 2023', amount: 240.00, status: 'pending' },
-                                { id: '2838', name: 'Sarah Connor', avatar: '4', date: 'Oct 23, 2023', amount: 1450.00, status: 'cancelled' },
-                                { id: '2837', name: 'Robert Frost', avatar: '5', date: 'Oct 22, 2023', amount: 320.15, status: 'delivered' },
-                            ].map((row) => (
-                                <tr key={row.id} className="group hover:bg-gray-50/50 transition-all">
-                                    <td className="py-6 px-2 text-xs font-black text-gray-900 uppercase">#ORD-{row.id}</td>
-                                    <td className="py-6 px-4">
-                                        <div className="flex items-center gap-3">
-                                            <div className="h-9 w-9 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
-                                                <Image
-                                                    src={`https://i.pravatar.cc/150?u=${row.avatar}`}
-                                                    alt="User"
-                                                    width={36}
-                                                    height={36}
-                                                />
-                                            </div>
-                                            <p className="text-sm font-bold text-gray-700">{row.name}</p>
+                            {/* Default placeholder if no actual orders */}
+                            {(!stats?.recentOrders || stats.recentOrders.length === 0) && (
+                                <tr>
+                                    <td colSpan={6} className="py-20 text-center">
+                                        <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-50 text-gray-300 mb-4">
+                                            <ShoppingBag className="h-6 w-6" />
                                         </div>
-                                    </td>
-                                    <td className="py-6 px-4 text-sm font-bold text-gray-400">{row.date}</td>
-                                    <td className="py-6 px-4 text-sm font-black text-gray-900">${row.amount.toFixed(2)}</td>
-                                    <td className="py-6 px-4">
-                                        <span className={cn(
-                                            "inline-flex items-center rounded-full px-4 py-1.5 text-[10px] font-black uppercase tracking-widest",
-                                            row.status === 'delivered' ? "bg-emerald-50 text-emerald-600" :
-                                                row.status === 'shipped' ? "bg-blue-50 text-blue-600" :
-                                                    row.status === 'cancelled' ? "bg-red-50 text-red-600" :
-                                                        "bg-orange-50 text-orange-600"
-                                        )}>
-                                            {row.status}
-                                        </span>
-                                    </td>
-                                    <td className="py-6 px-2 text-right">
-                                        <button className="p-2 text-gray-400 hover:text-gray-900 transition-colors">
-                                            <MoreHorizontal className="h-5 w-5" />
-                                        </button>
+                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Awaiting Transaction Streams</p>
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>

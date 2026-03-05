@@ -133,7 +133,7 @@ export default function ForgotPasswordPage() {
                 ) : (
                     <>
                         <div>
-                            <button 
+                            <button
                                 onClick={() => setStep('EMAIL')}
                                 className="mb-4 inline-flex items-center text-xs font-bold text-gray-400 hover:text-gray-900 transition-colors uppercase tracking-widest"
                             >

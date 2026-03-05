@@ -1,6 +1,8 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import ProductDetailsClient from './ProductDetailsClient';
+import ProductSkeleton from './ProductSkeleton';
 
 async function getProduct(slug: string) {
     try {
@@ -24,12 +26,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
     if (!product) {
         return {
-            title: 'Product Not Found | ClothStore',
+            title: 'Product Not Found | Urban Closet',
         };
     }
 
     return {
-        title: `${product.name} | ClothStore Premium`,
+        title: `${product.name} | Urban Closet Premium`,
         description: product.description?.substring(0, 160),
         openGraph: {
             title: product.name,
@@ -41,11 +43,18 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
+    
+    // We can fetch data here, but for better UX with Suspense, we could also move it to a sub-component
+    // However, since it's a server component Page, we'll keep it simple for now.
     const product = await getProduct(slug);
 
     if (!product) {
         notFound();
     }
 
-    return <ProductDetailsClient product={product} />;
+    return (
+        <Suspense fallback={<ProductSkeleton />}>
+            <ProductDetailsClient product={product} />
+        </Suspense>
+    );
 }

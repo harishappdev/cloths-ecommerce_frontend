@@ -38,7 +38,12 @@ export const orderService = {
     /**
      * Create new order
      */
-    async createOrder(orderData: { shippingAddress: ShippingAddress; paymentMethod: string }) {
+    async createOrder(orderData: {
+        shippingAddress: ShippingAddress;
+        paymentMethod: string;
+        couponCode?: string;
+        deliveryOption?: string;
+    }) {
         const response = await api.post<ApiResponse<{ order: Order }>>('/orders', orderData);
         return response.data;
     },
@@ -56,6 +61,22 @@ export const orderService = {
      */
     async getOrderById(id: string) {
         const response = await api.get<ApiResponse<{ order: Order }>>(`/orders/${id}`);
+        return response.data;
+    },
+
+    /**
+     * Cancel an order
+     */
+    async cancelOrder(id: string, reason?: string) {
+        const response = await api.patch<ApiResponse<{ order: Order }>>(`/orders/${id}/cancel`, { reason });
+        return response.data;
+    },
+
+    /**
+     * Request a return for an order
+     */
+    async requestReturn(id: string, reason?: string) {
+        const response = await api.patch<ApiResponse<{ order: Order }>>(`/orders/${id}/return`, { reason });
         return response.data;
     }
 };

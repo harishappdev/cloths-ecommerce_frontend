@@ -10,6 +10,7 @@ interface AuthContextType {
     loading: boolean;
     login: (token: string, user: User) => void;
     logout: () => void;
+    updateUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -17,6 +18,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
+
+    console.log('AuthProvider State:', { user: user?.email, loading, isAuthenticated: !!user });
 
     useEffect(() => {
         const loadUser = async () => {
@@ -47,21 +50,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(user);
     };
 
-    const logout = async () => {
-        // Optimistic update: clear state immediately for better perceived performance
+    const logout = () => {
+        // 1. Immediate UI update (Optimistic)
         localStorage.removeItem('token');
         setUser(null);
 
-        try {
-            await api.get('/auth/logout');
-        } catch (err) {
-            console.error('Logout error (background)', err);
-            // We don't need to revert state here as logout is a terminal operation for the session
+        // 2. Background cleanup (non-blocking)
+        api.get('/auth/logout').catch(err => {
+            console.error('Logout background cleanup failed', err);
+        });
+
+        // 3. Handle redirects instantly
+        if (typeof window !== 'undefined') {
+            if (window.location.pathname.startsWith('/admin')) {
+                window.location.href = '/login';
+            } else {
+                // For store pages, we can either stay on home or redirect to home if on a protected route
+                const protectedRoutes = ['/profile', '/orders', '/wishlist', '/checkout'];
+                if (protectedRoutes.some(route => window.location.pathname.startsWith(route))) {
+                    window.location.href = '/';
+                }
+            }
         }
     };
 
+    const updateUser = (user: User) => {
+        setUser(user);
+    };
+
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated: !!user, loading, login, logout }}>
+        <AuthContext.Provider value={{ user, isAuthenticated: !!user, loading, login, logout, updateUser }}>
             {children}
         </AuthContext.Provider>
     );

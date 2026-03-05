@@ -14,14 +14,24 @@ import {
     CreditCard,
     ShieldCheck,
     RotateCcw,
-    Check
+    Check,
+    X
 } from 'lucide-react';
 import Image from 'next/image';
 import { cn, getImageUrl } from '@/utils/lib';
 
 export default function CheckoutPage() {
     const router = useRouter();
-    const { items, totalPrice, clearCart, loading: cartLoading } = useCart();
+    const {
+        items,
+        totalPrice,
+        clearCart,
+        loading: cartLoading,
+        appliedCoupon,
+        applyCoupon,
+        removeCoupon,
+        discountedTotal
+    } = useCart();
 
     const [loading, setLoading] = useState(false);
     const [deliveryOption, setDeliveryOption] = useState<'standard' | 'express'>('standard');
@@ -71,6 +81,8 @@ export default function CheckoutPage() {
                     country: 'Worldwide'
                 },
                 paymentMethod: backendPaymentMethod,
+                couponCode: appliedCoupon?.code,
+                deliveryOption: deliveryOption
             });
 
             if (response.status === 'success') {
@@ -99,214 +111,219 @@ export default function CheckoutPage() {
 
     return (
         <ProtectedRoute>
-            <div className="bg-white min-h-screen">
-                <div className="container mx-auto px-4 py-8">
-                    {/* Breadcrumbs */}
-                    <nav className="mb-10 flex items-center space-x-2 text-[10px] font-bold text-gray-400">
-                        <span className="hover:text-black cursor-pointer" onClick={() => router.push('/cart')}>Cart</span>
-                        <ChevronRight className="h-2.5 w-2.5" />
-                        <span className="text-gray-900 font-black tracking-tight underline underline-offset-4 decoration-2 decoration-[#2563EB]">Checkout</span>
-                        <ChevronRight className="h-2.5 w-2.5" />
-                        <span className="text-gray-400">Payment</span>
+            <div className="bg-[#FCFCFD] min-h-screen">
+                <div className="container mx-auto px-4 md:px-8 py-12 md:py-20">
+                    {/* Modern Breadcrumbs */}
+                    <nav className="mb-16 flex items-center space-x-3 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
+                        <span className="hover:text-[#FF2C79] cursor-pointer transition-colors" onClick={() => router.push('/cart')}>Your Bag</span>
+                        <span className="h-[2px] w-4 bg-pink-100" />
+                        <span className="text-gray-900">Final Settlement</span>
                     </nav>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
-                        {/* Checkout Form */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
+                        {/* Checkout Logistics */}
                         <div className="lg:col-span-8 space-y-16 pb-20">
-                            {/* Step 1: Shipping Address */}
-                            <section className="space-y-10">
-                                <div className="flex items-center gap-4">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2563EB] text-sm font-black text-white">1</div>
-                                    <h2 className="text-2xl font-black text-gray-900 tracking-tight">Shipping Address</h2>
+                            {/* Step 1: Destination Selection */}
+                            <section className="bg-white p-8 md:p-12 rounded-[3rem] border border-gray-100 shadow-sm space-y-12">
+                                <div className="flex items-end justify-between border-b border-gray-50 pb-8">
+                                    <div className="flex items-center gap-6">
+                                        <div className="h-14 w-14 rounded-3xl bg-pink-50 text-pink-500 flex items-center justify-center font-black text-2xl shadow-sm">01</div>
+                                        <div>
+                                            <h2 className="text-3xl font-black text-gray-900 tracking-tighter uppercase leading-none">Destination</h2>
+                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2">Logistics Coordination</p>
+                                        </div>
+                                    </div>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-[#FF2C79] bg-pink-50 px-3 py-1 rounded-full border border-pink-100">Live Stage</span>
                                 </div>
 
                                 <div className="grid grid-cols-1 gap-8">
-                                    <div className="space-y-3">
-                                        <label className="text-xs font-black text-gray-900 uppercase">Full Name</label>
+                                    <div className="space-y-4">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2">Recipient Identity</label>
                                         <input
                                             type="text"
                                             name="fullName"
                                             value={formData.fullName}
                                             onChange={handleInputChange}
-                                            placeholder="John Doe"
-                                            className="w-full h-14 px-6 rounded-xl border border-gray-100 bg-[#F9FAFB] text-sm font-bold focus:outline-none focus:ring-2 focus:ring-blue-100"
+                                            placeholder="LEGAL FULL NAME"
+                                            className="w-full h-18 px-8 rounded-2xl bg-gray-50 border-none font-black text-[11px] tracking-widest focus:ring-2 focus:ring-pink-100 transition-all placeholder:text-gray-200 uppercase"
                                         />
                                     </div>
-                                    <div className="space-y-3">
-                                        <label className="text-xs font-black text-gray-900 uppercase">Address</label>
+                                    <div className="space-y-4">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2">Delivery Vector</label>
                                         <input
                                             type="text"
                                             name="address"
                                             value={formData.address}
                                             onChange={handleInputChange}
-                                            placeholder="123 Fashion Ave"
-                                            className="w-full h-14 px-6 rounded-xl border border-gray-100 bg-[#F9FAFB] text-sm font-bold focus:outline-none focus:ring-2 focus:ring-blue-100"
+                                            placeholder="STREET ADDRESS / APT NUMBER"
+                                            className="w-full h-18 px-8 rounded-2xl bg-gray-50 border-none font-black text-[11px] tracking-widest focus:ring-2 focus:ring-pink-100 transition-all placeholder:text-gray-200 uppercase"
                                         />
                                     </div>
-                                    <div className="grid grid-cols-2 gap-8">
-                                        <div className="space-y-3">
-                                            <label className="text-xs font-black text-gray-900 uppercase">City</label>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                                        <div className="space-y-4">
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2">Locality</label>
                                             <input
                                                 type="text"
                                                 name="city"
                                                 value={formData.city}
                                                 onChange={handleInputChange}
-                                                placeholder="New York"
-                                                className="w-full h-14 px-6 rounded-xl border border-gray-100 bg-[#F9FAFB] text-sm font-bold focus:outline-none focus:ring-2 focus:ring-blue-100"
+                                                placeholder="CITY / STATE"
+                                                className="w-full h-18 px-8 rounded-2xl bg-gray-50 border-none font-black text-[11px] tracking-widest focus:ring-2 focus:ring-pink-100 transition-all placeholder:text-gray-200 uppercase"
                                             />
                                         </div>
-                                        <div className="space-y-3">
-                                            <label className="text-xs font-black text-gray-900 uppercase">ZIP Code</label>
+                                        <div className="space-y-4">
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2">Postal Node</label>
                                             <input
                                                 type="text"
                                                 name="zipCode"
                                                 value={formData.zipCode}
                                                 onChange={handleInputChange}
-                                                placeholder="10001"
-                                                className="w-full h-14 px-6 rounded-xl border border-gray-100 bg-[#F9FAFB] text-sm font-bold focus:outline-none focus:ring-2 focus:ring-blue-100"
+                                                placeholder="ZIP / PIN CODE"
+                                                className="w-full h-18 px-8 rounded-2xl bg-gray-50 border-none font-black text-[11px] tracking-widest focus:ring-2 focus:ring-pink-100 transition-all placeholder:text-gray-200 uppercase"
                                             />
                                         </div>
                                     </div>
-                                    <div className="space-y-3">
-                                        <label className="text-xs font-black text-gray-900 uppercase">Phone Number</label>
+                                    <div className="space-y-4">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2">Communication Link</label>
                                         <input
                                             type="text"
                                             name="phoneNumber"
                                             value={formData.phoneNumber}
                                             onChange={handleInputChange}
-                                            placeholder="+1 (555) 000-0000"
-                                            className="w-full h-14 px-6 rounded-xl border border-gray-100 bg-[#F9FAFB] text-sm font-bold focus:outline-none focus:ring-2 focus:ring-blue-100"
+                                            placeholder="+91 CONTACT NUMBER"
+                                            className="w-full h-18 px-8 rounded-2xl bg-gray-50 border-none font-black text-[11px] tracking-widest focus:ring-2 focus:ring-pink-100 transition-all placeholder:text-gray-200"
                                         />
                                     </div>
                                 </div>
                             </section>
 
-                            {/* Step 2: Delivery Options */}
-                            <section className="space-y-10">
-                                <div className="flex items-center gap-4">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2563EB] text-sm font-black text-white">2</div>
-                                    <h2 className="text-2xl font-black text-gray-900 tracking-tight">Delivery Options</h2>
+                            {/* Step 2: Transit Protocol */}
+                            <section className="bg-white p-8 md:p-12 rounded-[3rem] border border-gray-100 shadow-sm space-y-12">
+                                <div className="flex items-end justify-between border-b border-gray-50 pb-8">
+                                    <div className="flex items-center gap-6">
+                                        <div className="h-14 w-14 rounded-3xl bg-purple-50 text-purple-500 flex items-center justify-center font-black text-2xl shadow-sm">02</div>
+                                        <div>
+                                            <h2 className="text-3xl font-black text-gray-900 tracking-tighter uppercase leading-none">Transit</h2>
+                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2">Velocity Selection</p>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                                     <button
                                         onClick={() => setDeliveryOption('standard')}
                                         className={cn(
-                                            "relative flex flex-col items-start p-8 rounded-2xl border-2 transition-all text-left",
-                                            deliveryOption === 'standard' ? "border-[#2563EB] bg-blue-50/10 shadow-lg shadow-blue-50" : "border-gray-100 bg-white hover:border-gray-200"
+                                            "relative flex flex-col items-start p-10 rounded-[2.5rem] border-2 transition-all duration-500 text-left group overflow-hidden",
+                                            deliveryOption === 'standard' ? "border-[#FF2C79] bg-white shadow-xl shadow-pink-100" : "border-gray-50 bg-gray-50/50 hover:border-pink-100"
                                         )}
                                     >
-                                        <div className="flex w-full items-center justify-between mb-4">
-                                            <span className="text-sm font-black text-gray-900">Standard Delivery</span>
+                                        <div className="flex w-full items-center justify-between mb-10">
+                                            <span className={cn("text-[10px] font-black uppercase tracking-[0.2em]", deliveryOption === 'standard' ? "text-[#FF2C79]" : "text-gray-400")}>Standard Protocol</span>
                                             {deliveryOption === 'standard' && (
-                                                <div className="h-5 w-5 rounded-full bg-[#2563EB] flex items-center justify-center">
-                                                    <Check className="h-3 w-3 text-white" />
+                                                <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-pink-500 to-purple-500 flex items-center justify-center shadow-lg shadow-pink-200">
+                                                    <Check className="h-4 w-4 text-white" />
                                                 </div>
                                             )}
                                         </div>
-                                        <p className="text-[10px] font-bold text-gray-400 mb-6 tracking-widest uppercase">3-5 business days</p>
-                                        <span className="text-sm font-black text-[#2563EB]">Free</span>
+                                        <h4 className="text-2xl font-black text-gray-900 tracking-tighter mb-2 uppercase">Balanced</h4>
+                                        <p className="text-[10px] font-bold text-gray-400 mb-8 tracking-widest uppercase italic">3-5 Cycle Arrival window</p>
+                                        <span className="text-[10px] font-black text-pink-600 bg-pink-50 px-4 py-2 rounded-full uppercase tracking-widest mt-auto border border-pink-100">Complementary</span>
                                     </button>
 
                                     <button
                                         onClick={() => setDeliveryOption('express')}
                                         className={cn(
-                                            "relative flex flex-col items-start p-8 rounded-2xl border-2 transition-all text-left",
-                                            deliveryOption === 'express' ? "border-[#2563EB] bg-blue-50/10 shadow-lg shadow-blue-50" : "border-gray-100 bg-white hover:border-gray-200"
+                                            "relative flex flex-col items-start p-10 rounded-[2.5rem] border-2 transition-all duration-500 text-left group overflow-hidden",
+                                            deliveryOption === 'express' ? "border-purple-600 bg-white shadow-xl shadow-purple-100" : "border-gray-50 bg-gray-50/50 hover:border-purple-100"
                                         )}
                                     >
-                                        <div className="flex w-full items-center justify-between mb-4">
-                                            <span className="text-sm font-black text-gray-900">Express Delivery</span>
+                                        <div className="flex w-full items-center justify-between mb-10">
+                                            <span className={cn("text-[10px] font-black uppercase tracking-[0.2em]", deliveryOption === 'express' ? "text-purple-600" : "text-gray-400")}>Priority Protocol</span>
                                             {deliveryOption === 'express' && (
-                                                <div className="h-5 w-5 rounded-full bg-[#2563EB] flex items-center justify-center">
-                                                    <Check className="h-3 w-3 text-white" />
+                                                <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-500 flex items-center justify-center shadow-lg shadow-purple-200">
+                                                    <Check className="h-4 w-4 text-white" />
                                                 </div>
                                             )}
                                         </div>
-                                        <p className="text-[10px] font-bold text-gray-400 mb-6 tracking-widest uppercase">Next business day</p>
-                                        <span className="text-sm font-black text-gray-900">$15.00</span>
+                                        <h4 className="text-2xl font-black text-gray-900 tracking-tighter mb-2 uppercase">Supersonic</h4>
+                                        <p className="text-[10px] font-bold text-gray-400 mb-8 tracking-widest uppercase italic">Next cycle arrival</p>
+                                        <span className="text-[10px] font-black text-purple-600 bg-purple-50 px-4 py-2 rounded-full uppercase tracking-widest mt-auto border border-purple-100">₹1,500 Additional</span>
                                     </button>
                                 </div>
                             </section>
 
-                            {/* Step 3: Payment Method */}
-                            <section className="space-y-10">
-                                <div className="flex items-center gap-4">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#2563EB] text-sm font-black text-white">3</div>
-                                    <h2 className="text-2xl font-black text-gray-900 tracking-tight">Payment Method</h2>
+                            {/* Step 3: Settlement */}
+                            <section className="bg-white p-8 md:p-12 rounded-[3rem] border border-gray-100 shadow-sm space-y-12">
+                                <div className="flex items-end justify-between border-b border-gray-50 pb-8">
+                                    <div className="flex items-center gap-6">
+                                        <div className="h-14 w-14 rounded-3xl bg-indigo-50 text-indigo-500 flex items-center justify-center font-black text-2xl shadow-sm">03</div>
+                                        <div>
+                                            <h2 className="text-3xl font-black text-gray-900 tracking-tighter uppercase leading-none">Settlement</h2>
+                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2">Financial Coordination</p>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="space-y-10">
-                                    <div className="flex gap-4">
-                                        <button
-                                            onClick={() => setPaymentMethod('card')}
-                                            className={cn(
-                                                "flex-1 h-14 flex items-center justify-center gap-2 rounded-xl border-2 font-bold text-sm transition-all",
-                                                paymentMethod === 'card' ? "border-[#2563EB] text-[#2563EB]" : "border-gray-100 text-gray-400 hover:border-gray-200"
-                                            )}
-                                        >
-                                            <CreditCard className="h-4 w-4" />
-                                            Card
-                                        </button>
-                                        <button
-                                            onClick={() => setPaymentMethod('paypal')}
-                                            className={cn(
-                                                "flex-1 h-14 flex items-center justify-center gap-2 rounded-xl border-2 font-bold text-sm transition-all",
-                                                paymentMethod === 'paypal' ? "border-[#2563EB] text-[#2563EB]" : "border-gray-100 text-gray-400 hover:border-gray-200"
-                                            )}
-                                        >
-                                            <span className="font-black italic">PayPal</span>
-                                        </button>
-                                        <button
-                                            onClick={() => setPaymentMethod('apple')}
-                                            className={cn(
-                                                "flex-1 h-14 flex items-center justify-center gap-2 rounded-xl border-2 font-bold text-sm transition-all",
-                                                paymentMethod === 'apple' ? "border-[#2563EB] text-[#2563EB]" : "border-gray-100 text-gray-400 hover:border-gray-200"
-                                            )}
-                                        >
-                                            <span className="font-black tracking-tight flex items-center gap-1">
-                                                <div className="mb-0.5">●</div> Apple Pay
-                                            </span>
-                                        </button>
+                                <div className="space-y-12">
+                                    <div className="flex flex-wrap gap-4">
+                                        {['card', 'paypal', 'apple'].map((method) => (
+                                            <button
+                                                key={method}
+                                                onClick={() => setPaymentMethod(method as any)}
+                                                className={cn(
+                                                    "h-16 px-10 flex items-center justify-center gap-4 rounded-2xl border transition-all duration-300 shadow-sm font-black text-[10px] uppercase tracking-widest",
+                                                    paymentMethod === method
+                                                        ? "border-transparent bg-gray-900 text-white shadow-xl shadow-gray-300"
+                                                        : "border-gray-50 bg-white text-gray-400 hover:border-gray-200"
+                                                )}
+                                            >
+                                                {method === 'card' && <CreditCard className="h-4 w-4 text-[#FF2C79]" />}
+                                                {method === 'paypal' && <span className="italic normal-case font-black text-blue-500">PayPal</span>}
+                                                {method === 'apple' && <span className="text-black">Apple Pay</span>}
+                                                {method === 'card' && "Protected Card"}
+                                            </button>
+                                        ))}
                                     </div>
 
                                     {paymentMethod === 'card' && (
-                                        <div className="p-10 rounded-[2rem] border border-gray-100 space-y-8 animate-in fade-in slide-in-from-top-4 duration-500">
-                                            <div className="space-y-3">
-                                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Card Number</label>
+                                        <div className="p-10 rounded-[2.5rem] bg-gray-50 border border-gray-100 shadow-inner space-y-10 animate-in fade-in slide-in-from-top-4 duration-700">
+                                            <div className="space-y-4">
+                                                <label className="text-[10px] font-black text-gray-900 uppercase tracking-widest px-2">Credential Identification</label>
                                                 <div className="relative">
-                                                    <CreditCard className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                    <div className="absolute left-8 top-1/2 -translate-y-1/2 h-10 w-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-gray-300">
+                                                        <CreditCard className="h-5 w-5" />
+                                                    </div>
                                                     <input
                                                         type="text"
                                                         name="cardNumber"
                                                         value={formData.cardNumber}
                                                         onChange={handleInputChange}
                                                         placeholder="0000 0000 0000 0000"
-                                                        className="w-full h-14 pl-16 pr-6 rounded-xl border border-gray-100 bg-[#F9FAFB] text-sm font-bold focus:outline-none focus:ring-2 focus:ring-blue-100"
+                                                        className="w-full h-20 pl-24 pr-8 rounded-3xl bg-white border-none font-black text-[12px] tracking-[0.35em] focus:ring-2 focus:ring-pink-100"
                                                     />
                                                 </div>
                                             </div>
                                             <div className="grid grid-cols-2 gap-8">
-                                                <div className="space-y-3">
-                                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Expiry Date</label>
+                                                <div className="space-y-4">
+                                                    <label className="text-[10px] font-black text-gray-900 uppercase tracking-widest px-2">Lifecycle End</label>
                                                     <input
                                                         type="text"
                                                         name="expiryDate"
                                                         value={formData.expiryDate}
                                                         onChange={handleInputChange}
-                                                        placeholder="MM/YY"
-                                                        className="w-full h-14 px-6 rounded-xl border border-gray-100 bg-[#F9FAFB] text-sm font-bold focus:outline-none focus:ring-2 focus:ring-blue-100"
+                                                        placeholder="MM / YY"
+                                                        className="w-full h-18 px-8 rounded-2xl bg-white border-none font-black text-[12px] tracking-widest focus:ring-2 focus:ring-pink-100"
                                                     />
                                                 </div>
-                                                <div className="space-y-3">
-                                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest">CVC</label>
+                                                <div className="space-y-4">
+                                                    <label className="text-[10px] font-black text-gray-900 uppercase tracking-widest px-2">Security Node</label>
                                                     <input
                                                         type="text"
                                                         name="cvc"
                                                         value={formData.cvc}
                                                         onChange={handleInputChange}
-                                                        placeholder="123"
-                                                        className="w-full h-14 px-6 rounded-xl border border-gray-100 bg-[#F9FAFB] text-sm font-bold focus:outline-none focus:ring-2 focus:ring-blue-100"
+                                                        placeholder="000"
+                                                        className="w-full h-18 px-8 rounded-2xl bg-white border-none font-black text-[12px] tracking-widest focus:ring-2 focus:ring-pink-100"
                                                     />
                                                 </div>
                                             </div>
@@ -316,90 +333,148 @@ export default function CheckoutPage() {
                             </section>
                         </div>
 
-                        {/* Order Summary Sidebar */}
-                        <div className="lg:col-span-4 lg:sticky lg:top-8 h-fit">
-                            <div className="rounded-[2rem] border border-gray-100 bg-white p-10 space-y-10">
-                                <h2 className="text-2xl font-black text-gray-900 tracking-tight">Order Summary</h2>
+                        {/* Order Recaps Sidebar */}
+                        <div className="lg:col-span-4 lg:sticky lg:top-12 h-fit">
+                            <div className="bg-white rounded-[3rem] border border-gray-100 p-10 space-y-10 shadow-2xl shadow-gray-200/50">
+                                <div className="flex items-center gap-4 mb-2">
+                                    <span className="h-2 w-8 bg-gradient-to-r from-[#FF2C79] to-purple-600 rounded-full" />
+                                    <h2 className="text-3xl font-black text-gray-900 tracking-tighter uppercase">Recap</h2>
+                                </div>
 
-                                {/* Compact Items List */}
-                                <div className="space-y-6 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                                {/* Industrial Items List */}
+                                <div className="space-y-6 max-h-[350px] overflow-y-auto pr-4 no-scrollbar border-b border-gray-50 pb-10">
                                     {items.map((item) => (
-                                        <div key={`${item.product._id}-${item.size}-${item.color}`} className="flex gap-4">
-                                            <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-xl bg-gray-50 border border-gray-50">
+                                        <div key={`${item.product._id}-${item.size}-${item.color}`} className="group flex gap-6">
+                                            <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-[1.5rem] bg-gray-50 border border-gray-50 shadow-sm">
                                                 <Image
                                                     src={getImageUrl(item.product?.images?.[0] || '')}
-                                                    alt={item.product?.name || 'Product'}
+                                                    alt={item.product?.name || 'Item'}
                                                     fill
                                                     unoptimized
-                                                    className="object-cover"
+                                                    className="object-cover transition-transform duration-700 group-hover:scale-110"
                                                 />
                                             </div>
-                                            <div className="flex flex-col justify-center flex-grow py-1">
-                                                <p className="text-sm font-bold text-gray-900 line-clamp-1">{item.product.name}</p>
-                                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
-                                                    {item.color} • {item.size} • x{item.quantity}
-                                                </p>
-                                            </div>
-                                            <div className="flex flex-col justify-center items-end py-1">
-                                                <span className="text-sm font-black text-gray-900">${(item.price * item.quantity).toFixed(2)}</span>
+                                            <div className="flex flex-col justify-center flex-grow py-1 space-y-2">
+                                                <p className="text-[11px] font-black text-gray-900 uppercase tracking-tight leading-none group-hover:text-[#FF2C79] transition-colors">{item.product.name}</p>
+                                                <div className="flex gap-2">
+                                                    <span className="text-[8px] font-black px-2 py-0.5 bg-gray-50 rounded text-gray-400 uppercase tracking-widest">{item.size}</span>
+                                                    <span className="text-[8px] font-black px-2 py-0.5 bg-gray-50 rounded text-gray-400 uppercase tracking-widest">QTY: {item.quantity}</span>
+                                                </div>
+                                                <span className="text-[11px] font-black text-gray-900">₹{(item.price * item.quantity).toLocaleString()}</span>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
 
-                                <div className="space-y-4 pt-4 border-t border-gray-50">
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Subtotal</span>
-                                        <span className="text-sm font-black text-gray-900">${totalPrice.toFixed(2)}</span>
+                                <div className="pt-4 space-y-4">
+                                    <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-gray-400">
+                                        <span>Merchandise</span>
+                                        <span className="text-gray-900">₹{totalPrice.toLocaleString()}</span>
                                     </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Shipping</span>
-                                        <span className="text-xs font-black text-green-500 uppercase">{shippingCost === 0 ? 'Free' : `$${shippingCost.toFixed(2)}`}</span>
+
+                                    {appliedCoupon && (
+                                        <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-pink-600">
+                                            <span>Coupon ({appliedCoupon.code})</span>
+                                            <span>- ₹{(totalPrice - discountedTotal).toLocaleString()}</span>
+                                        </div>
+                                    )}
+
+                                    <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-gray-400">
+                                        <span>Logistics</span>
+                                        <span className={cn("font-black", shippingCost === 0 ? "text-pink-600" : "text-gray-900")}>
+                                            {shippingCost === 0 ? 'GRATIS' : `₹${shippingCost.toLocaleString()}`}
+                                        </span>
                                     </div>
-                                    <div className="flex justify-between items-center">
-                                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Tax</span>
-                                        <span className="text-sm font-black text-gray-900">${tax.toFixed(2)}</span>
+                                    <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-gray-400 pb-8 border-b border-gray-50">
+                                        <span>Regulatory</span>
+                                        <span className="text-gray-900">₹{tax.toLocaleString()}</span>
                                     </div>
-                                    <div className="pt-6 border-t border-gray-50 flex justify-between items-baseline">
-                                        <span className="text-xl font-black text-gray-900 tracking-tight">Total</span>
-                                        <span className="text-3xl font-black text-[#2563EB] tracking-tight">${finalTotal.toFixed(2)}</span>
+                                </div>
+
+                                {/* Coupon Sector */}
+                                <div className="pt-2">
+                                    {!appliedCoupon ? (
+                                        <div className="flex gap-3">
+                                            <input
+                                                type="text"
+                                                id="coupon-input"
+                                                placeholder="VOUCHER CODE"
+                                                className="flex-grow bg-gray-50 border-none rounded-xl px-5 text-[10px] font-black uppercase tracking-widest focus:ring-1 focus:ring-pink-100"
+                                            />
+                                            <button
+                                                onClick={() => {
+                                                    const code = (document.getElementById('coupon-input') as HTMLInputElement).value;
+                                                    if (code) applyCoupon(code);
+                                                }}
+                                                className="px-6 py-3 bg-gray-900 text-white rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-black transition-all"
+                                            >
+                                                Apply
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center justify-between p-4 bg-pink-50 border border-pink-100 rounded-2xl">
+                                            <div className="flex items-center gap-3 text-pink-600">
+                                                <CheckCircle2 className="h-4 w-4" />
+                                                <span className="text-[10px] font-black uppercase tracking-widest">{appliedCoupon.code} ACTIVE</span>
+                                            </div>
+                                            <button onClick={removeCoupon} className="text-gray-400 hover:text-pink-600 transition-colors">
+                                                <X className="h-4 w-4" />
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="pt-4 flex justify-between items-end">
+                                    <div className="space-y-2">
+                                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#FF2C79] block">Total Obligation</span>
+                                        <span className="text-5xl font-black text-gray-900 tracking-tighter leading-none">₹{(discountedTotal + shippingCost + tax).toLocaleString()}</span>
                                     </div>
                                 </div>
 
                                 <button
                                     onClick={handlePlaceOrder}
                                     disabled={loading}
-                                    className="w-full h-16 rounded-2xl bg-[#2563EB] font-black text-white hover:bg-blue-700 transition-all active:scale-95 shadow-xl shadow-blue-100 disabled:opacity-50 flex items-center justify-center"
+                                    className="group relative w-full h-20 rounded-3xl bg-gray-900 text-white font-black text-[11px] uppercase tracking-[0.35em] overflow-hidden shadow-2xl transition-all duration-500 active:scale-95 flex items-center justify-center gap-4 disabled:opacity-50"
                                 >
-                                    {loading ? (
-                                        <div className="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                                    ) : (
-                                        'Place Order'
-                                    )}
+                                    <span className="relative z-10 flex items-center gap-4">
+                                        {loading ? (
+                                            <div className="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                                        ) : (
+                                            <>
+                                                Execute Settlement
+                                                <ChevronRight className="h-4 w-4 group-hover:translate-x-2 transition-transform" />
+                                            </>
+                                        )}
+                                    </span>
+                                    <div className="absolute inset-0 bg-gradient-to-r from-[#FF2C79] to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 </button>
 
-                                <p className="text-center text-[10px] font-bold text-gray-400 leading-relaxed max-w-[280px] mx-auto">
-                                    By clicking "Place Order" you agree to our <span className="underline cursor-pointer">Terms and Conditions</span>.
-                                </p>
-                            </div>
-
-                            <div className="mt-8 flex justify-center gap-8">
-                                <div className="flex items-center gap-2">
-                                    <ShieldCheck className="h-4 w-4 text-gray-400" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-[#6B7280]">Secure SSL</span>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <RotateCcw className="h-4 w-4 text-gray-400" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-[#6B7280]">30-Day Returns</span>
+                                <div className="flex flex-col items-center gap-6 pt-6 bg-pink-50/20 p-6 rounded-[2rem] border border-pink-100/30">
+                                    <div className="flex items-center gap-6 text-pink-300">
+                                        <ShieldCheck className="h-7 w-7" />
+                                        <Lock className="h-7 w-7" />
+                                        <CheckCircle2 className="h-7 w-7" />
+                                    </div>
+                                    <p className="text-center text-[9px] font-black uppercase text-pink-400 tracking-widest leading-relaxed">
+                                        Encrypted terminal. Data subject to global privacy protocols.
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Footer Attribution */}
-                <div className="container mx-auto px-4 py-8 mt-12 border-t border-gray-50 flex justify-center">
-                    <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest">© 2024 Fashion Store. All rights reserved.</p>
+                    {/* Industrial Footer */}
+                    <div className="container mx-auto py-16 mt-20 border-t border-gray-50 flex flex-col md:flex-row justify-between items-center gap-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">
+                        <div className="flex items-center gap-6">
+                            <span className="text-gray-900">VibrantHub Atelier</span>
+                            <span className="h-1 w-1 bg-gray-100 rounded-full" />
+                            <p className="leading-none">Global Operations © 2024</p>
+                        </div>
+                        <div className="flex gap-10">
+                            <button className="hover:text-[#FF2C79] transition-colors">Privacy Protocal</button>
+                            <button className="hover:text-[#FF2C79] transition-colors">Service Terms</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </ProtectedRoute>

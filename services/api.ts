@@ -26,12 +26,17 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
-        // If 401 (Unauthorized) and not already retried
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        const isAuthRequest = originalRequest.url?.includes('/auth/login') ||
+            originalRequest.url?.includes('/auth/logout') ||
+            originalRequest.url?.includes('/auth/refresh');
+
+        // If 401 (Unauthorized), not an auth request, and not already retried
+        if (error.response?.status === 401 && !isAuthRequest && !originalRequest._retry) {
             originalRequest._retry = true;
 
             try {
                 // Attempt to refresh token
+                console.log('API: Attempting token refresh...');
                 const refreshUrl = process.env.NEXT_PUBLIC_API_URL
                     ? `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`
                     : 'http://localhost:5000/api/v1/auth/refresh';
@@ -41,18 +46,20 @@ api.interceptors.response.use(
                 });
 
                 if (response.data.status === 'success') {
-                    const { token } = response.data;
-                    localStorage.setItem('token', token);
-
-                    // Update header and retry
-                    originalRequest.headers.Authorization = `Bearer ${token}`;
-                    return api(originalRequest);
+                    console.log('API: Refresh success');
+                    const token = response.data.token || response.data.accessToken;
+                    if (token) {
+                        localStorage.setItem('token', token);
+                        // Update header and retry
+                        originalRequest.headers.Authorization = `Bearer ${token}`;
+                        return api(originalRequest);
+                    }
                 }
             } catch (refreshError) {
-                // Refresh failed, clear data and redirect to login
+                // Refresh failed, clear data and redirect
+                console.error('API: Refresh failed, redirecting to login', refreshError);
                 if (typeof window !== 'undefined') {
                     localStorage.removeItem('token');
-                    // Only redirect if not already on the login page to avoid reloads
                     if (window.location.pathname !== '/login') {
                         window.location.href = '/login';
                     }
@@ -60,6 +67,15 @@ api.interceptors.response.use(
             }
         }
 
+        // For auth requests or failed refresh, just reject
+        if (isAuthRequest && error.response?.status === 401) {
+            console.warn('API: Auth request failed with 401');
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem('token');
+            }
+        }
+
+        console.error('API Error:', error.response?.status, error.response?.data?.message || error.message);
         return Promise.reject(error);
     }
 );
