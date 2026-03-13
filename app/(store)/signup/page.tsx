@@ -32,7 +32,7 @@ export default function SignupPage() {
             const { token, accessToken, data } = response.data;
 
             login(token || accessToken, data.user);
-            toast.success('Account created! Welcome to Urban Closet.');
+            toast.success('Account created! Welcome to StyleNest.');
             router.push('/');
         } catch (err: any) {
             console.error('Signup Error:', err);

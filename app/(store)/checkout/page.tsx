@@ -114,49 +114,49 @@ export default function CheckoutPage() {
             <div className="bg-[#FCFCFD] min-h-screen">
                 <div className="container mx-auto px-4 md:px-8 py-12 md:py-20">
                     {/* Modern Breadcrumbs */}
-                    <nav className="mb-16 flex items-center space-x-3 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
+                    <nav className="mb-6 md:mb-12 flex items-center space-x-3 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
                         <span className="hover:text-[#FF2C79] cursor-pointer transition-colors" onClick={() => router.push('/cart')}>Your Bag</span>
                         <span className="h-[2px] w-4 bg-pink-100" />
-                        <span className="text-gray-900">Final Settlement</span>
+                        <span className="text-gray-900 leading-none">Final Settlement</span>
                     </nav>
 
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 items-start">
                         {/* Checkout Logistics */}
-                        <div className="lg:col-span-8 space-y-16 pb-20">
+                        <div className="lg:col-span-8 space-y-8 md:space-y-16 pb-12 md:pb-20">
                             {/* Step 1: Destination Selection */}
                             <section className="bg-white p-8 md:p-12 rounded-[3rem] border border-gray-100 shadow-sm space-y-12">
-                                <div className="flex items-end justify-between border-b border-gray-50 pb-8">
-                                    <div className="flex items-center gap-6">
-                                        <div className="h-14 w-14 rounded-3xl bg-pink-50 text-pink-500 flex items-center justify-center font-black text-2xl shadow-sm">01</div>
+                                <div className="flex flex-col sm:flex-row sm:items-end justify-between border-b border-gray-50 pb-6 md:pb-8 gap-4">
+                                    <div className="flex items-center gap-4 md:gap-6">
+                                        <div className="h-12 w-12 md:h-14 md:w-14 rounded-2xl md:rounded-3xl bg-pink-50 text-pink-500 flex items-center justify-center font-black text-xl md:text-2xl shadow-sm shrink-0">01</div>
                                         <div>
-                                            <h2 className="text-3xl font-black text-gray-900 tracking-tighter uppercase leading-none">Destination</h2>
-                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2">Logistics Coordination</p>
+                                            <h2 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tighter uppercase leading-none">Destination</h2>
+                                            <p className="text-[9px] md:text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1.5 md:mt-2">Logistics Coordination</p>
                                         </div>
                                     </div>
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-[#FF2C79] bg-pink-50 px-3 py-1 rounded-full border border-pink-100">Live Stage</span>
+                                    <span className="self-start sm:self-auto text-[9px] font-black uppercase tracking-widest text-[#FF2C79] bg-pink-50 px-3 py-1 rounded-full border border-pink-100">Live Stage</span>
                                 </div>
 
                                 <div className="grid grid-cols-1 gap-8">
-                                    <div className="space-y-4">
-                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2">Recipient Identity</label>
+                                    <div className="space-y-3 md:space-y-4">
+                                        <label className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2">Recipient Identity</label>
                                         <input
                                             type="text"
                                             name="fullName"
                                             value={formData.fullName}
                                             onChange={handleInputChange}
                                             placeholder="LEGAL FULL NAME"
-                                            className="w-full h-18 px-8 rounded-2xl bg-gray-50 border-none font-black text-[11px] tracking-widest focus:ring-2 focus:ring-pink-100 transition-all placeholder:text-gray-200 uppercase"
+                                            className="w-full h-16 md:h-18 px-6 md:px-8 rounded-xl md:rounded-2xl bg-gray-50 border-none font-black text-[10px] md:text-[11px] tracking-widest focus:ring-2 focus:ring-pink-100 transition-all placeholder:text-gray-200 uppercase"
                                         />
                                     </div>
-                                    <div className="space-y-4">
-                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2">Delivery Vector</label>
+                                    <div className="space-y-3 md:space-y-4">
+                                        <label className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] px-2">Delivery Vector</label>
                                         <input
                                             type="text"
                                             name="address"
                                             value={formData.address}
                                             onChange={handleInputChange}
                                             placeholder="STREET ADDRESS / APT NUMBER"
-                                            className="w-full h-18 px-8 rounded-2xl bg-gray-50 border-none font-black text-[11px] tracking-widest focus:ring-2 focus:ring-pink-100 transition-all placeholder:text-gray-200 uppercase"
+                                            className="w-full h-16 md:h-18 px-6 md:px-8 rounded-xl md:rounded-2xl bg-gray-50 border-none font-black text-[10px] md:text-[11px] tracking-widest focus:ring-2 focus:ring-pink-100 transition-all placeholder:text-gray-200 uppercase"
                                         />
                                     </div>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
@@ -466,7 +466,7 @@ export default function CheckoutPage() {
                     {/* Industrial Footer */}
                     <div className="container mx-auto py-16 mt-20 border-t border-gray-50 flex flex-col md:flex-row justify-between items-center gap-8 text-[10px] font-black text-gray-300 uppercase tracking-widest">
                         <div className="flex items-center gap-6">
-                            <span className="text-gray-900">VibrantHub Atelier</span>
+                            <span className="text-gray-900">StyleNest Atelier</span>
                             <span className="h-1 w-1 bg-gray-100 rounded-full" />
                             <p className="leading-none">Global Operations © 2024</p>
                         </div>

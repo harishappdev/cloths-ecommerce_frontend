@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import useSWR, { mutate } from 'swr';
 import { adminService } from '@/services/adminService';
 import { productService } from '@/services/productService';
-import { Product } from '@/types';
+import { Product, Category } from '@/types';
+import { Skeleton } from '@/components/ui/Skeleton';
 import {
     Plus,
     Edit2,
@@ -25,11 +27,8 @@ import { toast } from 'react-hot-toast';
 import { cn, getImageUrl } from '@/utils/lib';
 
 export default function AdminProducts() {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-    const [categories, setCategories] = useState<any[]>([]);
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -46,31 +45,13 @@ export default function AdminProducts() {
     const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
     const [editingProduct, setEditingProduct] = useState<string | null>(null);
 
+    const { data: productsData, isLoading: productsLoading } = useSWR('/products');
+    const { data: categoriesData } = useSWR('/categories');
 
-    const fetchProducts = async () => {
-        try {
-            const response = await productService.getAllProducts();
-            setProducts(response.data.products);
-        } catch (error) {
-            toast.error('Failed to load products');
-        } finally {
-            setLoading(false);
-        }
-    };
+    const products = productsData?.data?.products || [];
+    const categories = categoriesData?.data?.categories || [];
 
-    const fetchCategories = async () => {
-        try {
-            const response = await adminService.getCategories();
-            setCategories(response.data.categories);
-        } catch (error) {
-            console.error('Failed to load categories');
-        }
-    };
-
-    useEffect(() => {
-        fetchProducts();
-        fetchCategories();
-    }, []);
+    // No longer need manual fetches in useEffect
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -107,7 +88,7 @@ export default function AdminProducts() {
 
             setIsAddModalOpen(false);
             resetForm();
-            fetchProducts();
+            mutate('/products');
         } catch (error: any) {
             toast.error(error.response?.data?.message || `Failed to ${isEditing ? 'update' : 'add'} product`, { id: loadingToast });
         }
@@ -144,15 +125,19 @@ export default function AdminProducts() {
         try {
             await adminService.deleteProduct(id);
             toast.success('Product deleted');
-            fetchProducts();
+            mutate('/products');
         } catch (error) {
             toast.error('Failed to delete product');
         }
     };
 
-    const filteredProducts = products.filter(p =>
+    const filteredProducts = products.filter((p: Product) =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.category.toLowerCase().includes(searchTerm.toLowerCase())
+        p.brand.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const filteredCategories = categories.filter((cat: Category) =>
+        cat.name.toLowerCase().includes('')
     );
 
     return (
@@ -189,6 +174,7 @@ export default function AdminProducts() {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full bg-[#F8FAFC] border-none rounded-2xl py-4 pl-14 pr-6 text-[11px] font-black uppercase tracking-widest focus:ring-2 focus:ring-pink-500/10 transition-all placeholder:text-gray-300"
+                        suppressHydrationWarning
                     />
                 </div>
 
@@ -197,6 +183,7 @@ export default function AdminProducts() {
                         <select
                             className="w-full bg-[#F8FAFC] border-none rounded-2xl py-4 pl-6 pr-12 text-[10px] font-black uppercase tracking-widest appearance-none cursor-pointer focus:ring-2 focus:ring-pink-500/10"
                             onChange={(e) => setSearchTerm(e.target.value === 'All Categories' ? '' : e.target.value)}
+                            suppressHydrationWarning
                         >
                             <option>All Categories</option>
                             {categories.map(cat => (
@@ -237,11 +224,11 @@ export default function AdminProducts() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
-                            {loading ? (
+                            {productsLoading ? (
                                 Array(5).fill(0).map((_, i) => (
-                                    <tr key={i} className="animate-pulse">
-                                        <td colSpan={7} className="py-12 px-10">
-                                            <div className="h-16 bg-gray-50 rounded-[1.5rem]" />
+                                    <tr key={i}>
+                                        <td colSpan={7} className="py-8 px-10">
+                                            <Skeleton className="h-16 w-full rounded-[1.5rem]" />
                                         </td>
                                     </tr>
                                 ))
@@ -254,7 +241,7 @@ export default function AdminProducts() {
                                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Zero Matching Entities</p>
                                     </td>
                                 </tr>
-                            ) : filteredProducts.map((product) => (
+                            ) : filteredProducts.map((product: Product) => (
                                 <tr key={product._id} className="group hover:bg-pink-50/10 transition-all duration-300">
                                     <td className="py-8 px-10">
                                         <div className="flex items-center gap-6">
@@ -416,7 +403,7 @@ export default function AdminProducts() {
                                                         onChange={e => setFormData({ ...formData, category: e.target.value })}
                                                     >
                                                         <option value="">SELECT TAXONOMY</option>
-                                                        {categories.map(cat => (
+                                                        {categories.map((cat: Category) => (
                                                             <option key={cat._id} value={cat.name}>{cat.name}</option>
                                                         ))}
                                                     </select>

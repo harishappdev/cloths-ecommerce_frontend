@@ -1,18 +1,20 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import useSWR from 'swr';
 import { adminService, DashboardStats } from '@/services/adminService';
-import { format, subDays } from 'date-fns';
+import { Skeleton } from '@/components/ui/Skeleton';
+import { format } from 'date-fns';
 import {
     ShoppingBag,
     Users,
     Package,
     Wallet,
     TrendingUp,
-    TrendingDown,
     MoreHorizontal,
     ArrowUpRight,
-    Target
+    Target,
+    DollarSign
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -28,47 +30,15 @@ import {
     Cell
 } from 'recharts';
 
-// Mock data for the bar chart based on the screenshot
-const barChartData = [
-    { name: 'Mon', revenue: 2000 },
-    { name: 'Tue', revenue: 3500 },
-    { name: 'Wed', revenue: 6000 }, // Highlighted bar
-    { name: 'Thu', revenue: 4800 },
-    { name: 'Fri', revenue: 3800 },
-    { name: 'Sat', revenue: 3800 },
-    { name: 'Sun', revenue: 3000 },
-];
-
 export default function AdminOverview() {
-    const [stats, setStats] = useState<DashboardStats | null>(null);
-    const [analytics, setAnalytics] = useState<{ _id: string; revenue: number }[]>([]);
-    const [loading, setLoading] = useState(true);
+    const { data: statsData, isLoading: statsLoading } = useSWR('/admin/stats');
+    const { data: analyticsData } = useSWR('/admin/analytics/daily');
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const [statsRes, analyticsRes] = await Promise.all([
-                    adminService.getStats(),
-                    adminService.getDailyAnalytics()
-                ]);
-                
-                if (statsRes.status === 'success') {
-                    setStats(statsRes.data);
-                }
-                if (analyticsRes.status === 'success') {
-                    setAnalytics(analyticsRes.data.analytics);
-                }
-            } catch (error) {
-                console.error('Failed to fetch dashboard data', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchData();
-    }, []);
+    const stats = statsData?.data;
+    const analytics = analyticsData?.data?.analytics || [];
 
     // Prepare chart data from last 7 days
-    const chartData = analytics.map(item => ({
+    const chartData = analytics.map((item: any) => ({
         name: format(new Date(item._id), 'eee'),
         revenue: item.revenue,
         fullDate: item._id
@@ -85,66 +55,40 @@ export default function AdminOverview() {
         { name: 'Sun', revenue: 0 },
     ];
 
-    if (loading) return (
-        <div className="flex h-[60vh] items-center justify-center">
-            <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent shadow-xl"></div>
+    // Dashboard cards helper
+    const StatCard = ({ title, value, icon: Icon, color, loading }: any) => (
+        <div className="bg-white rounded-[2.5rem] p-8 lg:p-10 shadow-sm border border-gray-100 transition-all hover:shadow-xl hover:shadow-gray-200/50 group">
+            <div className="flex items-center justify-between mb-8">
+                <div className={cn("h-14 w-14 rounded-2xl flex items-center justify-center text-white shadow-lg transition-transform group-hover:rotate-12", color)}>
+                    <Icon className="h-6 w-6" />
+                </div>
+                <div className="text-right">
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">{title}</p>
+                    <div className="flex items-center justify-end gap-2">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Live Sync</p>
+                    </div>
+                </div>
+            </div>
+            {loading ? (
+                <Skeleton className="h-10 w-32" />
+            ) : (
+                <h3 className="text-4xl lg:text-5xl font-black text-gray-900 tracking-tighter uppercase">{value}</h3>
+            )}
         </div>
     );
 
-    const statCards = [
-        {
-            name: 'Total Orders',
-            value: stats?.totalOrders?.toLocaleString() || '1,284',
-            change: '+12.5%',
-            isPositive: true,
-            icon: ShoppingBag,
-            color: 'text-pink-600',
-            bg: 'bg-pink-50',
-            border: 'border-pink-100/50'
-        },
-        {
-            name: 'Gross Revenue',
-            value: `₹${stats?.totalRevenue?.toLocaleString() || '45,231'}`,
-            change: '+8.2%',
-            isPositive: true,
-            icon: Wallet,
-            color: 'text-purple-600',
-            bg: 'bg-purple-50',
-            border: 'border-purple-100/50'
-        },
-        {
-            name: 'Inventory Size',
-            value: stats?.totalProducts?.toLocaleString() || '432',
-            change: 'Stable',
-            isPositive: true,
-            icon: Package,
-            color: 'text-blue-600',
-            bg: 'bg-blue-50',
-            border: 'border-blue-100/50'
-        },
-        {
-            name: 'User Growth',
-            value: stats?.totalUsers?.toLocaleString() || '892',
-            change: '+15.4%',
-            isPositive: true,
-            icon: Users,
-            color: 'text-orange-600',
-            bg: 'bg-orange-50',
-            border: 'border-orange-100/50'
-        },
-    ];
-
     return (
-        <div className="space-y-10 lg:space-y-16">
+        <div className="space-y-12">
             {/* Page Header */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
                 <div>
                     <div className="flex items-center gap-3 mb-3">
                         <span className="h-2 w-10 bg-gradient-to-r from-[#FF2C79] to-purple-600 rounded-full" />
-                        <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Command Center</p>
+                        <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Admin Dashboard</p>
                     </div>
-                    <h2 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 leading-[0.8]">VIBRANT <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">ANALYTICS</span></h2>
-                    <p className="text-xs font-bold text-gray-400 mt-4 uppercase tracking-[0.1em]">Real-time operational intelligence and performance metrics.</p>
+                    <h2 className="text-5xl md:text-6xl font-black tracking-tighter text-gray-900 leading-[0.8] uppercase">Sales <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">Overview</span></h2>
+                    <p className="text-sm font-bold text-gray-500 mt-4 uppercase tracking-[0.1em]">Current sales and performance statistics.</p>
                 </div>
                 <div className="flex items-center gap-4 bg-white p-2 rounded-[1.5rem] border border-gray-100 shadow-sm">
                     <button className="h-12 px-6 rounded-2xl bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest shadow-xl shadow-gray-200 hover:bg-[#FF2C79] transition-all active:scale-95">Download PDF Report</button>
@@ -152,30 +96,36 @@ export default function AdminOverview() {
                 </div>
             </div>
 
-            {/* Stat Cards */}
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {statCards.map((card) => (
-                    <div key={card.name} className={cn("group relative bg-white rounded-[2.5rem] border p-8 transition-all duration-500 hover:shadow-2xl hover:shadow-gray-200/50", card.border)}>
-                        <div className="flex items-center justify-between mb-8">
-                            <div className={cn("h-14 w-14 rounded-2xl flex items-center justify-center transition-transform group-hover:rotate-6", card.bg)}>
-                                <card.icon className={cn("h-7 w-7", card.color)} />
-                            </div>
-                            <div className={cn(
-                                "px-3 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest border shadow-sm",
-                                card.isPositive ? "bg-green-50 text-green-600 border-green-100" : "bg-red-50 text-red-600 border-red-100"
-                            )}>
-                                {card.change}
-                            </div>
-                        </div>
-                        <div className="space-y-1">
-                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{card.name}</p>
-                            <p className="text-3xl font-black text-gray-900 tracking-tighter">{card.value}</p>
-                        </div>
-                        <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <TrendingUp className={cn("h-5 w-5", card.color)} />
-                        </div>
-                    </div>
-                ))}
+            {/* Main Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <StatCard
+                    title="Revenue"
+                    value={`₹${(stats?.totalRevenue || 0).toLocaleString()}`}
+                    icon={DollarSign}
+                    color="bg-gray-900"
+                    loading={statsLoading}
+                />
+                <StatCard
+                    title="Orders"
+                    value={stats?.totalOrders || '0'}
+                    icon={ShoppingBag}
+                    color="bg-[#FF2C79]"
+                    loading={statsLoading}
+                />
+                <StatCard
+                    title="Products"
+                    value={stats?.totalProducts || '0'}
+                    icon={Package}
+                    color="bg-purple-600"
+                    loading={statsLoading}
+                />
+                <StatCard
+                    title="Customers"
+                    value={stats?.totalUsers || '0'}
+                    icon={Users}
+                    color="bg-blue-600"
+                    loading={statsLoading}
+                />
             </div>
 
             {/* Chart & Insights Section */}
@@ -183,8 +133,8 @@ export default function AdminOverview() {
                 <div className="lg:col-span-8 bg-white rounded-[3rem] border border-gray-100 p-8 md:p-12 shadow-sm">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 mb-12">
                         <div>
-                            <h3 className="text-xl font-black tracking-tighter text-gray-900 uppercase">Revenue Velocity</h3>
-                            <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">Financial trajectory monitor</p>
+                            <h3 className="text-2xl font-black tracking-tighter text-gray-900 uppercase">Revenue Trends</h3>
+                            <p className="text-sm font-bold text-gray-500 mt-1 uppercase tracking-widest">Revenue tracking over time</p>
                         </div>
                         <div className="flex items-center gap-2 p-1.5 bg-gray-50 border border-gray-100 rounded-2xl">
                             {['7D', '30D', '90D', 'ALL'].map((tab) => (
@@ -251,12 +201,12 @@ export default function AdminOverview() {
                     <div className="bg-gray-900 rounded-[3rem] p-10 text-white shadow-2xl shadow-gray-200">
                         <div className="flex items-center gap-3 mb-8">
                             <Package className="h-5 w-5 text-[#FF2C79]" />
-                            <h4 className="text-[10px] font-black uppercase tracking-[0.2em]">Inventory Health</h4>
+                            <h4 className="text-[10px] font-black uppercase tracking-[0.2em]">Stock Status</h4>
                         </div>
                         <div className="space-y-6">
                             <div className="flex justify-between items-center">
-                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Stocked Skus</span>
-                                <span className="text-sm font-black tracking-tight">{stats?.totalProducts || '432'}</span>
+                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Total Products</span>
+                                <span className="text-sm font-black tracking-tight">{stats?.totalProducts || '0'}</span>
                             </div>
                             <div className="flex justify-between items-center">
                                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Low Stock Alert</span>
@@ -272,11 +222,11 @@ export default function AdminOverview() {
             <div className="bg-white rounded-[3rem] border border-gray-100 shadow-sm overflow-hidden p-8 md:p-12">
                 <div className="flex items-center justify-between mb-12">
                     <div>
-                        <h3 className="text-xl font-black tracking-tighter text-gray-900 uppercase">Transaction Feed</h3>
-                        <p className="text-xs font-bold text-gray-400 mt-1 uppercase tracking-widest">Latest procurement activities</p>
+                        <h3 className="text-2xl font-black tracking-tighter text-gray-900 uppercase">Recent Orders</h3>
+                        <p className="text-sm font-bold text-gray-500 mt-1 uppercase tracking-widest">Latest customer orders</p>
                     </div>
                     <Link href="/admin/orders" className="group h-12 px-8 flex items-center gap-3 rounded-2xl bg-gray-50 border border-gray-100 text-[10px] font-black uppercase tracking-widest text-gray-900 hover:bg-black hover:text-white transition-all">
-                        View Audit Log <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                        View All Orders <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                     </Link>
                 </div>
 
@@ -284,16 +234,22 @@ export default function AdminOverview() {
                     <table className="w-full min-w-[800px]">
                         <thead>
                             <tr className="text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-50">
-                                <th className="pb-6 px-4">IDENTIFIER</th>
-                                <th className="pb-6 px-6">NOMENCLATURE</th>
-                                <th className="pb-6 px-6">TIMESTAMP</th>
-                                <th className="pb-6 px-6">VALUATION</th>
-                                <th className="pb-6 px-6">STATUS VECTOR</th>
-                                <th className="pb-6 px-4 text-right">PROTOCOL</th>
+                                <th className="pb-6 px-4">ORDER ID</th>
+                                <th className="pb-6 px-6">CUSTOMER</th>
+                                <th className="pb-6 px-6">DATE</th>
+                                <th className="pb-6 px-6">TOTAL AMOUNT</th>
+                                <th className="pb-6 px-6">ORDER STATUS</th>
+                                <th className="pb-6 px-4 text-right">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
-                            {(stats?.recentOrders || []).map((order: any) => (
+                            {statsLoading ? (
+                                Array(5).fill(0).map((_, i) => (
+                                    <tr key={i}>
+                                        <td colSpan={6} className="py-8"><Skeleton className="h-12 w-full" /></td>
+                                    </tr>
+                                ))
+                            ) : (stats?.recentOrders || []).map((order: any) => (
                                 <tr key={order._id} className="group hover:bg-pink-50/10 transition-all duration-300">
                                     <td className="py-8 px-4 text-[11px] font-black text-gray-900 tracking-tight">#{order._id.slice(-8).toUpperCase()}</td>
                                     <td className="py-8 px-6">
@@ -332,8 +288,7 @@ export default function AdminOverview() {
                                 </tr>
                             ))}
 
-                            {/* Default placeholder if no actual orders */}
-                            {(!stats?.recentOrders || stats.recentOrders.length === 0) && (
+                            {!statsLoading && (!stats?.recentOrders || stats.recentOrders.length === 0) && (
                                 <tr>
                                     <td colSpan={6} className="py-20 text-center">
                                         <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-50 text-gray-300 mb-4">

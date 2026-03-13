@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { CartProvider } from "@/context/CartContext";
@@ -13,20 +13,15 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
-});
 
 export const metadata: Metadata = {
-  title: "Urban Closet | Premium Clothing Ecommerce",
-  description: "Shop the latest premium clothing collections at Urban Closet.",
+  title: "StyleNest | Premium Clothing Ecommerce",
+  description: "Shop the latest premium clothing collections at StyleNest.",
   openGraph: {
-    title: "Urban Closet | Premium Clothing Ecommerce",
-    description: "Shop the latest premium clothing collections at Urban Closet.",
+    title: "StyleNest | Premium Clothing Ecommerce",
+    description: "Shop the latest premium clothing collections at StyleNest.",
     type: "website",
-    siteName: "Urban Closet",
+    siteName: "StyleNest",
   },
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'),
 };
@@ -41,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${poppins.variable} antialiased min-h-screen flex flex-col`}
+        className={`${inter.variable} antialiased min-h-screen flex flex-col`}
       >
         <AuthProvider>
           <CartProvider>

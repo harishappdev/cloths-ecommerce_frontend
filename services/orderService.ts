@@ -29,7 +29,7 @@ export interface Order {
     paidAt?: string;
     isDelivered: boolean;
     deliveredAt?: string;
-    orderStatus: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
+    orderStatus: 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled' | 'returned' | 'return_requested';
     paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
     createdAt: string;
 }

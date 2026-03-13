@@ -32,5 +32,19 @@ export const productService = {
     async getCategories() {
         const response = await api.get<ApiResponse<{ categories: any[] }>>('/categories');
         return response.data;
+    },
+    /**
+     * Get unique filter options
+     */
+    async getFilterOptions() {
+        const response = await api.get<ApiResponse<{
+            categories: string[],
+            brands: string[],
+            colors: string[],
+            fabric: string[],
+            sizes: string[],
+            occasion: string[]
+        }>>('/products/filters');
+        return response.data;
     }
 };

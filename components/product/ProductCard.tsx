@@ -22,6 +22,7 @@ interface ProductCardProps {
         ratings: number;
         numReviews: number;
         slug: string;
+        colors?: string[];
     };
 }
 
@@ -139,17 +140,17 @@ export default function ProductCard({ product }: ProductCardProps) {
                 {/* Quick Add Button */}
                 <button
                     onClick={handleAddToCart}
-                    className="absolute bottom-0 left-0 right-0 bg-primary/95 backdrop-blur-md text-white py-3 font-bold text-xs uppercase tracking-wider translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex items-center justify-center gap-2"
+                    className="absolute bottom-0 left-0 right-0 bg-primary/95 backdrop-blur-md text-white py-4 font-black text-[10px] uppercase tracking-[0.2em] translate-y-full group-hover:translate-y-0 transition-transform duration-500 flex items-center justify-center gap-2"
                 >
                     <ShoppingBag className="h-4 w-4" />
-                    Add to Bag
+                    Quick Add
                 </button>
             </Link>
 
             {/* Product Info */}
-            <div className="p-3 space-y-1">
+            <div className="p-3 md:p-4 space-y-1.5">
                 <div className="flex justify-between items-center">
-                    <p className="text-[11px] font-bold text-gray-500 uppercase tracking-wide">
+                    <p className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest">
                         {product.brand}
                     </p>
                     <div className="flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 rounded text-green-700">
@@ -159,10 +160,42 @@ export default function ProductCard({ product }: ProductCardProps) {
                 </div>
 
                 <Link href={`/products/${product.slug}`} className="block">
-                    <h3 className="text-sm font-semibold text-gray-800 truncate">
+                    <h3 className="text-xs md:text-sm font-black text-gray-900 truncate tracking-tight uppercase italic">
                         {product.name}
                     </h3>
                 </Link>
+
+                {/* Color Swatches */}
+                {product.colors && product.colors.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                        {product.colors.map((color) => (
+                            <div 
+                                key={color}
+                                className="h-2.5 w-2.5 rounded-full border border-gray-100 shadow-sm"
+                                style={{ 
+                                    backgroundColor: 
+                                        color.toLowerCase() === 'block' ? '#000000' : 
+                                        color.toLowerCase() === 'black' ? '#000000' :
+                                        color.toLowerCase() === 'white' ? '#FFFFFF' :
+                                        color.toLowerCase() === 'red' ? '#DC2626' :
+                                        color.toLowerCase() === 'blue' ? '#2563EB' :
+                                        color.toLowerCase() === 'green' ? '#059669' :
+                                        color.toLowerCase() === 'navy' ? '#1E293B' :
+                                        color.toLowerCase() === 'pink' ? '#EC4899' :
+                                        color.toLowerCase() === 'yellow' ? '#FACC15' :
+                                        color.toLowerCase() === 'purple' ? '#8B5CF6' :
+                                        color.toLowerCase() === 'grey' ? '#94A3B8' :
+                                        color.toLowerCase() === 'silver' ? '#C0C0C0' :
+                                        color.toLowerCase() === 'gold' ? '#FFD700' :
+                                        color.toLowerCase() === 'beige' ? '#F5F5DC' :
+                                        color.toLowerCase() === 'brown' ? '#A52A2A' :
+                                        color // Fallback to raw value
+                                }}
+                                title={color}
+                            />
+                        ))}
+                    </div>
+                )}
 
                 <div className="flex items-center gap-2 pt-1">
                     <span className="text-sm font-bold text-gray-900">

@@ -12,14 +12,12 @@ import {
     User,
     Mail,
     Shield,
-    Calendar,
+    ShieldCheck,
     Package,
     Heart,
     ChevronRight,
     MapPin,
-    LogOut,
-    ExternalLink,
-    Settings,
+    TrendingUp,
     Edit3
 } from 'lucide-react';
 import { cn } from '@/utils/lib';
@@ -77,224 +75,223 @@ export default function ProfilePage() {
 
     return (
         <ProtectedRoute>
-            <div className="bg-[#f8f9fa] min-h-screen">
-                <div className="container mx-auto px-4 py-12">
-                    <div className="max-w-4xl mx-auto">
-                        {/* Header Section */}
-                        <div className="relative rounded-3xl overflow-hidden mb-8 shadow-xl shadow-gray-200">
-                            <div className="absolute inset-0 bg-gradient-vibrant opacity-90" />
-                            <div className="relative px-8 py-12 flex flex-col md:flex-row items-center gap-8">
-                                <div className="h-24 w-24 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-4xl font-black text-white border-2 border-white/30 shadow-2xl">
-                                    {user.name?.[0].toUpperCase() || 'U'}
-                                </div>
-                                <div className="text-center md:text-left">
-                                    <h1 className="text-3xl md:text-4xl font-black text-white uppercase italic tracking-tight mb-2">{user.name}</h1>
-                                    <div className="flex flex-wrap justify-center md:justify-start gap-4">
-                                        <div className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-xs font-bold text-white border border-white/20 flex items-center gap-1.5">
-                                            <Mail className="h-3 w-3" />
-                                            {user.email}
+            <div className="bg-[#FAFAFB] min-h-screen">
+                <div className="container mx-auto px-4 py-10 md:py-16">
+                    <div className="max-w-5xl mx-auto">
+                        {/* Header Section - Refined Compact Premium */}
+                        <div className="mb-10 md:mb-16">
+                            <div className="flex flex-col md:flex-row items-center md:items-end justify-between gap-8">
+                                <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
+                                    <div className="relative group">
+                                        <div className="h-24 w-24 rounded-[2rem] bg-gradient-to-tr from-[#FF2C79] to-purple-600 flex items-center justify-center text-4xl font-black text-white shadow-xl shadow-pink-100 transition-transform group-hover:rotate-6 group-hover:scale-105 duration-500">
+                                            {user.name?.[0].toUpperCase() || 'U'}
                                         </div>
-                                        <div className="px-3 py-1 bg-white/10 backdrop-blur-sm rounded-full text-xs font-bold text-white border border-white/20 flex items-center gap-1.5 uppercase">
-                                            <Shield className="h-3 w-3" />
-                                            {user.role}
+                                        <div className="absolute -bottom-1 -right-1 h-8 w-8 bg-white rounded-xl shadow-lg flex items-center justify-center text-[#FF2C79] border border-gray-50">
+                                            <Shield className="h-4 w-4" />
                                         </div>
                                     </div>
+                                    <div className="text-center md:text-left space-y-2">
+                                        <div className="flex items-center justify-center md:justify-start gap-2">
+                                            <span className="h-1 w-6 bg-[#FF2C79] rounded-full" />
+                                            <p className="text-[9px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Member Profile</p>
+                                        </div>
+                                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 uppercase tracking-tighter leading-none">{user.name}</h1>
+                                        <div className="flex flex-wrap justify-center md:justify-start gap-2">
+                                            <div className="px-3 py-1.5 bg-white rounded-lg text-[9px] font-black text-gray-400 border border-gray-100 uppercase tracking-widest shadow-sm flex items-center gap-1.5">
+                                                <Mail className="h-3 w-3 text-gray-300" />
+                                                {user.email}
+                                            </div>
+                                            <div className="px-3 py-1.5 bg-gray-900 rounded-lg text-[9px] font-black text-white uppercase tracking-widest shadow-lg flex items-center gap-1.5">
+                                                <ShieldCheck className="h-3 w-3" />
+                                                {user.role}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex gap-3">
+                                    <button 
+                                        onClick={() => logout()}
+                                        className="h-12 px-6 rounded-xl bg-white border border-gray-100 text-[9px] font-black text-red-500 uppercase tracking-[0.2em] hover:bg-red-50 hover:border-red-100 transition-all shadow-sm"
+                                    >
+                                        TERMINATE
+                                    </button>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                            {/* Left Column: Stats & Quick Links */}
-                            <div className="space-y-6">
-                                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                                    <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">Account Summary</h3>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <Link href="/orders" className="bg-blue-50/50 p-4 rounded-xl border border-blue-100/50 hover:bg-blue-100/50 transition-colors text-left">
-                                            <Package className="h-5 w-5 text-blue-500 mb-2" />
-                                            <p className="text-xl font-black text-blue-900">{orderCount}</p>
-                                            <p className="text-[10px] font-bold text-blue-600 uppercase">Orders</p>
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
+                            {/* Left Column: Premium Sidebar */}
+                            <div className="lg:col-span-4 space-y-8">
+                                <div className="bg-white rounded-[2.5rem] p-3 shadow-sm border border-gray-100 overflow-hidden">
+                                    <p className="px-5 pt-5 pb-3 text-[8px] font-black text-gray-400 uppercase tracking-[0.3em]">Account Hub</p>
+                                    <nav className="space-y-1">
+                                        <button 
+                                            onClick={() => setActiveView('profile')}
+                                            className={cn(
+                                                "w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all",
+                                                activeView === 'profile' 
+                                                    ? "bg-[#FF2C79] text-white shadow-lg shadow-pink-100" 
+                                                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                                            )}
+                                        >
+                                            <User className={cn("h-4 w-4", activeView === 'profile' ? "text-white" : "text-gray-400")} />
+                                            <span>Identity Intel</span>
+                                            {activeView === 'profile' && <ChevronRight className="ml-auto h-3.5 w-3.5 opacity-50" />}
+                                        </button>
+
+                                        <button 
+                                            onClick={() => setActiveView('addresses')}
+                                            className={cn(
+                                                "w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all",
+                                                activeView === 'addresses' 
+                                                    ? "bg-[#FF2C79] text-white shadow-lg shadow-pink-100" 
+                                                    : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
+                                            )}
+                                        >
+                                            <MapPin className={cn("h-4 w-4", activeView === 'addresses' ? "text-white" : "text-gray-400")} />
+                                            <span>Locations</span>
+                                            {activeView === 'addresses' && <ChevronRight className="ml-auto h-3.5 w-3.5 opacity-50" />}
+                                        </button>
+
+                                        <Link 
+                                            href="/orders"
+                                            className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-[10px] font-black text-gray-500 hover:bg-gray-50 hover:text-gray-900 uppercase tracking-widest transition-all"
+                                        >
+                                            <Package className="h-4 w-4 text-gray-400" />
+                                            <span>Order Logs</span>
                                         </Link>
-                                        <Link href="/wishlist" className="bg-pink-50/50 p-4 rounded-xl border border-pink-100/50 hover:bg-pink-100/50 transition-colors text-left">
-                                            <Heart className="h-5 w-5 text-primary mb-2" />
-                                            <p className="text-xl font-black text-pink-900">{wishlist.length}</p>
-                                            <p className="text-[10px] font-bold text-primary uppercase">Wishlist</p>
+
+                                        <Link 
+                                            href="/wishlist"
+                                            className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-[10px] font-black text-gray-500 hover:bg-gray-50 hover:text-gray-900 uppercase tracking-widest transition-all"
+                                        >
+                                            <Heart className="h-4 w-4 text-gray-400" />
+                                            <span>Curated</span>
                                         </Link>
+                                    </nav>
+                                </div>
+
+                                {/* Summary Card */}
+                                <div className="bg-gray-900 rounded-[2.5rem] p-8 text-white shadow-xl shadow-gray-200 overflow-hidden relative group">
+                                    <div className="absolute top-0 right-0 p-6 opacity-10 group-hover:scale-110 transition-transform duration-500">
+                                        <TrendingUp className="h-16 w-16" />
+                                    </div>
+                                    <div className="relative z-10">
+                                        <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#FF2C79] mb-6">Activity Pulse</h4>
+                                        <div className="space-y-4">
+                                            <div className="flex justify-between items-end border-b border-white/10 pb-3">
+                                                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Orders</span>
+                                                <span className="text-2xl font-black italic tracking-tighter leading-none">{orderCount}</span>
+                                            </div>
+                                            <div className="flex justify-between items-end border-b border-white/10 pb-3">
+                                                <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Wishlist</span>
+                                                <span className="text-2xl font-black italic tracking-tighter leading-none">{wishlist.length}</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col gap-2">
-                                    <Link href="/orders" className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors group text-left">
-                                        <div className="flex items-center gap-3">
-                                            <Package className="h-5 w-5 text-gray-400" />
-                                            <span className="text-sm font-bold text-gray-700">Orders & Returns</span>
-                                        </div>
-                                        <ChevronRight className="h-4 w-4 text-gray-300 group-hover:text-primary transition-colors" />
-                                    </Link>
-                                    <button 
-                                        onClick={() => setActiveView('addresses')}
-                                        className={cn(
-                                            "flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors group text-left w-full",
-                                            activeView === 'addresses' && "bg-primary/5 text-primary"
-                                        )}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <MapPin className={cn("h-5 w-5", activeView === 'addresses' ? "text-primary" : "text-gray-400")} />
-                                            <span className={cn("text-sm font-bold", activeView === 'addresses' ? "text-primary" : "text-gray-700")}>Saved Addresses</span>
-                                        </div>
-                                        <ChevronRight className={cn("h-4 w-4", activeView === 'addresses' ? "text-primary" : "text-gray-300 group-hover:text-primary transition-colors")} />
-                                    </button>
-                                    <button className="flex items-center justify-between p-3 rounded-xl hover:bg-gray-50 transition-colors group text-left">
-                                        <div className="flex items-center gap-3">
-                                            <Settings className="h-5 w-5 text-gray-400" />
-                                            <span className="text-sm font-bold text-gray-700">Account Settings</span>
-                                        </div>
-                                        <ChevronRight className="h-4 w-4 text-gray-300 group-hover:text-primary transition-colors" />
-                                    </button>
-                                </div>
-
-                                <button
-                                    onClick={() => logout()}
-                                    className="w-full bg-white text-red-500 border border-red-100 rounded-2xl p-4 font-bold text-sm flex items-center justify-center gap-2 hover:bg-red-50 transition-colors"
-                                >
-                                    <LogOut className="h-4 w-4" />
-                                    Logout Session
-                                </button>
                             </div>
 
-                             {/* Right Column: Details & Settings */}
-                            <div className="lg:col-span-2 space-y-8">
+                             {/* Right Column: Dynamic Viewport */}
+                            <div className="lg:col-span-8">
                                 {activeView === 'profile' ? (
-                                    <>
-                                        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-                                    <div className="flex items-center justify-between mb-8">
-                                        <h2 className="text-xl font-black text-gray-900 uppercase italic tracking-tight">Personal Details</h2>
-                                        {!isEditing && (
-                                            <button
-                                                onClick={() => setIsEditing(true)}
-                                                className="text-xs font-bold text-primary uppercase hover:underline"
-                                            >
-                                                Edit Info
-                                            </button>
+                                    <div className="bg-white rounded-[3.5rem] p-10 md:p-16 shadow-sm border border-gray-100 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 mb-16">
+                                            <div>
+                                                <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tighter">Identity Detail</h2>
+                                                <p className="text-[10px] font-black text-gray-400 uppercase mt-2 tracking-widest">Core personal information and security context.</p>
+                                            </div>
+                                            {!isEditing && (
+                                                <button
+                                                    onClick={() => setIsEditing(true)}
+                                                    className="h-12 px-8 rounded-2xl bg-gray-50 text-[10px] font-black text-gray-900 uppercase tracking-widest hover:bg-[#FF2C79] hover:text-white transition-all shadow-sm flex items-center gap-2"
+                                                >
+                                                    <Edit3 className="h-4 w-4" />
+                                                    Modify Data
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        {isEditing ? (
+                                            <form onSubmit={handleUpdateProfile} className="space-y-12">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                                    <div className="space-y-4">
+                                                        <label className="text-[9px] font-black text-[#FF2C79] uppercase tracking-[0.2em] ml-1">Designation</label>
+                                                        <div className="relative group">
+                                                            <User className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-300 group-focus-within:text-[#FF2C79] transition-colors" />
+                                                            <input
+                                                                type="text"
+                                                                value={formData.name}
+                                                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                                                className="w-full bg-gray-50 border border-gray-100 rounded-3xl py-5 pl-16 pr-6 text-sm font-black focus:bg-white focus:ring-4 focus:ring-pink-500/5 focus:border-pink-200 transition-all outline-none"
+                                                                placeholder="Enter full name"
+                                                                required
+                                                                suppressHydrationWarning
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div className="space-y-4">
+                                                        <label className="text-[9px] font-black text-[#FF2C79] uppercase tracking-[0.2em] ml-1">Digital Mail</label>
+                                                        <div className="relative group">
+                                                            <Mail className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-300 group-focus-within:text-[#FF2C79] transition-colors" />
+                                                            <input
+                                                                type="email"
+                                                                value={formData.email}
+                                                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                                                className="w-full bg-gray-50 border border-gray-100 rounded-3xl py-5 pl-16 pr-6 text-sm font-black focus:bg-white focus:ring-4 focus:ring-pink-500/5 focus:border-pink-200 transition-all outline-none"
+                                                                placeholder="Enter email address"
+                                                                required
+                                                                suppressHydrationWarning
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-6 pt-8">
+                                                    <button
+                                                        type="submit"
+                                                        disabled={isLoading}
+                                                        className="flex-1 h-16 bg-gray-900 text-white font-black uppercase text-xs tracking-[0.2em] rounded-2xl shadow-2xl shadow-gray-200 hover:bg-[#FF2C79] transition-all disabled:opacity-50"
+                                                    >
+                                                        {isLoading ? 'SYNCING...' : 'COMMIT CHANGES'}
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setIsEditing(false);
+                                                            setFormData({
+                                                                name: user.name,
+                                                                email: user.email,
+                                                                phone: '+91 9999 000 000',
+                                                                dob: 'Not Provided'
+                                                            });
+                                                        }}
+                                                        className="flex-1 h-16 bg-white border-2 border-gray-100 text-gray-400 font-black uppercase text-xs tracking-[0.2em] rounded-2xl hover:bg-gray-50 transition-all"
+                                                    >
+                                                        DISCARD
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        ) : (
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                                                <div className="space-y-4 group">
+                                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-l-2 border-[#FF2C79] pl-3">Designation</p>
+                                                    <p className="text-xl font-black text-gray-900 group-hover:text-[#FF2C79] transition-colors">{user.name}</p>
+                                                </div>
+                                                <div className="space-y-4 group">
+                                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-l-2 border-gray-200 pl-3">Digital Mail</p>
+                                                    <p className="text-xl font-black text-gray-900 group-hover:text-[#FF2C79] transition-colors">{user.email}</p>
+                                                </div>
+                                                <div className="space-y-4 group">
+                                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-l-2 border-gray-200 pl-3">Mobile Vector</p>
+                                                    <p className="text-xl font-black text-gray-900 group-hover:text-[#FF2C79] transition-colors uppercase italic">+91 9999 000 000</p>
+                                                </div>
+                                                <div className="space-y-4 group">
+                                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-l-2 border-gray-200 pl-3">Temporal Origin</p>
+                                                    <p className="text-xl font-black text-gray-900 group-hover:text-[#FF2C79] transition-colors italic">UNSPECIFIED</p>
+                                                </div>
+                                            </div>
                                         )}
                                     </div>
-
-                                    {isEditing ? (
-                                        <form onSubmit={handleUpdateProfile} className="space-y-6">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Full Name</label>
-                                                    <div className="relative">
-                                                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                                                        <input
-                                                            type="text"
-                                                            value={formData.name}
-                                                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                            className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                                                            placeholder="Enter your name"
-                                                            required
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Email Address</label>
-                                                    <div className="relative">
-                                                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                                                        <input
-                                                            type="email"
-                                                            value={formData.email}
-                                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                                            className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-100 rounded-xl text-sm font-bold focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
-                                                            placeholder="Enter your email"
-                                                            required
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="space-y-2 opacity-50">
-                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Mobile Number (Fixed)</label>
-                                                    <input
-                                                        type="text"
-                                                        value={formData.phone}
-                                                        disabled
-                                                        className="w-full px-4 py-2 bg-gray-100 border border-gray-100 rounded-xl text-sm font-bold cursor-not-allowed"
-                                                    />
-                                                </div>
-                                                <div className="space-y-2 opacity-50">
-                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date of Birth (Fixed)</label>
-                                                    <input
-                                                        type="text"
-                                                        value={formData.dob}
-                                                        disabled
-                                                        className="w-full px-4 py-2 bg-gray-100 border border-gray-100 rounded-xl text-sm font-bold cursor-not-allowed"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="flex gap-4 pt-4">
-                                                <button
-                                                    type="submit"
-                                                    disabled={isLoading}
-                                                    className="flex-1 bg-gradient-to-r from-primary to-purple-600 text-white font-black uppercase text-xs tracking-widest py-3 rounded-xl shadow-lg shadow-pink-100 hover:shadow-pink-200 transition-all disabled:opacity-50"
-                                                >
-                                                    {isLoading ? 'Updating...' : 'Save Changes'}
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => {
-                                                        setIsEditing(false);
-                                                        setFormData({
-                                                            name: user.name,
-                                                            email: user.email,
-                                                            phone: '+91 9999 000 000',
-                                                            dob: 'Not Provided'
-                                                        });
-                                                    }}
-                                                    className="flex-1 bg-gray-100 text-gray-500 font-black uppercase text-xs tracking-widest py-3 rounded-xl hover:bg-gray-200 transition-all"
-                                                >
-                                                    Cancel
-                                                </button>
-                                            </div>
-                                        </form>
-                                    ) : (
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                            <div className="space-y-1">
-                                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Full Name</p>
-                                                <p className="text-sm font-bold text-gray-900">{user.name}</p>
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Email Address</p>
-                                                <p className="text-sm font-bold text-gray-900">{user.email}</p>
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Mobile Number</p>
-                                                <p className="text-sm font-bold text-gray-900">+91 9999 000 000</p>
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date of Birth</p>
-                                                <p className="text-sm font-bold text-gray-900">Not Provided</p>
-                                            </div>
-                                        </div>
-                                    )}
-                                        </div>
-
-                                        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-                                            <h2 className="text-xl font-black text-gray-900 uppercase italic tracking-tight mb-8">Quick Actions</h2>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                <div className="p-6 rounded-2xl bg-gray-50 border border-gray-100 group hover:border-primary transition-colors cursor-pointer text-left">
-                                                    <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center text-gray-400 group-hover:text-primary group-hover:bg-primary/5 transition-colors mb-4 border border-gray-100">
-                                                        <ExternalLink className="h-5 w-5" />
-                                                    </div>
-                                                    <h4 className="text-sm font-black text-gray-900 uppercase mb-1">Verify Email</h4>
-                                                    <p className="text-[11px] font-medium text-gray-500 italic">Secure your account with email verification.</p>
-                                                </div>
-                                                <div className="p-6 rounded-2xl bg-gray-50 border border-gray-100 group hover:border-primary transition-colors cursor-pointer text-left">
-                                                    <div className="h-10 w-10 bg-white rounded-xl flex items-center justify-center text-gray-400 group-hover:text-primary group-hover:bg-primary/5 transition-colors mb-4 border border-gray-100">
-                                                        <Calendar className="h-5 w-5" />
-                                                    </div>
-                                                    <h4 className="text-sm font-black text-gray-900 uppercase mb-1">Account History</h4>
-                                                    <p className="text-[11px] font-medium text-gray-500 italic">View your login activity and sessions.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </>
                                 ) : (
                                     <AddressManager onBack={() => setActiveView('profile')} />
                                 )}

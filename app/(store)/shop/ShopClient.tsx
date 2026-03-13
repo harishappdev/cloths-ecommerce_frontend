@@ -3,7 +3,9 @@
 import { useState, useEffect, Suspense, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
+import useSWR from 'swr';
 import { useProducts } from '@/hooks/useProducts';
+import { productService } from '@/services/productService';
 import ProductCard, { ProductCardSkeleton } from '@/components/product/ProductCard';
 import {
     Search,
@@ -25,71 +27,32 @@ interface Product {
     price: number;
     discountPrice?: number;
     category: string;
+    colors?: string[];
     images: string[];
     ratings: number;
     numReviews: number;
 }
 
-const SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-const COLORS = [
-    { name: 'Navy', hex: '#1E293B' },
-    { name: 'White', hex: '#FFFFFF', border: true },
-    { name: 'Blue', hex: '#2563EB' },
-    { name: 'Green', hex: '#059669' },
-    { name: 'Orange', hex: '#D97706' },
-];
+const COLOR_MAP: Record<string, string> = {
+    'navy': '#1E293B',
+    'white': '#FFFFFF',
+    'blue': '#2563EB',
+    'green': '#059669',
+    'orange': '#D97706',
+    'black': '#000000',
+    'block': '#000000',
+    'red': '#DC2626',
+    'pink': '#EC4899',
+    'yellow': '#FACC15',
+    'purple': '#8B5CF6',
+    'grey': '#94A3B8',
+    'silver': '#C0C0C0',
+    'gold': '#FFD700',
+    'beige': '#F5F5DC',
+    'brown': '#A52A2A',
+};
 
-const BRANDS = ['EcoWear', 'Urban Nomad', 'Classic Peak', 'Tailored Fit', 'Luxe Essentials', 'Urban Flow'];
-const FABRICS = ['Cotton', 'Silk', 'Linen', 'Wool', 'Polyester', 'Denim', 'Rayon', 'Chiffon'];
-const OCCASIONS = ['Casual', 'Formal', 'Party', 'Ethnic', 'Sport', 'Work'];
 const RATINGS = [4, 3, 2];
-
-const DUMMY_PRODUCTS: Product[] = [
-    {
-        _id: 'sample1',
-        name: 'Premium Wool Blazer',
-        slug: 'premium-wool-blazer',
-        brand: 'Urban Nomad',
-        price: 18900,
-        category: 'Men',
-        images: ['https://images.unsplash.com/photo-1543132220-3ce99c5ae93c?auto=format&fit=crop&q=80&w=800'],
-        ratings: 4.8,
-        numReviews: 250
-    },
-    {
-        _id: 'sample2',
-        name: 'Essential Cotton Tee',
-        slug: 'essential-cotton-tee',
-        brand: 'Urban Nomad',
-        price: 3500,
-        category: 'Men',
-        images: ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&q=80&w=800'],
-        ratings: 4.5,
-        numReviews: 180
-    },
-    {
-        _id: 'sample3',
-        name: 'Classic Urban Trench',
-        slug: 'classic-urban-trench',
-        brand: 'Classic Peak',
-        price: 14500,
-        category: 'Women',
-        images: ['https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&q=80&w=800'],
-        ratings: 4.9,
-        numReviews: 128
-    },
-    {
-        _id: 'sample4',
-        name: 'Air Max Velocity',
-        slug: 'air-max-velocity',
-        brand: 'EcoWear',
-        price: 12000,
-        category: 'Footwear',
-        images: ['https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800'],
-        ratings: 4.9,
-        numReviews: 320
-    }
-];
 
 function FilterAccordion({ title, children, defaultOpen = true }: { title: string; children: React.ReactNode; defaultOpen?: boolean }) {
     const [isOpen, setIsOpen] = useState(defaultOpen);
@@ -118,6 +81,17 @@ export function ShopClient() {
 
     const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+    // Fetch dynamic filter options
+    const { data: filterData } = useSWR('/products/filters', () => productService.getFilterOptions());
+    const filterOptions = filterData?.data;
+
+    const SIZES = filterOptions?.sizes || ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    const BRANDS = filterOptions?.brands || [];
+    const FABRICS = filterOptions?.fabric || [];
+    const OCCASIONS = filterOptions?.occasion || ['Casual', 'Formal', 'Party', 'Ethnic', 'Sport', 'Work'];
+    const CATEGORIES = filterOptions?.categories || ['menswear', 'womenswear', 'kids', 'footwear', 'accessories'];
+    const COLORS = filterOptions?.colors || [];
 
     // Current filters from URL
     const category = searchParams.get('category');
@@ -168,13 +142,8 @@ export function ShopClient() {
         return () => observer.disconnect();
     }, [loading, isFetchingMore, page, apiResults, limit, searchParams, router]);
 
-    const showDummyData = !loading && !error && (apiProducts?.length === 0 || !apiProducts);
-
-    const products = showDummyData
-        ? DUMMY_PRODUCTS.filter(p => !category || p.category === category).filter(p => !sale || p.discountPrice)
-        : apiProducts;
-
-    const results = showDummyData ? products.length : apiResults;
+    const products = apiProducts || [];
+    const results = apiResults || 0;
 
     const updateParams = (newParams: Record<string, string | null>) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -233,7 +202,11 @@ export function ShopClient() {
 
     const collectionTitle = useMemo(() => {
         if (sale) return "Limited sale";
-        if (category) return `${category}'s wardrobe`;
+        if (category) {
+            if (category.toLowerCase() === 'menswear') return "Men's wardrobe";
+            if (category.toLowerCase() === 'womenswear') return "Women's wardrobe";
+            return `${category}'s wardrobe`;
+        }
         return "Season edit";
     }, [category, sale]);
 
@@ -265,6 +238,7 @@ export function ShopClient() {
                                     value={sort}
                                     onChange={(e) => updateParams({ sort: e.target.value })}
                                     className="bg-transparent text-xs font-bold focus:outline-none cursor-pointer text-gray-900"
+                                    suppressHydrationWarning
                                 >
                                     <option value="-createdAt">Newest</option>
                                     <option value="price">Price: Low to High</option>
@@ -284,8 +258,8 @@ export function ShopClient() {
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 md:px-6 py-12 md:py-24">
-                <div className="flex flex-col lg:flex-row gap-12 lg:gap-20">
+            <div className="container mx-auto px-4 md:px-8 py-8 md:py-16">
+                <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
                     {/* Desktop Sidebar - Accordion Style */}
                     <aside className="hidden lg:block w-64 shrink-0 sticky top-32 h-fit">
                         <div className="space-y-2 mb-8">
@@ -298,13 +272,14 @@ export function ShopClient() {
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                     className="w-full bg-[#F8FAFC] border-none rounded-2xl py-4 pl-12 pr-4 text-[11px] font-black uppercase tracking-widest focus:bg-white focus:ring-4 focus:ring-pink-500/5 transition-all outline-none placeholder:text-gray-300"
+                                    suppressHydrationWarning
                                 />
                             </form>
                         </div>
 
                         <FilterAccordion title="Categories">
                             <div className="space-y-3">
-                                {['Men', 'Women', 'Kids', 'Footwear', 'Accessories'].map((cat) => (
+                                {CATEGORIES.map((cat) => (
                                     <button
                                         key={cat}
                                         onClick={() => updateParams({ category: cat, page: '1' })}
@@ -340,21 +315,29 @@ export function ShopClient() {
                         </FilterAccordion>
 
                         <FilterAccordion title="Color Palette">
-                            <div className="flex flex-wrap gap-3">
-                                {COLORS.map((color) => (
+                            <div className="space-y-3">
+                                {COLORS.map((colorName) => (
                                     <button
-                                        key={color.name}
-                                        title={color.name}
-                                        onClick={() => toggleColor(color.name)}
-                                        className={cn(
-                                            "h-8 w-8 rounded-full border-4 transition-all hover:scale-110 relative",
-                                            selectedColors.includes(color.name) ? "border-black scale-110" : "border-white shadow-sm"
-                                        )}
-                                        style={{ backgroundColor: color.hex }}
+                                        key={colorName}
+                                        onClick={() => toggleColor(colorName)}
+                                        className="flex items-center gap-3 w-full group transition-all"
                                     >
-                                        {color.border && <div className="absolute inset-0 rounded-full border border-gray-100" />}
+                                        <div 
+                                            className={cn(
+                                                "h-6 w-6 rounded-full border-2 transition-all group-hover:scale-110",
+                                                selectedColors.includes(colorName) ? "border-black scale-110" : "border-gray-100 shadow-sm"
+                                            )}
+                                            style={{ backgroundColor: COLOR_MAP[colorName.toLowerCase()] || '#CBD5E1' }}
+                                        />
+                                        <span className={cn(
+                                            "text-[10px] font-black uppercase tracking-widest transition-colors",
+                                            selectedColors.includes(colorName) ? "text-gray-900" : "text-gray-400 group-hover:text-pink-600"
+                                        )}>
+                                            {colorName}
+                                        </span>
                                     </button>
                                 ))}
+                                {COLORS.length === 0 && <p className="text-[9px] font-bold text-gray-300 italic">No colors found</p>}
                             </div>
                         </FilterAccordion>
 
@@ -365,7 +348,7 @@ export function ShopClient() {
                                         e.preventDefault();
                                         toggleBrand(brand);
                                     }}>
-                                        <div className={cn(
+                                        <span className={cn(
                                             "h-5 w-5 border-2 rounded-lg flex items-center justify-center transition-all",
                                             selectedBrands.includes(brand) ? "bg-black border-black" : "border-gray-100 bg-[#F8FAFC] group-hover:border-pink-200"
                                         )}>
@@ -374,7 +357,7 @@ export function ShopClient() {
                                                     <polyline points="20 6 9 17 4 12" />
                                                 </svg>
                                             )}
-                                        </div>
+                                        </span>
                                         <span className={cn(
                                             "text-[10px] font-black uppercase tracking-widest transition-colors",
                                             selectedBrands.includes(brand) ? "text-gray-900" : "text-gray-400 group-hover:text-pink-600"
@@ -391,7 +374,7 @@ export function ShopClient() {
                                         e.preventDefault();
                                         toggleFabric(fabric);
                                     }}>
-                                        <div className={cn(
+                                        <span className={cn(
                                             "h-5 w-5 border-2 rounded-lg flex items-center justify-center transition-all",
                                             selectedFabrics.includes(fabric) ? "bg-black border-black" : "border-gray-100 bg-[#F8FAFC] group-hover:border-pink-200"
                                         )}>
@@ -400,7 +383,7 @@ export function ShopClient() {
                                                     <polyline points="20 6 9 17 4 12" />
                                                 </svg>
                                             )}
-                                        </div>
+                                        </span>
                                         <span className={cn(
                                             "text-[10px] font-black uppercase tracking-widest transition-colors",
                                             selectedFabrics.includes(fabric) ? "text-gray-900" : "text-gray-400 group-hover:text-pink-600"
@@ -417,7 +400,7 @@ export function ShopClient() {
                                         e.preventDefault();
                                         toggleOccasion(occasion);
                                     }}>
-                                        <div className={cn(
+                                        <span className={cn(
                                             "h-5 w-5 border-2 rounded-lg flex items-center justify-center transition-all",
                                             selectedOccasions.includes(occasion) ? "bg-black border-black" : "border-gray-100 bg-[#F8FAFC] group-hover:border-pink-200"
                                         )}>
@@ -426,7 +409,7 @@ export function ShopClient() {
                                                     <polyline points="20 6 9 17 4 12" />
                                                 </svg>
                                             )}
-                                        </div>
+                                        </span>
                                         <span className={cn(
                                             "text-[10px] font-black uppercase tracking-widest transition-colors",
                                             selectedOccasions.includes(occasion) ? "text-gray-900" : "text-gray-400 group-hover:text-pink-600"
@@ -480,7 +463,7 @@ export function ShopClient() {
                                 <div className="space-y-6">
                                     <FilterAccordion title="Categories" defaultOpen={false}>
                                         <div className="space-y-3">
-                                            {['Men', 'Women', 'Kids', 'Footwear', 'Accessories'].map((cat) => (
+                                            {CATEGORIES.map((cat) => (
                                                 <button
                                                     key={cat}
                                                     onClick={() => updateParams({ category: cat, page: '1' })}
@@ -495,7 +478,71 @@ export function ShopClient() {
                                         </div>
                                     </FilterAccordion>
 
-                                    {/* Other mobile filters omitted for brevity in this refactor, but would normally be replicated */}
+                                    <FilterAccordion title="Size Matrix" defaultOpen={false}>
+                                        <div className="grid grid-cols-3 gap-2">
+                                            {SIZES.map((size) => (
+                                                <button
+                                                    key={size}
+                                                    onClick={() => toggleSize(size)}
+                                                    className={cn(
+                                                        "h-12 flex items-center justify-center rounded-xl border text-[10px] font-black transition-all",
+                                                        selectedSizes.includes(size)
+                                                            ? "bg-black border-black text-white"
+                                                            : "border-gray-100 bg-[#F8FAFC] text-gray-400"
+                                                    )}
+                                                    suppressHydrationWarning
+                                                >
+                                                    {size}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </FilterAccordion>
+
+                                    <FilterAccordion title="Color Palette" defaultOpen={false}>
+                                        <div className="space-y-4">
+                                            {COLORS.map((colorName) => (
+                                                <button
+                                                    key={colorName}
+                                                    onClick={() => toggleColor(colorName)}
+                                                    className="flex items-center gap-4 w-full"
+                                                    suppressHydrationWarning
+                                                >
+                                                    <div 
+                                                        className={cn(
+                                                            "h-8 w-8 rounded-full border-4 transition-all relative",
+                                                            selectedColors.includes(colorName) ? "border-black" : "border-white shadow-sm"
+                                                        )}
+                                                        style={{ backgroundColor: COLOR_MAP[colorName.toLowerCase()] || '#CBD5E1' }}
+                                                    >
+                                                        {colorName === 'white' && <div className="absolute inset-0 rounded-full border border-gray-100" />}
+                                                    </div>
+                                                    <span className={cn(
+                                                        "text-[10px] font-black uppercase tracking-widest transition-colors",
+                                                        selectedColors.includes(colorName) ? "text-gray-900" : "text-gray-400"
+                                                    )}>
+                                                        {colorName}
+                                                    </span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </FilterAccordion>
+
+                                    <FilterAccordion title="Brand House" defaultOpen={false}>
+                                        <div className="space-y-3">
+                                            {BRANDS.map((brand) => (
+                                                <button
+                                                    key={brand}
+                                                    onClick={() => toggleBrand(brand)}
+                                                    className={cn(
+                                                        "flex items-center justify-between w-full text-[10px] font-black uppercase tracking-widest",
+                                                        selectedBrands.includes(brand) ? "text-pink-600" : "text-gray-400"
+                                                    )}
+                                                >
+                                                    {brand}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </FilterAccordion>
                                 </div>
 
                                 <button
@@ -511,7 +558,7 @@ export function ShopClient() {
                     {/* Product Grid */}
                     <div className="flex-grow">
                         {loading ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-x-6 gap-y-16">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-x-6 gap-y-12">
                                 {[...Array(8)].map((_, i) => (
                                     <ProductCardSkeleton key={i} />
                                 ))}
@@ -546,7 +593,7 @@ export function ShopClient() {
                             </div>
                         ) : (
                             <>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-x-8 gap-y-20">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-x-6 md:gap-x-8 gap-y-12 md:gap-y-20">
                                     {products.map((product) => (
                                         <ProductCard key={product._id} product={product} />
                                     ))}

@@ -12,17 +12,17 @@ export async function generateMetadata({
     const search = params.search as string;
     const sale = params.sale === 'true';
 
-    let title = 'Shop All Collections | Urban Closet';
+    let title = 'Shop All Collections | StyleNest';
     let description = 'Explore our premium collections of clothing, footwear, and accessories.';
 
     if (category) {
-        title = `${category}'s Collection | Urban Closet Premium`;
-        description = `Discover the latest trends in ${category.toLowerCase()}'s fashion at Urban Closet.`;
+        title = `${category}'s Collection | StyleNest Premium`;
+        description = `Discover the latest trends in ${category.toLowerCase()}'s fashion at StyleNest.`;
     } else if (sale) {
-        title = 'Limited Sale | Exclusive Offers at Urban Closet';
+        title = 'Limited Sale | Exclusive Offers at StyleNest';
         description = 'Shop our exclusive sale items and get the best deals on premium fashion.';
     } else if (search) {
-        title = `Search results for "${search}" | Urban Closet`;
+        title = `Search results for "${search}" | StyleNest`;
     }
 
     return {

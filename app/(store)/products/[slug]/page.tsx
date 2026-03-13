@@ -26,12 +26,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
     if (!product) {
         return {
-            title: 'Product Not Found | Urban Closet',
+            title: 'Product Not Found | StyleNest',
         };
     }
 
     return {
-        title: `${product.name} | Urban Closet Premium`,
+        title: `${product.name} | StyleNest Premium`,
         description: product.description?.substring(0, 160),
         openGraph: {
             title: product.name,

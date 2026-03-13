@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import useSWR, { mutate } from 'swr';
 import { adminService } from '@/services/adminService';
 import { Category } from '@/types';
+import { Skeleton } from '@/components/ui/Skeleton';
 import {
     Plus,
     Edit2,
@@ -17,26 +19,11 @@ import { toast } from 'react-hot-toast';
 import { cn } from '@/utils/lib';
 
 export default function AdminCategories() {
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [loading, setLoading] = useState(true);
     const [newCategoryName, setNewCategoryName] = useState('');
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editName, setEditName] = useState('');
-
-    const fetchCategories = async () => {
-        try {
-            const response = await adminService.getCategories();
-            setCategories(response.data.categories);
-        } catch (error) {
-            toast.error('Failed to load categories');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchCategories();
-    }, []);
+    const { data: categoriesData, isLoading: categoriesLoading } = useSWR('/categories');
+    const categories = categoriesData?.data?.categories || [];
 
     const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -45,7 +32,7 @@ export default function AdminCategories() {
             await adminService.createCategory(newCategoryName);
             toast.success('Category created');
             setNewCategoryName('');
-            fetchCategories();
+            mutate('/categories');
         } catch (error: any) {
             toast.error(error.response?.data?.message || 'Failed to create category');
         }
@@ -63,7 +50,7 @@ export default function AdminCategories() {
             await adminService.updateCategory(editingId, editName);
             toast.success('Category updated');
             setEditingId(null);
-            fetchCategories();
+            mutate('/categories');
         } catch (error: any) {
             toast.error(error.response?.data?.message || 'Failed to update category');
         }
@@ -74,7 +61,7 @@ export default function AdminCategories() {
         try {
             await adminService.deleteCategory(id);
             toast.success('Category deleted');
-            fetchCategories();
+            mutate('/categories');
         } catch (error) {
             toast.error('Failed to delete category');
         }
@@ -86,13 +73,13 @@ export default function AdminCategories() {
             <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-3">
                     <span className="h-2 w-10 bg-gradient-to-r from-[#FF2C79] to-purple-600 rounded-full" />
-                    <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Inventory Hierarchy</p>
+                    <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Product Categories</p>
                 </div>
                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-gray-900 leading-[0.8]">
-                    CATEGORY <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">DEPARTMENTS</span>
+                    STORE <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">SECTIONS</span>
                 </h1>
                 <p className="text-xs font-bold text-gray-400 mt-4 uppercase tracking-[0.1em]">
-                    Defining the structural architecture of the marketplace.
+                    Organize your products into easy-to-find sections.
                 </p>
             </div>
 
@@ -108,9 +95,9 @@ export default function AdminCategories() {
                     </div>
                     <div>
                         <h2 className="text-xl font-black text-[#111827] uppercase tracking-tighter">
-                            New Department
+                            New Category
                         </h2>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Append to directory</p>
+                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Add to list</p>
                     </div>
                 </div>
 
@@ -119,7 +106,7 @@ export default function AdminCategories() {
                         <Tag className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within/input:text-[#FF2C79] transition-colors" />
                         <input
                             type="text"
-                            placeholder="DEPARTMENT NOMENCLATURE..."
+                            placeholder="CATEGORY NAME..."
                             value={newCategoryName}
                             onChange={(e) => setNewCategoryName(e.target.value)}
                             className="w-full bg-gray-50 border-none rounded-2xl py-5 pl-14 pr-6 text-sm font-black placeholder:text-gray-300 focus:ring-4 focus:ring-pink-500/5 focus:bg-white transition-all text-gray-900 uppercase tracking-widest"
@@ -129,16 +116,16 @@ export default function AdminCategories() {
                         type="submit"
                         className="flex items-center justify-center rounded-2xl bg-gray-900 px-10 py-5 font-black text-[11px] text-white hover:bg-[#FF2C79] shadow-2xl shadow-gray-200 transition-all active:scale-95 uppercase tracking-[0.2em]"
                     >
-                        Register Department
+                        Add Category
                     </button>
                 </form>
             </div>
 
             {/* Categories List */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {loading ? (
+                {categoriesLoading ? (
                     Array(8).fill(0).map((_, i) => (
-                        <div key={i} className="h-64 animate-pulse rounded-[2.5rem] bg-gray-50 border border-gray-100" />
+                        <Skeleton key={i} className="h-64 rounded-[2.5rem]" />
                     ))
                 ) : categories.length === 0 ? (
                     <div className="col-span-full py-40 text-center rounded-[3rem] border-2 border-dashed border-gray-100 bg-[#F8FAFC]/30">
@@ -147,7 +134,7 @@ export default function AdminCategories() {
                         </div>
                         <p className="text-gray-400 font-black text-xs uppercase tracking-[0.3em]">Directory is currently vacant</p>
                     </div>
-                ) : categories.map((cat) => (
+                ) : categories.map((cat: Category) => (
                     <div key={cat._id} className="group relative flex flex-col justify-between rounded-[2.5rem] border border-gray-100 bg-white p-10 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-pink-100/50 hover:-translate-y-2 overflow-hidden min-h-[220px]">
                         <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-all -translate-y-2 group-hover:translate-y-0">
                             <div className="h-1 w-12 bg-gradient-to-r from-[#FF2C79] to-purple-600 rounded-full" />

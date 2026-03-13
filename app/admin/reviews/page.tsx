@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import useSWR, { mutate } from 'swr';
 import { 
     MessageSquare, 
     Trash2, 
@@ -8,15 +9,11 @@ import {
     Filter, 
     Star, 
     CheckCircle2, 
-    XCircle,
-    User,
+    Clock,
     Package,
     Calendar,
-    ThumbsUp,
-    MoreVertical,
     Check,
     X,
-    Eye,
     ChevronLeft,
     ChevronRight,
     AlertCircle
@@ -26,33 +23,20 @@ import { toast } from 'react-hot-toast';
 import { reviewService, Review } from '@/services/reviewService';
 import { format } from 'date-fns';
 import Image from 'next/image';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export default function ReviewManagementPage() {
-    const [reviews, setReviews] = useState<Review[]>([]);
-    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState<'all' | 'approved' | 'pending'>('all');
 
-    useEffect(() => {
-        fetchReviews();
-    }, []);
-
-    const fetchReviews = async () => {
-        try {
-            const response = await reviewService.getAllReviews();
-            setReviews(response.data.reviews);
-        } catch (error) {
-            toast.error('Failed to load reviews');
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { data: reviewsData, isLoading: loading } = useSWR('/reviews');
+    const reviews = reviewsData?.data?.reviews || [];
 
     const handleToggleApproval = async (id: string) => {
         try {
             await reviewService.toggleApproval(id);
             toast.success('Review status updated');
-            fetchReviews();
+            mutate('/reviews');
         } catch (error) {
             toast.error('Failed to update status');
         }
@@ -63,13 +47,13 @@ export default function ReviewManagementPage() {
         try {
             await reviewService.deleteReview(id);
             toast.success('Review deleted');
-            fetchReviews();
+            mutate('/reviews');
         } catch (error) {
             toast.error('Failed to delete review');
         }
     };
 
-    const filteredReviews = reviews.filter(r => {
+    const filteredReviews = reviews.filter((r: any) => {
         const matchesSearch = 
             (typeof r.product === 'object' ? r.product.name : '').toLowerCase().includes(searchTerm.toLowerCase()) ||
             r.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -85,8 +69,8 @@ export default function ReviewManagementPage() {
 
     const stats = [
         { label: 'Total Reviews', value: reviews.length, icon: MessageSquare, color: 'text-blue-500', bg: 'bg-blue-50' },
-        { label: 'Pending Moderation', value: reviews.filter(r => !r.isApproved).length, icon: AlertCircle, color: 'text-orange-500', bg: 'bg-orange-50' },
-        { label: 'Avg Rating', value: (reviews.reduce((acc, curr) => acc + curr.rating, 0) / (reviews.length || 1)).toFixed(1), icon: Star, color: 'text-yellow-500', bg: 'bg-yellow-50' },
+        { label: 'Pending Moderation', value: reviews.filter((r: any) => !r.isApproved).length, icon: AlertCircle, color: 'text-orange-500', bg: 'bg-orange-50' },
+        { label: 'Avg Rating', value: (reviews.reduce((acc: any, curr: any) => acc + curr.rating, 0) / (reviews.length || 1)).toFixed(1), icon: Star, color: 'text-yellow-500', bg: 'bg-yellow-50' },
     ];
 
     return (
@@ -169,8 +153,10 @@ export default function ReviewManagementPage() {
                         <tbody className="divide-y divide-gray-50">
                             {loading ? (
                                 [...Array(5)].map((_, i) => (
-                                    <tr key={i} className="animate-pulse">
-                                        <td colSpan={6} className="px-8 py-10 h-24 bg-gray-50/20" />
+                                    <tr key={i}>
+                                        <td colSpan={6} className="py-8 px-10">
+                                            <Skeleton className="h-16 w-full rounded-[1.5rem]" />
+                                        </td>
                                     </tr>
                                 ))
                             ) : filteredReviews.length === 0 ? (
@@ -180,7 +166,7 @@ export default function ReviewManagementPage() {
                                     </td>
                                 </tr>
                             ) : (
-                                filteredReviews.map((review) => (
+                                filteredReviews.map((review: any) => (
                                     <tr key={review._id} className="group hover:bg-gray-50/50 transition-colors">
                                         <td className="px-8 py-8">
                                             <div className="flex items-center gap-4">
@@ -219,7 +205,7 @@ export default function ReviewManagementPage() {
                                         <td className="px-8 py-8">
                                             <div className="flex -space-x-2">
                                                 {review.images && review.images.length > 0 ? (
-                                                    review.images.slice(0, 3).map((img, i) => (
+                                                    review.images.slice(0, 3).map((img: any, i: any) => (
                                                         <div key={i} className="relative h-10 w-10 rounded-lg border-2 border-white shadow-sm overflow-hidden bg-gray-50">
                                                             <Image src={getImageUrl(img)} alt="Review" fill unoptimized className="object-cover" />
                                                         </div>

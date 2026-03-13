@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useSearchParams, usePathname } from 'next/navigation';
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
@@ -27,9 +27,11 @@ export default function Navbar() {
     const [scrolled, setScrolled] = useState(false);
     const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
     const [mounted, setMounted] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     const searchParams = useSearchParams();
     const pathname = usePathname();
+    const router = useRouter();
     const currentCategory = searchParams.get('category');
 
     useEffect(() => {
@@ -42,7 +44,7 @@ export default function Navbar() {
     const navLinks = [
         {
             name: 'Men',
-            href: '/shop?category=Men',
+            href: '/shop?category=menswear',
             megaMenu: [
                 { title: 'Clothing', items: ['T-Shirts', 'Shirts', 'Jeans', 'Trousers', 'Jackets'] },
                 { title: 'Footwear', items: ['Sneakers', 'Formal Shoes', 'Boots', 'Sandals'] },
@@ -52,7 +54,7 @@ export default function Navbar() {
         },
         {
             name: 'Women',
-            href: '/shop?category=Women',
+            href: '/shop?category=womenswear',
             megaMenu: [
                 { title: 'Clothing', items: ['Dresses', 'Tops', 'Skirts', 'Trousers', 'Ethnic Wear'] },
                 { title: 'Footwear', items: ['Heels', 'Flats', 'Sneakers', 'Boots'] },
@@ -60,26 +62,34 @@ export default function Navbar() {
                 { title: 'Featured', items: ['Summer Collection', 'Editor\'s Pick', 'Sale'], highlight: true }
             ]
         },
-        { name: 'Kids', href: '/shop?category=Kids' },
+        { name: 'Kids', href: '/shop?category=kids' },
         { name: 'Offers', href: '/shop?sale=true', isSale: true },
     ];
 
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            router.push(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+            setIsMobileMenuOpen(false);
+            setSearchQuery('');
+        }
+    };
+
     return (
-        <header
+        <nav
             className={cn(
-                "sticky top-0 z-[100] w-full transition-all duration-300",
-                scrolled ? "bg-white shadow-marketplace" : "bg-white border-b border-gray-100"
+                "fixed top-0 left-0 right-0 z-[100] transition-all duration-500",
+                scrolled ? "bg-white/80 backdrop-blur-xl border-b border-gray-100 py-3" : "bg-white py-5 md:py-8"
             )}
         >
-            {/* Main Navbar */}
-            <div className="container mx-auto px-4 md:px-6">
-                <div className="flex items-center justify-between h-20 md:h-24 gap-4">
+            <div className="container mx-auto px-4 md:px-8">
+                <div className="flex items-center justify-between gap-4 md:gap-8">
                     {/* Logo */}
                     <Link href="/" className="flex items-center space-x-2 shrink-0 group">
                         <div className="h-9 w-9 bg-gradient-primary rounded-lg flex items-center justify-center transition-transform group-hover:scale-110">
                             <Package className="h-5 w-5 text-white" />
                         </div>
-                        <span className="text-2xl font-heading font-black tracking-tighter text-gray-900">VibrantHub</span>
+                        <span className="text-2xl font-heading font-black tracking-tighter text-gray-900">StyleNest</span>
                     </Link>
 
                     {/* Desktop Navigation */}
@@ -155,14 +165,17 @@ export default function Navbar() {
                     {/* Right Actions */}
                     <div className="flex items-center space-x-2 md:space-x-6">
                         {/* Search bar - Marketplace Style */}
-                        <div className="relative hidden md:flex items-center group">
+                        <form onSubmit={handleSearch} className="relative hidden md:flex items-center group">
                             <input
                                 type="text"
                                 placeholder="Search for brands, products and more"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-64 lg:w-96 bg-gray-100 border border-transparent rounded-lg py-2.5 pl-10 pr-4 text-sm font-medium focus:bg-white focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none placeholder:text-gray-500"
+                                suppressHydrationWarning
                             />
                             <Search className="absolute left-3 h-4 w-4 text-gray-400 group-focus-within:text-primary transition-colors" />
-                        </div>
+                        </form>
 
                         <div className="flex items-center space-x-1 md:space-x-4">
                             {isAuthenticated ? (
@@ -203,6 +216,7 @@ export default function Navbar() {
                             <button
                                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                                 className="lg:hidden p-2.5 text-black hover:bg-gray-50 rounded-full transition-colors"
+                                suppressHydrationWarning
                             >
                                 {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                             </button>
@@ -216,14 +230,17 @@ export default function Navbar() {
                 <div className="lg:hidden fixed inset-0 top-20 bg-white z-[200] overflow-y-auto animate-in fade-in slide-in-from-right duration-300">
                     <div className="p-4 space-y-8">
                         {/* Mobile Search */}
-                        <div className="relative">
+                        <form onSubmit={handleSearch} className="relative">
                             <input
                                 type="text"
                                 placeholder="Search for products, brands and more"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-full bg-gray-100 border-none rounded-lg py-4 px-10 text-sm font-medium focus:ring-1 focus:ring-primary outline-none"
+                                suppressHydrationWarning
                             />
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        </div>
+                        </form>
 
                         {/* Navigation Links */}
                         <div className="grid grid-cols-1 gap-1">
@@ -259,6 +276,7 @@ export default function Navbar() {
                                         logout();
                                     }}
                                     className="flex items-center gap-3 px-4 py-2 text-sm font-bold text-primary"
+                                    suppressHydrationWarning
                                 >
                                     <X className="h-5 w-5" />
                                     Logout
@@ -268,7 +286,7 @@ export default function Navbar() {
                     </div>
                 </div>
             )}
-        </header>
+        </nav>
     );
 }
 

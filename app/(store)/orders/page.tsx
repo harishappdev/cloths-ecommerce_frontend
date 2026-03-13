@@ -58,22 +58,22 @@ export default function OrdersPage() {
                 <div className="container mx-auto px-4 md:px-8 py-12 md:py-20">
                     {/* Modern Breadcrumbs */}
                     <nav className="mb-12 flex items-center space-x-3 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-                        <Link href="/" className="hover:text-[#FF2C79] transition-colors">VibrantHub</Link>
+                        <Link href="/" className="hover:text-[#FF2C79] transition-colors">StyleNest</Link>
                         <span className="h-[2px] w-4 bg-pink-100" />
                         <span className="text-gray-900">Your Orders</span>
                     </nav>
 
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 md:mb-16 gap-6 md:gap-8">
                         <div>
                             <div className="flex items-center gap-3 mb-2">
-                                <span className="h-2 w-10 bg-gradient-to-r from-[#FF2C79] to-purple-600 rounded-full" />
-                                <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-widest">Customer Terminal</p>
+                                <span className="h-1.5 md:h-2 w-8 md:w-10 bg-gradient-to-r from-[#FF2C79] to-purple-600 rounded-full" />
+                                <p className="text-[9px] md:text-[10px] font-black text-[#FF2C79] uppercase tracking-widest">Customer Terminal</p>
                             </div>
-                            <h3 className="text-3xl md:text-5xl font-black text-gray-900 tracking-tighter leading-[0.8] mb-4">PURCHASE <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">HISTORY</span></h3>
-                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{orders.length} Authenticated Transactions</p>
+                            <h3 className="text-2xl md:text-5xl font-black text-gray-900 tracking-tighter leading-tight md:leading-[0.8] mb-3 md:mb-4 uppercase italic">PURCHASE <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">HISTORY</span></h3>
+                            <p className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest">{orders.length} Authenticated Transactions</p>
                         </div>
                         <button className="group h-12 px-6 flex items-center gap-3 rounded-xl bg-white border border-gray-100 text-[10px] font-black uppercase tracking-widest text-gray-900 shadow-sm hover:shadow-md transition-all active:scale-95">
-                            Filter Records <ChevronRight className="h-3 w-3 group-hover:rotate-90 transition-transform" />
+                            Refine Records <ChevronRight className="h-3 w-3 group-hover:rotate-90 transition-transform" />
                         </button>
                     </div>
 
@@ -93,19 +93,19 @@ export default function OrdersPage() {
                             {orders.map((order) => (
                                 <div key={order._id} className="group bg-white rounded-[3rem] border border-gray-100 overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500">
                                     {/* Order Header - Gradient Impact */}
-                                    <div className="bg-gray-50/50 p-8 md:p-10 flex flex-wrap items-center justify-between gap-8 border-b border-gray-50">
-                                        <div className="flex flex-wrap items-center gap-10">
-                                            <div className="space-y-2">
-                                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Order Ref</p>
-                                                <p className="text-sm font-black text-gray-900 tracking-tight">#{order._id.slice(-8).toUpperCase()}</p>
+                                    <div className="bg-gray-50/50 p-6 md:p-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 md:gap-8 border-b border-gray-50">
+                                        <div className="grid grid-cols-2 lg:flex items-center gap-6 md:gap-10 w-full md:w-auto">
+                                            <div className="space-y-1 md:space-y-2">
+                                                <p className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">Order Ref</p>
+                                                <p className="text-xs md:text-sm font-black text-gray-900 tracking-tight">#{order._id.slice(-8).toUpperCase()}</p>
                                             </div>
-                                            <div className="space-y-2">
-                                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Procurement Date</p>
-                                                <p className="text-sm font-black text-gray-900 tracking-tight">{new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                                            <div className="space-y-1 md:space-y-2">
+                                                <p className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">Procurement</p>
+                                                <p className="text-xs md:text-sm font-black text-gray-900 tracking-tight">{new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</p>
                                             </div>
-                                            <div className="space-y-2">
-                                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Net Value</p>
-                                                <p className="text-sm font-black text-pink-600 tracking-tight">₹{order.totalPrice.toLocaleString()}</p>
+                                            <div className="space-y-1 md:space-y-2">
+                                                <p className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest">Net Value</p>
+                                                <p className="text-xs md:text-sm font-black text-pink-600 tracking-tight">₹{order.totalPrice.toLocaleString()}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-4">

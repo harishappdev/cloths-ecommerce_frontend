@@ -79,7 +79,7 @@ export default function CartPage() {
             <div className="container mx-auto px-4 md:px-8 py-12 md:py-20">
                 {/* Modern Breadcrumbs */}
                 <nav className="mb-12 flex items-center space-x-3 text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">
-                    <Link href="/" className="hover:text-[#FF2C79] transition-colors">VibrantHub</Link>
+                    <Link href="/" className="hover:text-[#FF2C79] transition-colors">StyleNest</Link>
                     <span className="h-[2px] w-4 bg-pink-100" />
                     <span className="text-gray-900">Your Bag</span>
                 </nav>
@@ -98,14 +98,14 @@ export default function CartPage() {
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 items-start">
+                <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 items-start">
                     {/* Items List */}
-                    <div className="lg:col-span-8 space-y-8">
-                        <div className="space-y-6">
+                    <div className="lg:col-span-8 space-y-6">
+                        <div className="space-y-4">
                             {items.map((item, index) => (
-                                <div key={`${item.product?._id || index}-${item.size}-${item.color}`} className="group relative bg-white p-6 md:p-10 rounded-[2.5rem] border border-gray-100 flex flex-col sm:flex-row gap-8 shadow-sm hover:shadow-xl hover:shadow-gray-200/40 transition-all duration-500">
+                                <div key={`${item.product?._id || index}-${item.size}-${item.color}`} className="group relative bg-white p-5 md:p-8 rounded-3xl border border-gray-100 flex flex-col sm:flex-row gap-6 shadow-sm hover:shadow-xl hover:shadow-gray-200/40 transition-all duration-500">
                                     {/* Image Section */}
-                                    <div className="relative h-72 sm:h-64 w-full sm:w-52 shrink-0 overflow-hidden rounded-[2rem] bg-gray-50 border border-gray-50">
+                                    <div className="relative h-60 sm:h-48 w-full sm:w-40 shrink-0 overflow-hidden rounded-2xl bg-gray-50 border border-gray-50">
                                         <Image
                                             src={getImageUrl(item.product?.images?.[0] || '')}
                                             alt={item.product?.name || 'Product'}
@@ -113,22 +113,22 @@ export default function CartPage() {
                                             unoptimized
                                             className="object-cover transition-transform duration-1000 group-hover:scale-110"
                                         />
-                                        <div className="absolute top-4 right-4 h-10 w-10 bg-white/90 backdrop-blur-sm rounded-xl flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm cursor-pointer" onClick={() => item.product && removeItem(item.product._id, item.size, item.color)}>
-                                            <Trash2 className="h-4 w-4" />
+                                        <div className="absolute top-3 right-3 h-8 w-8 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center text-gray-400 hover:text-red-500 transition-colors shadow-sm cursor-pointer" onClick={() => item.product && removeItem(item.product._id, item.size, item.color)}>
+                                            <Trash2 className="h-3.5 w-3.5" />
                                         </div>
                                     </div>
 
                                     {/* Info Section */}
                                     <div className="flex flex-grow flex-col justify-between py-2">
                                         <div>
-                                            <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
-                                                <div className="space-y-2">
-                                                    <p className="text-[10px] font-black text-pink-500 uppercase tracking-widest">Premium Quality</p>
-                                                    <h3 className="text-3xl font-black text-gray-900 tracking-tighter leading-tight group-hover:text-[#FF2C79] transition-colors">{item.product?.name}</h3>
+                                            <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
+                                                <div className="space-y-1">
+                                                    <p className="text-[9px] font-black text-pink-500 uppercase tracking-widest">Premium Quality</p>
+                                                    <h3 className="text-xl md:text-2xl font-black text-gray-900 tracking-tighter leading-tight group-hover:text-[#FF2C79] transition-colors">{item.product?.name}</h3>
                                                 </div>
-                                                <div className="text-right">
-                                                    <span className="text-3xl font-black text-gray-900 tracking-tighter block leading-none">₹{(item.price * item.quantity).toLocaleString()}</span>
-                                                    <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2 block">Value Added</span>
+                                                <div className="text-left sm:text-right">
+                                                    <span className="text-2xl md:text-3xl font-black text-gray-900 tracking-tighter block leading-none">₹{(item.price * item.quantity).toLocaleString()}</span>
+                                                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1 block">Value Added</span>
                                                 </div>
                                             </div>
 
@@ -143,23 +143,23 @@ export default function CartPage() {
                                             </div>
                                         </div>
 
-                                        <div className="mt-10 flex items-center justify-between gap-6">
-                                            <div className="flex items-center bg-gray-50 rounded-2xl p-1.5 border border-gray-100">
+                                        <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
+                                            <div className="flex items-center bg-gray-50 rounded-xl p-1 border border-gray-100">
                                                 <button
                                                     onClick={() => item.product && updateItemQuantity(item.product._id, Math.max(1, item.quantity - 1), item.size, item.color)}
-                                                    className="h-12 w-12 flex items-center justify-center rounded-xl bg-white text-gray-400 hover:text-[#FF2C79] hover:shadow-sm transition-all shadow-[0_4px_10px_rgba(0,0,0,0.03)]"
+                                                    className="h-10 w-10 flex items-center justify-center rounded-lg bg-white text-gray-400 hover:text-[#FF2C79] hover:shadow-sm transition-all"
                                                 >
-                                                    <Minus className="h-4 w-4" />
+                                                    <Minus className="h-3.5 w-3.5" />
                                                 </button>
-                                                <span className="w-14 text-center text-base font-black text-gray-900">{item.quantity}</span>
+                                                <span className="w-10 text-center text-sm font-black text-gray-900">{item.quantity}</span>
                                                 <button
                                                     onClick={() => item.product && updateItemQuantity(item.product._id, item.quantity + 1, item.size, item.color)}
-                                                    className="h-12 w-12 flex items-center justify-center rounded-xl bg-white text-gray-400 hover:text-[#FF2C79] hover:shadow-sm transition-all shadow-[0_4px_10px_rgba(0,0,0,0.03)]"
+                                                    className="h-10 w-10 flex items-center justify-center rounded-lg bg-white text-gray-400 hover:text-[#FF2C79] hover:shadow-sm transition-all"
                                                 >
-                                                    <Plus className="h-4 w-4" />
+                                                    <Plus className="h-3.5 w-3.5" />
                                                 </button>
                                             </div>
-                                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest italic animate-pulse">Available for priority shipping</p>
+                                            <p className="text-[8px] font-black text-gray-400 uppercase tracking-widest italic opacity-60">Priority Delivery Available</p>
                                         </div>
                                     </div>
                                 </div>
@@ -167,23 +167,23 @@ export default function CartPage() {
                         </div>
 
                         {/* Order Benefits - Enhanced */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-12">
-                            <div className="p-8 rounded-[2.5rem] bg-pink-50/20 border border-pink-100/30 flex gap-6 items-center group hover:bg-white hover:shadow-xl hover:shadow-pink-100/50 transition-all duration-500">
-                                <div className="h-16 w-16 bg-gradient-to-br from-pink-500 to-purple-500 rounded-3xl flex items-center justify-center shadow-lg shadow-pink-200 text-white">
-                                    <Truck className="h-7 w-7" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-10">
+                            <div className="p-6 rounded-3xl bg-pink-50/20 border border-pink-100/30 flex gap-5 items-center group hover:bg-white hover:shadow-xl hover:shadow-pink-100/50 transition-all duration-500">
+                                <div className="h-12 w-12 bg-gradient-to-br from-pink-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg shadow-pink-200 text-white shrink-0">
+                                    <Truck className="h-5 w-5" />
                                 </div>
-                                <div className="space-y-1">
-                                    <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-900">Vibrant Express</h4>
-                                    <p className="text-[10px] font-bold text-gray-400 leading-relaxed uppercase">Free shipping on orders above ₹10k</p>
+                                <div className="space-y-0.5">
+                                    <h4 className="text-[9px] font-black uppercase tracking-widest text-gray-900">Vibrant Express</h4>
+                                    <p className="text-[9px] font-bold text-gray-400 leading-relaxed uppercase">Free shipping above ₹10k</p>
                                 </div>
                             </div>
-                            <div className="p-8 rounded-[2.5rem] bg-purple-50/20 border border-purple-100/30 flex gap-6 items-center group hover:bg-white hover:shadow-xl hover:shadow-purple-100/50 transition-all duration-500">
-                                <div className="h-16 w-16 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-3xl flex items-center justify-center shadow-lg shadow-purple-200 text-white">
-                                    <ShieldCheck className="h-7 w-7" />
+                            <div className="p-6 rounded-3xl bg-purple-50/20 border border-purple-100/30 flex gap-5 items-center group hover:bg-white hover:shadow-xl hover:shadow-purple-100/50 transition-all duration-500">
+                                <div className="h-12 w-12 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center shadow-lg shadow-purple-200 text-white shrink-0">
+                                    <ShieldCheck className="h-5 w-5" />
                                 </div>
-                                <div className="space-y-1">
-                                    <h4 className="text-[10px] font-black uppercase tracking-widest text-gray-900">Encrypted Pay</h4>
-                                    <p className="text-[10px] font-bold text-gray-400 leading-relaxed uppercase">100% Secure Transaction Protocols</p>
+                                <div className="space-y-0.5">
+                                    <h4 className="text-[9px] font-black uppercase tracking-widest text-gray-900">Encrypted Pay</h4>
+                                    <p className="text-[9px] font-bold text-gray-400 leading-relaxed uppercase">100% Secure Protocols</p>
                                 </div>
                             </div>
                         </div>

@@ -1,51 +1,39 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import useSWR from 'swr';
 import { adminService } from '@/services/adminService';
+import { Skeleton } from '@/components/ui/Skeleton';
 import {
     Users,
-    UserCheck,
-    UserPlus,
-    Wallet,
     Search,
     Filter,
-    ChevronRight,
-    ChevronLeft,
+    ChevronDown,
+    MoreHorizontal,
     Mail,
     Phone,
-    MoreHorizontal,
+    Calendar,
+    ArrowUpRight,
+    UserCheck,
+    UserMinus,
+    Shield,
+    ShieldCheck,
     Download,
-    Bell,
-    HelpCircle,
     Plus,
-    UserPlus2
+    ChevronLeft,
+    ChevronRight
 } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'react-hot-toast';
 import { cn } from '@/utils/lib';
 
 export default function CustomersPage() {
-    const [customers, setCustomers] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        const fetchCustomers = async () => {
-            try {
-                const response = await adminService.getUsers();
-                if (response.status === 'success' && response.data?.users) {
-                    setCustomers(response.data.users);
-                }
-            } catch (error) {
-                toast.error('Failed to load customers');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchCustomers();
-    }, []);
+    const { data: usersData, isLoading: usersLoading } = useSWR('/users');
+    const customers = usersData?.data?.users || [];
 
-    const filteredCustomers = (customers || []).filter(c =>
+    const filteredCustomers = (customers || []).filter((c: any) =>
         c?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         c?.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         c?._id?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -58,14 +46,14 @@ export default function CustomersPage() {
                 <div>
                     <div className="flex items-center gap-3 mb-3">
                         <span className="h-2 w-10 bg-gradient-to-r from-[#FF2C79] to-purple-600 rounded-full" />
-                        <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Community Intelligence</p>
+                        <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Customer Insights</p>
                     </div>
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-gray-900 leading-[0.8] uppercase">Customer <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">Archival</span></h1>
-                    <p className="text-xs font-bold text-gray-400 mt-4 uppercase tracking-[0.1em]">Managing the global fashion community and profile assets.</p>
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-gray-900 leading-[0.8] uppercase">Customer <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">Directory</span></h1>
+                    <p className="text-sm font-bold text-gray-500 mt-4 uppercase tracking-[0.1em]">Manage your customer base and their profiles.</p>
                 </div>
                 <button className="w-full sm:w-auto flex items-center justify-center gap-3 px-10 py-5 rounded-[1.5rem] bg-gray-900 text-[11px] font-black text-white shadow-2xl shadow-gray-200 hover:bg-[#FF2C79] transition-all active:scale-95 uppercase tracking-[0.2em]">
                     <Download className="h-4 w-4" />
-                    <span>Export Ledger</span>
+                    <span>Export Data</span>
                 </button>
             </div>
 
@@ -75,10 +63,11 @@ export default function CustomersPage() {
                     <Search className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-300 group-focus-within:text-[#FF2C79] transition-colors" />
                     <input
                         type="text"
-                        placeholder="SEARCH PROFILES / UID..."
+                        placeholder="SEARCH BY NAME / EMAIL..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full bg-[#FAFAFB] border-none rounded-2xl py-5 pl-16 pr-6 text-[11px] font-black uppercase tracking-widest focus:ring-4 focus:ring-pink-500/5 focus:bg-white placeholder:text-gray-300 transition-all text-gray-900"
+                        suppressHydrationWarning
                     />
                 </div>
 
@@ -95,7 +84,7 @@ export default function CustomersPage() {
 
                     <button className="flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-gray-900 text-white text-[10px] font-black transition-all hover:bg-[#FF2C79] shadow-xl shadow-gray-200 uppercase tracking-[0.2em]">
                         <Plus className="h-4 w-4" />
-                        <span>Add Entity</span>
+                        <span>Add Customer</span>
                     </button>
                 </div>
             </div>
@@ -106,20 +95,20 @@ export default function CustomersPage() {
                     <table className="w-full text-left min-w-[1100px]">
                         <thead>
                             <tr className="text-[10px] font-black uppercase text-gray-400 tracking-[0.2em] border-b border-gray-50 bg-[#FAFAFB]/50">
-                                <th className="py-8 px-10">ENTITY IDENTITY</th>
-                                <th className="py-8 px-8">COMMUNICATION PATHS</th>
-                                <th className="py-8 px-8">ENGAGEMENT COUNT</th>
-                                <th className="py-8 px-8">TOTAL FLOW</th>
-                                <th className="py-8 px-8">ACCESS LEVEL</th>
-                                <th className="py-8 px-10 text-right">PROTOCOL</th>
+                                <th className="py-8 px-10">CUSTOMER INFO</th>
+                                <th className="py-8 px-8">CONTACT DETAILS</th>
+                                <th className="py-8 px-8">ORDER COUNT</th>
+                                <th className="py-8 px-8">TOTAL SPENT</th>
+                                <th className="py-8 px-8">STATUS</th>
+                                <th className="py-8 px-10 text-right">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
-                            {loading ? (
+                            {usersLoading ? (
                                 Array(5).fill(0).map((_, i) => (
-                                    <tr key={i} className="animate-pulse">
-                                        <td colSpan={6} className="py-12 px-10">
-                                            <div className="h-20 bg-gray-50 rounded-[2rem]" />
+                                    <tr key={i}>
+                                        <td colSpan={6} className="py-8 px-10">
+                                            <Skeleton className="h-16 w-full rounded-[1.5rem]" />
                                         </td>
                                     </tr>
                                 ))
@@ -129,10 +118,10 @@ export default function CustomersPage() {
                                         <div className="bg-gray-50 h-24 w-24 rounded-[2rem] flex items-center justify-center mx-auto mb-8">
                                             <Users className="h-10 w-10 text-gray-200" />
                                         </div>
-                                        <p className="text-[10px] font-black uppercase tracking-[0.3em]">Zero matching entities indexed</p>
+                                        <p className="text-[10px] font-black uppercase tracking-[0.3em]">No customers found</p>
                                     </td>
                                 </tr>
-                            ) : filteredCustomers.map((customer) => (
+                            ) : filteredCustomers.map((customer: any) => (
                                 <tr key={customer._id} className="group hover:bg-pink-50/10 transition-all duration-500">
                                     <td className="py-8 px-10">
                                         <div className="flex items-center gap-6">
@@ -146,7 +135,7 @@ export default function CustomersPage() {
                                             </div>
                                             <div>
                                                 <p className="text-sm font-black text-gray-900 group-hover:text-[#FF2C79] transition-colors uppercase tracking-tight">{customer.name}</p>
-                                                <p className="text-[9px] font-black text-gray-400 mt-1 uppercase tracking-widest">UID: #{customer._id.slice(-8).toUpperCase()}</p>
+                                                <p className="text-[9px] font-black text-gray-400 mt-1 uppercase tracking-widest">ID: #{customer._id.slice(-8).toUpperCase()}</p>
                                             </div>
                                         </div>
                                     </td>
@@ -158,12 +147,12 @@ export default function CustomersPage() {
                                             </div>
                                             <div className="flex items-center gap-3 text-[10px] font-bold text-gray-300 uppercase tracking-widest">
                                                 <Phone className="h-3.5 w-3.5" />
-                                                No Telemetry
+                                                No Phone
                                             </div>
                                         </div>
                                     </td>
                                     <td className="py-8 px-8 text-center sm:text-left">
-                                        <span className="text-xs font-black text-gray-900 bg-gray-50 px-4 py-2 rounded-xl border border-gray-100 uppercase tracking-widest">08 UNITS</span>
+                                        <span className="text-xs font-black text-gray-900 bg-gray-50 px-4 py-2 rounded-xl border border-gray-100 uppercase tracking-widest">8 ORDERS</span>
                                     </td>
                                     <td className="py-8 px-8 font-black text-gray-900 text-sm tracking-tight">
                                         ₹{Number(1240).toLocaleString()}
@@ -173,7 +162,7 @@ export default function CustomersPage() {
                                             "inline-flex items-center rounded-xl px-4 py-2 text-[9px] font-black uppercase tracking-[0.2em] shadow-sm",
                                             customer.role === 'admin' ? "bg-purple-50 text-purple-600 border border-purple-100" : "bg-emerald-50 text-emerald-600 border border-emerald-100"
                                         )}>
-                                            {customer.role === 'admin' ? "Internal Admin" : "Retail Member"}
+                                            {customer.role === 'admin' ? "Admin" : "Customer"}
                                         </span>
                                     </td>
                                     <td className="py-8 px-10 text-right">
@@ -190,7 +179,7 @@ export default function CustomersPage() {
                 {/* Pagination */}
                 <div className="bg-white px-10 py-8 border-t border-gray-50 flex flex-col sm:flex-row items-center justify-between gap-6">
                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
-                        DATASET PAGE <span className="text-gray-900 font-black">01 OF 01</span>
+                        PAGE <span className="text-gray-900 font-black">01 OF 01</span>
                     </p>
                     <div className="flex items-center gap-3">
                         <button className="h-12 w-12 flex items-center justify-center rounded-2xl border border-gray-100 text-gray-400 hover:bg-gray-50 transition-all">
@@ -204,6 +193,5 @@ export default function CustomersPage() {
                 </div>
             </div>
         </div>
-
     );
 }

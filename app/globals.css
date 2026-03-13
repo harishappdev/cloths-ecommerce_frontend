@@ -1,9 +1,20 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @theme {
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-heading: 'Poppins', sans-serif;
+  --font-heading: 'Inter', sans-serif;
+
+  /* Typographic Scale */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 1.875rem;
+  --text-4xl: 2.25rem;
+  --text-5xl: 3rem;
 
   --color-primary: #FF3F6C;
   /* Vibrant Pink */
@@ -46,24 +57,48 @@
 
 body {
   font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.5;
   color: var(--foreground);
   background: var(--background);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, .h1 {
   font-family: var(--font-heading);
+  font-size: var(--text-4xl);
   font-weight: 800;
+  line-height: 1.2;
   color: #282C3F;
-  text-transform: none;
+  letter-spacing: -0.02em;
+}
+
+h2, .h2 {
+  font-family: var(--font-heading);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  line-height: 1.25;
+  color: #282C3F;
   letter-spacing: -0.01em;
 }
+
+h3, .h3 {
+  font-family: var(--font-heading);
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  line-height: 1.3;
+  color: #282C3F;
+}
+
+h4, .h4 {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  line-height: 1.4;
+  color: #282C3F;
+}
+
 
 .bg-gradient-primary {
   background: var(--gradient-primary);

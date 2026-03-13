@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import useSWR, { mutate } from 'swr';
 import { 
     Ticket, 
     Plus, 
@@ -23,10 +24,9 @@ import { cn } from '@/utils/lib';
 import { toast } from 'react-hot-toast';
 import { couponService, Coupon } from '@/services/couponService';
 import { format } from 'date-fns';
+import { Skeleton } from '@/components/ui/Skeleton';
 
 export default function CouponsPage() {
-    const [coupons, setCoupons] = useState<Coupon[]>([]);
-    const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [newCoupon, setNewCoupon] = useState({
@@ -38,28 +38,15 @@ export default function CouponsPage() {
         expiryDate: '',
         isActive: true
     });
-
-    useEffect(() => {
-        fetchCoupons();
-    }, []);
-
-    const fetchCoupons = async () => {
-        try {
-            const response = await couponService.getAllCoupons();
-            setCoupons(response.data.coupons);
-        } catch (error) {
-            toast.error('Failed to load coupons');
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { data: couponsData, isLoading: couponsLoading } = useSWR('/coupons');
+    const coupons = couponsData?.data?.coupons || [];
 
     const handleDelete = async (id: string) => {
         if (!confirm('Are you sure you want to delete this coupon?')) return;
         try {
             await couponService.deleteCoupon(id);
             toast.success('Coupon deleted');
-            fetchCoupons();
+            mutate('/coupons');
         } catch (error) {
             toast.error('Failed to delete coupon');
         }
@@ -91,20 +78,20 @@ export default function CouponsPage() {
                 expiryDate: '',
                 isActive: true
             });
-            fetchCoupons();
+            mutate('/coupons');
         } catch (error: any) {
             toast.error(error.response?.data?.message || 'Failed to create coupon');
         }
     };
 
-    const filteredCoupons = coupons.filter(c => 
+    const filteredCoupons = coupons.filter((c: Coupon) => 
         c.code.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const stats = [
-        { label: 'Total Active', value: coupons.filter(c => c.isActive).length, icon: Zap, color: 'text-yellow-500', bg: 'bg-yellow-50' },
-        { label: 'Total Used', value: coupons.reduce((acc, curr) => acc + curr.usageCount, 0), icon: TrendingUp, color: 'text-blue-500', bg: 'bg-blue-50' },
-        { label: 'Expiring Soon', value: coupons.filter(c => new Date(c.expiryDate).getTime() - Date.now() < 86400000 * 7).length, icon: Clock, color: 'text-orange-500', bg: 'bg-orange-50' },
+        { label: 'Total Active', value: coupons.filter((c: Coupon) => c.isActive).length, icon: Zap, color: 'text-yellow-500', bg: 'bg-yellow-50' },
+        { label: 'Total Used', value: coupons.reduce((acc: number, curr: Coupon) => acc + curr.usageCount, 0), icon: TrendingUp, color: 'text-blue-500', bg: 'bg-blue-50' },
+        { label: 'Expiring Soon', value: coupons.filter((c: Coupon) => new Date(c.expiryDate).getTime() - Date.now() < 86400000 * 7).length, icon: Clock, color: 'text-orange-500', bg: 'bg-orange-50' },
     ];
 
     return (
@@ -189,10 +176,12 @@ export default function CouponsPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
-                            {loading ? (
-                                [...Array(5)].map((_, i) => (
-                                    <tr key={i} className="animate-pulse">
-                                        <td colSpan={6} className="px-8 py-8 h-20 bg-gray-50/20" />
+                            {couponsLoading ? (
+                                Array(5).fill(0).map((_, i) => (
+                                    <tr key={i}>
+                                        <td colSpan={6} className="py-8 px-10">
+                                            <Skeleton className="h-16 w-full rounded-[1.5rem]" />
+                                        </td>
                                     </tr>
                                 ))
                             ) : filteredCoupons.length === 0 ? (
