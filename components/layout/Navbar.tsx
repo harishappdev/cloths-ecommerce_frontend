@@ -89,7 +89,7 @@ export default function Navbar() {
                         <div className="h-9 w-9 bg-gradient-primary rounded-lg flex items-center justify-center transition-transform group-hover:scale-110">
                             <Package className="h-5 w-5 text-white" />
                         </div>
-                        <span className="text-2xl font-heading font-black tracking-tighter text-gray-900">StyleNest</span>
+                        <span className="text-2xl font-bold tracking-tight text-gray-900 group-hover:text-primary transition-colors">StyleNest</span>
                     </Link>
 
                     {/* Desktop Navigation */}
@@ -109,7 +109,7 @@ export default function Navbar() {
                                     <Link
                                         href={link.name === 'Offers' ? '/shop?sale=true' : link.href}
                                         className={cn(
-                                            "relative text-xs font-bold uppercase tracking-wider transition-vibrant flex items-center gap-1",
+                                            "relative text-sm font-semibold tracking-tight transition-vibrant flex items-center gap-1",
                                             isActive ? "text-primary" : link.isSale ? "text-primary px-3 py-1 bg-primary/5 rounded-full" : "text-gray-700 hover:text-primary"
                                         )}
                                     >
@@ -127,7 +127,7 @@ export default function Navbar() {
                                             {link.megaMenu.map((section) => (
                                                 <div key={section.title} className="space-y-6">
                                                     <h4 className={cn(
-                                                        "text-[10px] font-black uppercase tracking-[0.2em]",
+                                                        "text-[10px] font-bold uppercase tracking-[0.2em]",
                                                         section.highlight ? "text-blue-600" : "text-black"
                                                     )}>
                                                         {section.title}
@@ -151,8 +151,8 @@ export default function Navbar() {
                                             <div className="col-span-1 rounded-2xl bg-gray-50 flex items-center justify-center relative overflow-hidden group/img">
                                                 <div className="absolute inset-0 bg-black/20 group-hover/img:bg-black/40 transition-colors z-10" />
                                                 <div className="relative z-20 text-center p-4">
-                                                    <p className="text-[10px] font-black text-white uppercase tracking-widest mb-2">Editor's Choice</p>
-                                                    <h5 className="text-white font-black text-sm">2024 Collection</h5>
+                                                    <p className="text-[10px] font-bold text-white uppercase tracking-widest mb-2">Editor's Choice</p>
+                                                    <h5 className="text-white font-bold text-sm">2024 Collection</h5>
                                                 </div>
                                             </div>
                                         </div>
@@ -189,13 +189,13 @@ export default function Navbar() {
                                     className="hidden sm:flex flex-col items-center p-1 text-gray-700 hover:text-primary transition-vibrant"
                                 >
                                     <User className="h-6 w-6" />
-                                    <span className="text-[10px] font-bold mt-0.5">Login</span>
+                                    <span className="text-[11px] font-bold mt-1">Login</span>
                                 </Link>
                             )}
 
                             <Link href="/wishlist" className="hidden sm:flex flex-col items-center p-1 text-gray-700 hover:text-primary transition-vibrant relative">
                                 <Heart className="h-6 w-6" />
-                                <span className="text-[10px] font-bold mt-0.5">Wishlist</span>
+                                <span className="text-[11px] font-bold mt-1">Wishlist</span>
                                 {mounted && wishlist.length > 0 && (
                                     <span className="absolute -top-1 right-1 h-4 w-4 bg-primary text-white text-[9px] font-bold rounded-full flex items-center justify-center ring-2 ring-white">
                                         {wishlist.length}

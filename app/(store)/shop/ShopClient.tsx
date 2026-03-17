@@ -60,7 +60,7 @@ function FilterAccordion({ title, children, defaultOpen = true }: { title: strin
         <div className="border-b border-gray-100 py-6 last:border-0 group">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center justify-between w-full text-[10px] font-accent tracking-[0.3em] text-gray-950 group-hover:text-pink-600 transition-colors"
+                className="flex items-center justify-between w-full text-[10px] font-bold tracking-[0.3em] text-gray-950 group-hover:text-pink-600 transition-colors"
             >
                 {title}
                 <ChevronDown className={cn("h-4 w-4 transition-transform duration-300", isOpen ? "rotate-180" : "")} />
@@ -215,7 +215,7 @@ export function ShopClient() {
     return (
         <div className="bg-white min-h-screen">
             {/* Header section with vibrant typography */}
-            <div className="bg-white pt-8 pb-10">
+            <div className="bg-white pt-32 md:pt-40 pb-10">
                 <div className="container mx-auto px-4 md:px-6">
                     <nav className="flex items-center text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-4">
                         <Link href="/" className="hover:text-pink-600 transition-colors">Home</Link>
@@ -224,7 +224,7 @@ export function ShopClient() {
                     </nav>
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                         <div className="space-y-2">
-                            <h1 className="text-3xl md:text-5xl font-black tracking-tight text-gray-900 uppercase italic">
+                            <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-gray-900 uppercase">
                                 {collectionTitle}
                             </h1>
                             <p className="text-sm text-gray-500 max-w-md font-medium">
@@ -248,7 +248,7 @@ export function ShopClient() {
                             </div>
                             <button
                                 onClick={() => setIsFilterOpen(true)}
-                                className="lg:hidden flex items-center gap-2 px-6 py-3 bg-black text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-gray-200"
+                                className="lg:hidden flex items-center gap-2 px-6 py-3 bg-black text-white rounded-xl text-[10px] font-bold uppercase tracking-widest shadow-xl shadow-gray-200"
                             >
                                 <SlidersHorizontal className="h-4 w-4" />
                                 Filters
@@ -263,7 +263,7 @@ export function ShopClient() {
                     {/* Desktop Sidebar - Accordion Style */}
                     <aside className="hidden lg:block w-64 shrink-0 sticky top-32 h-fit">
                         <div className="space-y-2 mb-8">
-                            <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400 mb-4">Refine Search</h3>
+                            <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-400 mb-4">Refine Search</h3>
                             <form onSubmit={handleSearch} className="relative group">
                                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-pink-600 transition-colors" />
                                 <input
@@ -271,7 +271,7 @@ export function ShopClient() {
                                     placeholder="TYPE TO EXPLORE..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-full bg-[#F8FAFC] border-none rounded-2xl py-4 pl-12 pr-4 text-[11px] font-black uppercase tracking-widest focus:bg-white focus:ring-4 focus:ring-pink-500/5 transition-all outline-none placeholder:text-gray-300"
+                                    className="w-full bg-[#F8FAFC] border-none rounded-2xl py-4 pl-12 pr-4 text-[11px] font-bold uppercase tracking-widest focus:bg-white focus:ring-4 focus:ring-pink-500/5 transition-all outline-none placeholder:text-gray-300"
                                     suppressHydrationWarning
                                 />
                             </form>
@@ -284,7 +284,7 @@ export function ShopClient() {
                                         key={cat}
                                         onClick={() => updateParams({ category: cat, page: '1' })}
                                         className={cn(
-                                            "flex items-center justify-between w-full text-[10px] font-black uppercase tracking-widest transition-all",
+                                            "flex items-center justify-between w-full text-[10px] font-bold uppercase tracking-widest transition-all",
                                             category === cat ? "text-pink-600" : "text-gray-500 hover:text-pink-600"
                                         )}
                                     >
@@ -302,7 +302,7 @@ export function ShopClient() {
                                         key={size}
                                         onClick={() => toggleSize(size)}
                                         className={cn(
-                                            "h-12 flex items-center justify-center rounded-xl border text-[10px] font-black transition-all",
+                                            "h-12 flex items-center justify-center rounded-xl border text-[10px] font-bold transition-all",
                                             selectedSizes.includes(size)
                                                 ? "bg-black border-black text-white shadow-xl shadow-gray-200"
                                                 : "border-gray-100 bg-[#F8FAFC] text-gray-400 hover:border-pink-200 hover:text-pink-600"
@@ -330,14 +330,14 @@ export function ShopClient() {
                                             style={{ backgroundColor: COLOR_MAP[colorName.toLowerCase()] || '#CBD5E1' }}
                                         />
                                         <span className={cn(
-                                            "text-[10px] font-black uppercase tracking-widest transition-colors",
+                                            "text-[10px] font-bold uppercase tracking-widest transition-colors",
                                             selectedColors.includes(colorName) ? "text-gray-900" : "text-gray-400 group-hover:text-pink-600"
                                         )}>
                                             {colorName}
                                         </span>
                                     </button>
                                 ))}
-                                {COLORS.length === 0 && <p className="text-[9px] font-bold text-gray-300 italic">No colors found</p>}
+                                {COLORS.length === 0 && <p className="text-[9px] font-bold text-gray-300">No colors found</p>}
                             </div>
                         </FilterAccordion>
 
@@ -359,7 +359,7 @@ export function ShopClient() {
                                             )}
                                         </span>
                                         <span className={cn(
-                                            "text-[10px] font-black uppercase tracking-widest transition-colors",
+                                            "text-[10px] font-bold uppercase tracking-widest transition-colors",
                                             selectedBrands.includes(brand) ? "text-gray-900" : "text-gray-400 group-hover:text-pink-600"
                                         )}>{brand}</span>
                                     </label>
@@ -385,7 +385,7 @@ export function ShopClient() {
                                             )}
                                         </span>
                                         <span className={cn(
-                                            "text-[10px] font-black uppercase tracking-widest transition-colors",
+                                            "text-[10px] font-bold uppercase tracking-widest transition-colors",
                                             selectedFabrics.includes(fabric) ? "text-gray-900" : "text-gray-400 group-hover:text-pink-600"
                                         )}>{fabric}</span>
                                     </label>
@@ -411,7 +411,7 @@ export function ShopClient() {
                                             )}
                                         </span>
                                         <span className={cn(
-                                            "text-[10px] font-black uppercase tracking-widest transition-colors",
+                                            "text-[10px] font-bold uppercase tracking-widest transition-colors",
                                             selectedOccasions.includes(occasion) ? "text-gray-900" : "text-gray-400 group-hover:text-pink-600"
                                         )}>{occasion}</span>
                                     </label>
@@ -441,7 +441,7 @@ export function ShopClient() {
                                                 />
                                             ))}
                                         </div>
-                                        <span className="text-[10px] font-black uppercase tracking-widest">& Up</span>
+                                        <span className="text-[10px] font-bold uppercase tracking-widest">& Up</span>
                                     </button>
                                 ))}
                             </div>
@@ -454,7 +454,7 @@ export function ShopClient() {
                             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsFilterOpen(false)} />
                             <div className="absolute top-0 right-0 w-[85%] h-full bg-white shadow-2xl p-8 overflow-y-auto animate-in slide-in-from-right duration-500 rounded-l-[3rem]">
                                 <div className="flex items-center justify-between mb-12">
-                                    <h3 className="text-xl font-black uppercase tracking-tighter italic">Refine <span className="text-pink-600">Edit</span></h3>
+                                    <h3 className="text-xl font-bold uppercase tracking-tighter">Refine <span className="text-pink-600">Edit</span></h3>
                                     <button onClick={() => setIsFilterOpen(false)} className="h-12 w-12 flex items-center justify-center bg-gray-50 rounded-2xl">
                                         <X className="h-5 w-5" />
                                     </button>
@@ -468,7 +468,7 @@ export function ShopClient() {
                                                     key={cat}
                                                     onClick={() => updateParams({ category: cat, page: '1' })}
                                                     className={cn(
-                                                        "flex items-center justify-between w-full text-[10px] font-black uppercase tracking-widest",
+                                                        "flex items-center justify-between w-full text-[10px] font-bold uppercase tracking-widest",
                                                         category === cat ? "text-pink-600" : "text-gray-400"
                                                     )}
                                                 >
@@ -485,7 +485,7 @@ export function ShopClient() {
                                                     key={size}
                                                     onClick={() => toggleSize(size)}
                                                     className={cn(
-                                                        "h-12 flex items-center justify-center rounded-xl border text-[10px] font-black transition-all",
+                                                        "h-12 flex items-center justify-center rounded-xl border text-[10px] font-bold transition-all",
                                                         selectedSizes.includes(size)
                                                             ? "bg-black border-black text-white"
                                                             : "border-gray-100 bg-[#F8FAFC] text-gray-400"
@@ -517,7 +517,7 @@ export function ShopClient() {
                                                         {colorName === 'white' && <div className="absolute inset-0 rounded-full border border-gray-100" />}
                                                     </div>
                                                     <span className={cn(
-                                                        "text-[10px] font-black uppercase tracking-widest transition-colors",
+                                                        "text-[10px] font-bold uppercase tracking-widest transition-colors",
                                                         selectedColors.includes(colorName) ? "text-gray-900" : "text-gray-400"
                                                     )}>
                                                         {colorName}
@@ -534,7 +534,7 @@ export function ShopClient() {
                                                     key={brand}
                                                     onClick={() => toggleBrand(brand)}
                                                     className={cn(
-                                                        "flex items-center justify-between w-full text-[10px] font-black uppercase tracking-widest",
+                                                        "flex items-center justify-between w-full text-[10px] font-bold uppercase tracking-widest",
                                                         selectedBrands.includes(brand) ? "text-pink-600" : "text-gray-400"
                                                     )}
                                                 >
@@ -547,7 +547,7 @@ export function ShopClient() {
 
                                 <button
                                     onClick={() => setIsFilterOpen(false)}
-                                    className="w-full mt-12 bg-black text-white h-20 rounded-[2rem] text-[10px] font-black uppercase tracking-[0.2em] shadow-2xl shadow-gray-200 active:scale-95 transition-transform"
+                                    className="w-full mt-12 bg-black text-white h-20 rounded-[2rem] text-[10px] font-bold uppercase tracking-[0.2em] shadow-2xl shadow-gray-200 active:scale-95 transition-transform"
                                 >
                                     Apply & Close
                                 </button>
@@ -568,11 +568,11 @@ export function ShopClient() {
                                 <div className="h-20 w-20 bg-red-50 rounded-[2rem] flex items-center justify-center mx-auto mb-8">
                                     <X className="h-8 w-8 text-red-500" />
                                 </div>
-                                <h3 className="text-xl font-black uppercase tracking-tighter mb-4">Sync Error</h3>
+                                <h3 className="text-xl font-bold uppercase tracking-tighter mb-4">Sync Error</h3>
                                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-10 leading-relaxed">{error}</p>
                                 <button
                                     onClick={() => window.location.reload()}
-                                    className="w-full bg-black text-white h-16 rounded-[1.5rem] text-[10px] font-black uppercase tracking-widest shadow-xl shadow-gray-200"
+                                    className="w-full bg-black text-white h-16 rounded-[1.5rem] text-[10px] font-bold uppercase tracking-widest shadow-xl shadow-gray-200"
                                 >
                                     Reload Stream
                                 </button>
@@ -582,11 +582,11 @@ export function ShopClient() {
                                 <div className="h-24 w-24 bg-gray-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8">
                                     <Search className="h-10 w-10 text-gray-200" />
                                 </div>
-                                <h3 className="text-xl font-black uppercase tracking-tighter mb-4 italic">Empty <span className="text-pink-600">Vault</span></h3>
+                                <h3 className="text-xl font-bold uppercase tracking-tighter mb-4">Empty <span className="text-pink-600">Vault</span></h3>
                                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-10 leading-relaxed">No entities matching your refined criteria were identified in our active collections.</p>
                                 <button
                                     onClick={() => router.push('/shop')}
-                                    className="px-10 py-5 bg-gray-50 rounded-2xl text-[10px] font-black uppercase tracking-widest text-[#FF2C79] hover:bg-pink-50 transition-all"
+                                    className="px-10 py-5 bg-gray-50 rounded-2xl text-[10px] font-bold uppercase tracking-widest text-[#FF2C79] hover:bg-pink-50 transition-all"
                                 >
                                     Reset Selection
                                 </button>
@@ -608,7 +608,7 @@ export function ShopClient() {
                                                 isFetchingMore ? "animate-spin" : "opacity-0"
                                             )} />
                                             <div className="text-center space-y-2">
-                                                <p className="text-[11px] font-black text-gray-900 uppercase tracking-[0.3em]">
+                                                <p className="text-[11px] font-bold text-gray-900 uppercase tracking-[0.3em]">
                                                     {isFetchingMore ? "Unlocking More Styles" : "Scroll to Reveal"}
                                                 </p>
                                                 <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">
@@ -620,7 +620,7 @@ export function ShopClient() {
                                         {!isFetchingMore && (
                                             <button 
                                                 onClick={() => updateParams({ page: (page + 1).toString() })}
-                                                className="px-12 py-5 bg-black text-white text-[10px] font-black uppercase tracking-[0.3em] rounded-2xl shadow-2xl shadow-gray-200 hover:scale-105 active:scale-95 transition-all"
+                                                className="px-12 py-5 bg-black text-white text-[10px] font-bold uppercase tracking-[0.3em] rounded-2xl shadow-2xl shadow-gray-200 hover:scale-105 active:scale-95 transition-all"
                                             >
                                                 Force Reveal More
                                             </button>
@@ -633,8 +633,8 @@ export function ShopClient() {
                                         <div className="inline-flex h-20 w-20 items-center justify-center rounded-[2.5rem] bg-gray-50 text-gray-200 mb-8">
                                             <Clock className="h-8 w-8" />
                                         </div>
-                                        <h3 className="text-xl font-black uppercase tracking-tighter italic text-gray-900 mb-2">Vault <span className="text-pink-600">Reached</span></h3>
-                                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">You've explored the entire active collection</p>
+                                        <h3 className="text-xl font-bold uppercase tracking-tighter text-gray-900 mb-2">Vault <span className="text-pink-600">Reached</span></h3>
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">You've explored the entire active collection</p>
                                     </div>
                                 )}
                             </>

@@ -87,14 +87,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
                     )}>
                         <div className="p-8 pb-4">
-                            <Link href="/admin" className="group">
-                                <div className="flex items-center gap-3 mb-1">
-                                    <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-[#FF2C79] to-purple-600 flex items-center justify-center text-white shadow-lg shadow-pink-200 group-hover:rotate-12 transition-transform">
-                                        <LayoutDashboard className="h-4 w-4" />
-                                    </div>
-                                    <h1 className="text-xl font-black text-gray-900 tracking-tighter">Vibrant<span className="text-[#FF2C79]">Hub</span></h1>
+                            <Link href="/admin" className="flex items-center space-x-2 shrink-0 group">
+                                <div className="h-9 w-9 bg-gradient-primary rounded-lg flex items-center justify-center transition-transform group-hover:scale-110">
+                                    <Package className="h-5 w-5 text-white" />
                                 </div>
-                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] ml-11">Admin Terminal</p>
+                                <div>
+                                    <span className="text-2xl font-bold tracking-tight text-gray-900 group-hover:text-primary transition-colors">StyleNest</span>
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] -mt-1 opacity-70">Admin Terminal</p>
+                                </div>
                             </Link>
                         </div>
 
@@ -116,14 +116,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                             }
                                         }}
                                         className={cn(
-                                            "group flex items-center rounded-2xl px-4 py-3.5 text-[12px] font-black transition-all duration-300",
+                                            "group flex items-center rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-300",
                                             isActive
                                                 ? "bg-[#FF2C79] text-white shadow-xl shadow-pink-100"
                                                 : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
                                         )}
                                     >
-                                        <Icon className={cn("mr-3.5 h-5 w-5 transition-transform group-hover:scale-110", isActive ? "text-white" : "text-gray-400")} />
-                                        <span className="uppercase tracking-widest">{link.name}</span>
+                                        <Icon className={cn("mr-3 h-5 w-5 transition-transform group-hover:scale-110", isActive ? "text-white" : "text-gray-400")} />
+                                        <span className="tracking-tight">{link.name}</span>
                                         {isActive && <ChevronRight className="ml-auto h-4 w-4 opacity-50" />}
                                     </Link>
                                 );
@@ -145,8 +145,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                         {(user?.name || 'A').charAt(0).toUpperCase()}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-xs font-black text-gray-900 truncate uppercase mt-0.5">{user?.name || 'Admin'}</p>
-                                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-tight">Access Level: High</p>
+                                        <p className="text-sm font-bold text-gray-900 truncate mt-0.5">{user?.name || 'Admin'}</p>
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Access Level: High</p>
                                     </div>
                                 </div>
                             </div>
@@ -164,6 +164,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 >
                                     <LayoutDashboard className="h-5 w-5" />
                                 </button>
+
+                                {/* Logo in Header (Mobile/Tablet) */}
+                                <Link href="/" className="flex lg:hidden items-center space-x-2 group">
+                                    <div className="h-9 w-9 bg-gradient-primary rounded-lg flex items-center justify-center transition-transform group-hover:scale-110">
+                                        <Package className="h-5 w-5 text-white" />
+                                    </div>
+                                    <span className="text-2xl font-bold tracking-tight text-gray-900 group-hover:text-primary transition-colors">StyleNest</span>
+                                </Link>
 
                                 <div className="relative w-full max-w-[460px] hidden md:block group">
                                     <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 group-focus-within:text-[#FF2C79] transition-colors" />
@@ -190,8 +198,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
                                 <div className="items-center gap-4 hidden sm:flex">
                                     <div className="text-right">
-                                        <p className="text-[12px] font-black text-gray-900 leading-none uppercase tracking-tighter">{user?.name || 'Administrator'}</p>
-                                        <p className="text-[9px] font-black text-[#FF2C79] uppercase mt-1 tracking-widest">Master Control</p>
+                                        <p className="text-sm font-bold text-gray-900 leading-none tracking-tight">{user?.name || 'Administrator'}</p>
+                                        <p className="text-[10px] font-bold text-[#FF2C79] uppercase mt-1 tracking-wider">Master Control</p>
                                     </div>
                                     <div className="h-12 w-12 rounded-2xl overflow-hidden border-2 border-white shadow-xl shadow-gray-200 bg-gradient-to-tr from-[#FF2C79] to-purple-600 flex items-center justify-center">
                                         <span className="text-sm font-black text-white">

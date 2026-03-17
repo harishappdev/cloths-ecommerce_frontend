@@ -48,7 +48,7 @@ export default function CustomersPage() {
                         <span className="h-2 w-10 bg-gradient-to-r from-[#FF2C79] to-purple-600 rounded-full" />
                         <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Customer Insights</p>
                     </div>
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-gray-900 leading-[0.8] uppercase">Customer <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">Directory</span></h1>
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-[0.8] uppercase">Customer <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">Directory</span></h1>
                     <p className="text-sm font-bold text-gray-500 mt-4 uppercase tracking-[0.1em]">Manage your customer base and their profiles.</p>
                 </div>
                 <button className="w-full sm:w-auto flex items-center justify-center gap-3 px-10 py-5 rounded-[1.5rem] bg-gray-900 text-[11px] font-black text-white shadow-2xl shadow-gray-200 hover:bg-[#FF2C79] transition-all active:scale-95 uppercase tracking-[0.2em]">

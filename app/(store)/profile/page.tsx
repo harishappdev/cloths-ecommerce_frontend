@@ -83,7 +83,7 @@ export default function ProfilePage() {
                             <div className="flex flex-col md:flex-row items-center md:items-end justify-between gap-8">
                                 <div className="flex flex-col md:flex-row items-center md:items-end gap-6">
                                     <div className="relative group">
-                                        <div className="h-24 w-24 rounded-[2rem] bg-gradient-to-tr from-[#FF2C79] to-purple-600 flex items-center justify-center text-4xl font-black text-white shadow-xl shadow-pink-100 transition-transform group-hover:rotate-6 group-hover:scale-105 duration-500">
+                                        <div className="h-24 w-24 rounded-[2rem] bg-gradient-to-tr from-[#FF2C79] to-purple-600 flex items-center justify-center text-4xl font-bold text-white shadow-xl shadow-pink-100 transition-transform group-hover:rotate-6 group-hover:scale-105 duration-500">
                                             {user.name?.[0].toUpperCase() || 'U'}
                                         </div>
                                         <div className="absolute -bottom-1 -right-1 h-8 w-8 bg-white rounded-xl shadow-lg flex items-center justify-center text-[#FF2C79] border border-gray-50">
@@ -93,15 +93,15 @@ export default function ProfilePage() {
                                     <div className="text-center md:text-left space-y-2">
                                         <div className="flex items-center justify-center md:justify-start gap-2">
                                             <span className="h-1 w-6 bg-[#FF2C79] rounded-full" />
-                                            <p className="text-[9px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Member Profile</p>
+                                            <p className="text-[9px] font-bold text-[#FF2C79] uppercase tracking-[0.2em]">Member Profile</p>
                                         </div>
-                                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-gray-900 uppercase tracking-tighter leading-none">{user.name}</h1>
+                                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 uppercase tracking-tighter leading-none">{user.name}</h1>
                                         <div className="flex flex-wrap justify-center md:justify-start gap-2">
-                                            <div className="px-3 py-1.5 bg-white rounded-lg text-[9px] font-black text-gray-400 border border-gray-100 uppercase tracking-widest shadow-sm flex items-center gap-1.5">
+                                            <div className="px-3 py-1.5 bg-white rounded-lg text-[9px] font-bold text-gray-400 border border-gray-100 uppercase tracking-widest shadow-sm flex items-center gap-1.5">
                                                 <Mail className="h-3 w-3 text-gray-300" />
                                                 {user.email}
                                             </div>
-                                            <div className="px-3 py-1.5 bg-gray-900 rounded-lg text-[9px] font-black text-white uppercase tracking-widest shadow-lg flex items-center gap-1.5">
+                                            <div className="px-3 py-1.5 bg-gray-900 rounded-lg text-[9px] font-bold text-white uppercase tracking-widest shadow-lg flex items-center gap-1.5">
                                                 <ShieldCheck className="h-3 w-3" />
                                                 {user.role}
                                             </div>
@@ -111,7 +111,7 @@ export default function ProfilePage() {
                                 <div className="flex gap-3">
                                     <button 
                                         onClick={() => logout()}
-                                        className="h-12 px-6 rounded-xl bg-white border border-gray-100 text-[9px] font-black text-red-500 uppercase tracking-[0.2em] hover:bg-red-50 hover:border-red-100 transition-all shadow-sm"
+                                        className="h-12 px-6 rounded-xl bg-white border border-gray-100 text-[9px] font-bold text-red-500 uppercase tracking-[0.2em] hover:bg-red-50 hover:border-red-100 transition-all shadow-sm"
                                     >
                                         TERMINATE
                                     </button>
@@ -123,12 +123,12 @@ export default function ProfilePage() {
                             {/* Left Column: Premium Sidebar */}
                             <div className="lg:col-span-4 space-y-8">
                                 <div className="bg-white rounded-[2.5rem] p-3 shadow-sm border border-gray-100 overflow-hidden">
-                                    <p className="px-5 pt-5 pb-3 text-[8px] font-black text-gray-400 uppercase tracking-[0.3em]">Account Hub</p>
+                                    <p className="px-5 pt-5 pb-3 text-[8px] font-bold text-gray-400 uppercase tracking-[0.3em]">Account Hub</p>
                                     <nav className="space-y-1">
                                         <button 
                                             onClick={() => setActiveView('profile')}
                                             className={cn(
-                                                "w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all",
+                                                "w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all",
                                                 activeView === 'profile' 
                                                     ? "bg-[#FF2C79] text-white shadow-lg shadow-pink-100" 
                                                     : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
@@ -142,7 +142,7 @@ export default function ProfilePage() {
                                         <button 
                                             onClick={() => setActiveView('addresses')}
                                             className={cn(
-                                                "w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all",
+                                                "w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all",
                                                 activeView === 'addresses' 
                                                     ? "bg-[#FF2C79] text-white shadow-lg shadow-pink-100" 
                                                     : "text-gray-500 hover:bg-gray-50 hover:text-gray-900"
@@ -155,7 +155,7 @@ export default function ProfilePage() {
 
                                         <Link 
                                             href="/orders"
-                                            className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-[10px] font-black text-gray-500 hover:bg-gray-50 hover:text-gray-900 uppercase tracking-widest transition-all"
+                                            className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-[10px] font-bold text-gray-500 hover:bg-gray-50 hover:text-gray-900 uppercase tracking-widest transition-all"
                                         >
                                             <Package className="h-4 w-4 text-gray-400" />
                                             <span>Order Logs</span>
@@ -163,7 +163,7 @@ export default function ProfilePage() {
 
                                         <Link 
                                             href="/wishlist"
-                                            className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-[10px] font-black text-gray-500 hover:bg-gray-50 hover:text-gray-900 uppercase tracking-widest transition-all"
+                                            className="w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-[10px] font-bold text-gray-500 hover:bg-gray-50 hover:text-gray-900 uppercase tracking-widest transition-all"
                                         >
                                             <Heart className="h-4 w-4 text-gray-400" />
                                             <span>Curated</span>
@@ -177,15 +177,15 @@ export default function ProfilePage() {
                                         <TrendingUp className="h-16 w-16" />
                                     </div>
                                     <div className="relative z-10">
-                                        <h4 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#FF2C79] mb-6">Activity Pulse</h4>
+                                        <h4 className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#FF2C79] mb-6">Activity Pulse</h4>
                                         <div className="space-y-4">
                                             <div className="flex justify-between items-end border-b border-white/10 pb-3">
                                                 <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Orders</span>
-                                                <span className="text-2xl font-black italic tracking-tighter leading-none">{orderCount}</span>
+                                                <span className="text-2xl font-bold tracking-tighter leading-none">{orderCount}</span>
                                             </div>
                                             <div className="flex justify-between items-end border-b border-white/10 pb-3">
                                                 <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Wishlist</span>
-                                                <span className="text-2xl font-black italic tracking-tighter leading-none">{wishlist.length}</span>
+                                                <span className="text-2xl font-bold tracking-tighter leading-none">{wishlist.length}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -198,13 +198,13 @@ export default function ProfilePage() {
                                     <div className="bg-white rounded-[3.5rem] p-10 md:p-16 shadow-sm border border-gray-100 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 mb-16">
                                             <div>
-                                                <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tighter">Identity Detail</h2>
-                                                <p className="text-[10px] font-black text-gray-400 uppercase mt-2 tracking-widest">Core personal information and security context.</p>
+                                                <h2 className="text-3xl font-bold text-gray-900 uppercase tracking-tighter">Identity Detail</h2>
+                                                <p className="text-[10px] font-bold text-gray-400 uppercase mt-2 tracking-widest">Core personal information and security context.</p>
                                             </div>
                                             {!isEditing && (
                                                 <button
                                                     onClick={() => setIsEditing(true)}
-                                                    className="h-12 px-8 rounded-2xl bg-gray-50 text-[10px] font-black text-gray-900 uppercase tracking-widest hover:bg-[#FF2C79] hover:text-white transition-all shadow-sm flex items-center gap-2"
+                                                    className="h-12 px-8 rounded-2xl bg-gray-50 text-[10px] font-bold text-gray-900 uppercase tracking-widest hover:bg-[#FF2C79] hover:text-white transition-all shadow-sm flex items-center gap-2"
                                                 >
                                                     <Edit3 className="h-4 w-4" />
                                                     Modify Data
@@ -216,14 +216,14 @@ export default function ProfilePage() {
                                             <form onSubmit={handleUpdateProfile} className="space-y-12">
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                                                     <div className="space-y-4">
-                                                        <label className="text-[9px] font-black text-[#FF2C79] uppercase tracking-[0.2em] ml-1">Designation</label>
+                                                        <label className="text-[9px] font-bold text-[#FF2C79] uppercase tracking-[0.2em] ml-1">Designation</label>
                                                         <div className="relative group">
                                                             <User className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-300 group-focus-within:text-[#FF2C79] transition-colors" />
                                                             <input
                                                                 type="text"
                                                                 value={formData.name}
                                                                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                                                className="w-full bg-gray-50 border border-gray-100 rounded-3xl py-5 pl-16 pr-6 text-sm font-black focus:bg-white focus:ring-4 focus:ring-pink-500/5 focus:border-pink-200 transition-all outline-none"
+                                                                className="w-full bg-gray-50 border border-gray-100 rounded-3xl py-5 pl-16 pr-6 text-sm font-bold focus:bg-white focus:ring-4 focus:ring-pink-500/5 focus:border-pink-200 transition-all outline-none"
                                                                 placeholder="Enter full name"
                                                                 required
                                                                 suppressHydrationWarning
@@ -231,14 +231,14 @@ export default function ProfilePage() {
                                                         </div>
                                                     </div>
                                                     <div className="space-y-4">
-                                                        <label className="text-[9px] font-black text-[#FF2C79] uppercase tracking-[0.2em] ml-1">Digital Mail</label>
+                                                        <label className="text-[9px] font-bold text-[#FF2C79] uppercase tracking-[0.2em] ml-1">Digital Mail</label>
                                                         <div className="relative group">
                                                             <Mail className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-300 group-focus-within:text-[#FF2C79] transition-colors" />
                                                             <input
                                                                 type="email"
                                                                 value={formData.email}
                                                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                                                className="w-full bg-gray-50 border border-gray-100 rounded-3xl py-5 pl-16 pr-6 text-sm font-black focus:bg-white focus:ring-4 focus:ring-pink-500/5 focus:border-pink-200 transition-all outline-none"
+                                                                className="w-full bg-gray-50 border border-gray-100 rounded-3xl py-5 pl-16 pr-6 text-sm font-bold focus:bg-white focus:ring-4 focus:ring-pink-500/5 focus:border-pink-200 transition-all outline-none"
                                                                 placeholder="Enter email address"
                                                                 required
                                                                 suppressHydrationWarning
@@ -250,44 +250,44 @@ export default function ProfilePage() {
                                                     <button
                                                         type="submit"
                                                         disabled={isLoading}
-                                                        className="flex-1 h-16 bg-gray-900 text-white font-black uppercase text-xs tracking-[0.2em] rounded-2xl shadow-2xl shadow-gray-200 hover:bg-[#FF2C79] transition-all disabled:opacity-50"
+                                                        className="flex-1 h-16 bg-gray-900 text-white font-bold uppercase text-xs tracking-[0.2em] rounded-2xl shadow-2xl shadow-gray-200 hover:bg-[#FF2C79] transition-all disabled:opacity-50"
                                                     >
                                                         {isLoading ? 'SYNCING...' : 'COMMIT CHANGES'}
                                                     </button>
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => {
-                                                            setIsEditing(false);
-                                                            setFormData({
-                                                                name: user.name,
-                                                                email: user.email,
-                                                                phone: '+91 9999 000 000',
-                                                                dob: 'Not Provided'
-                                                            });
-                                                        }}
-                                                        className="flex-1 h-16 bg-white border-2 border-gray-100 text-gray-400 font-black uppercase text-xs tracking-[0.2em] rounded-2xl hover:bg-gray-50 transition-all"
-                                                    >
-                                                        DISCARD
-                                                    </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setIsEditing(false);
+                                                                setFormData({
+                                                                    name: user.name,
+                                                                    email: user.email,
+                                                                    phone: '+91 9999 000 000',
+                                                                    dob: 'Not Provided'
+                                                                });
+                                                            }}
+                                                            className="flex-1 h-16 bg-white border-2 border-gray-100 text-gray-400 font-bold uppercase text-xs tracking-[0.2em] rounded-2xl hover:bg-gray-50 transition-all"
+                                                        >
+                                                            DISCARD
+                                                        </button>
                                                 </div>
                                             </form>
                                         ) : (
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                                 <div className="space-y-4 group">
-                                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-l-2 border-[#FF2C79] pl-3">Designation</p>
-                                                    <p className="text-xl font-black text-gray-900 group-hover:text-[#FF2C79] transition-colors">{user.name}</p>
+                                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest border-l-2 border-[#FF2C79] pl-3">Designation</p>
+                                                    <p className="text-xl font-bold text-gray-900 group-hover:text-[#FF2C79] transition-colors">{user.name}</p>
                                                 </div>
                                                 <div className="space-y-4 group">
-                                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-l-2 border-gray-200 pl-3">Digital Mail</p>
-                                                    <p className="text-xl font-black text-gray-900 group-hover:text-[#FF2C79] transition-colors">{user.email}</p>
+                                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest border-l-2 border-gray-200 pl-3">Digital Mail</p>
+                                                    <p className="text-xl font-bold text-gray-900 group-hover:text-[#FF2C79] transition-colors">{user.email}</p>
                                                 </div>
                                                 <div className="space-y-4 group">
-                                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-l-2 border-gray-200 pl-3">Mobile Vector</p>
-                                                    <p className="text-xl font-black text-gray-900 group-hover:text-[#FF2C79] transition-colors uppercase italic">+91 9999 000 000</p>
+                                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest border-l-2 border-gray-200 pl-3">Mobile Vector</p>
+                                                    <p className="text-xl font-bold text-gray-900 group-hover:text-[#FF2C79] transition-colors uppercase">+91 9999 000 000</p>
                                                 </div>
                                                 <div className="space-y-4 group">
-                                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest border-l-2 border-gray-200 pl-3">Temporal Origin</p>
-                                                    <p className="text-xl font-black text-gray-900 group-hover:text-[#FF2C79] transition-colors italic">UNSPECIFIED</p>
+                                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest border-l-2 border-gray-200 pl-3">Temporal Origin</p>
+                                                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-[#FF2C79] transition-colors">UNSPECIFIED</h3>
                                                 </div>
                                             </div>
                                         )}

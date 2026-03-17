@@ -35,7 +35,7 @@ export default function CategoryGrid() {
     return (
         <section className="container mx-auto px-4 py-16">
             <div className="mb-8">
-                <h2 className="text-2xl md:text-3xl font-black text-gray-900 tracking-tight uppercase italic">Shop by Category</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 tracking-tight uppercase">Shop by Category</h2>
                 <div className="h-1 w-20 bg-primary mt-2"></div>
             </div>
 
@@ -57,7 +57,7 @@ export default function CategoryGrid() {
 
                         {/* Content */}
                         <div className="absolute inset-0 flex items-center justify-center p-4">
-                            <h3 className="text-2xl md:text-3xl font-black text-white tracking-tighter drop-shadow-lg group-hover:scale-110 transition-transform">
+                            <h3 className="text-2xl md:text-3xl font-bold text-white tracking-tighter drop-shadow-lg group-hover:scale-110 transition-transform">
                                 {cat.name}
                             </h3>
                         </div>

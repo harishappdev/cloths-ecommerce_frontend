@@ -58,7 +58,7 @@ export default function Home() {
             {/* 3. Trending Now - Uses skeletons while loading */}
             <section className="container mx-auto px-4 py-12">
                 <div className="flex items-center justify-between mb-10">
-                    <h2 className="text-3xl font-bold text-black tracking-tight uppercase italic">Trending Now</h2>
+                    <h2 className="text-3xl font-bold text-black tracking-tight uppercase">Trending Now</h2>
                     <Link
                         href="/shop"
                         className="flex items-center gap-1.5 text-sm font-bold text-[#2563EB] hover:text-blue-700 transition-colors uppercase tracking-wider"
@@ -91,7 +91,7 @@ export default function Home() {
             {/* 5. Best Sellers - Uses skeletons while loading */}
             <section className="container mx-auto px-4 py-20 pb-40">
                 <div className="flex items-center justify-between mb-10">
-                    <h2 className="text-3xl font-bold text-black tracking-tight uppercase italic">Best Sellers</h2>
+                    <h2 className="text-3xl font-bold text-black tracking-tight uppercase">Best Sellers</h2>
                     <div className="flex items-center gap-3">
                         <button
                             className="h-10 w-10 flex items-center justify-center rounded-full border border-gray-200 text-gray-400 hover:text-black hover:border-black transition-all"

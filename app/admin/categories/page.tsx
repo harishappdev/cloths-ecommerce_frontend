@@ -75,7 +75,7 @@ export default function AdminCategories() {
                     <span className="h-2 w-10 bg-gradient-to-r from-[#FF2C79] to-purple-600 rounded-full" />
                     <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Product Categories</p>
                 </div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tighter text-gray-900 leading-[0.8]">
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-[0.8]">
                     STORE <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">SECTIONS</span>
                 </h1>
                 <p className="text-xs font-bold text-gray-400 mt-4 uppercase tracking-[0.1em]">

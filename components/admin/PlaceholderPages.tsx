@@ -17,9 +17,9 @@ const PlaceholderPage = ({ title, icon: Icon, description }: any) => (
             </div>
         </div>
         <div className="space-y-4">
-            <h1 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight text-gray-900 uppercase">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900 uppercase">
                 {title} <br className="sm:hidden" />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600 italic ml-2 mt-2 inline-block">Next Gen Admin</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600 ml-2 mt-2 inline-block">Next Gen Admin</span>
             </h1>
             <p className="text-xs md:text-sm font-bold text-gray-400 leading-relaxed uppercase tracking-widest">{description}</p>
         </div>

@@ -149,7 +149,7 @@ export default function AdminProducts() {
                         <span className="h-2 w-10 bg-gradient-to-r from-[#FF2C79] to-purple-600 rounded-full" />
                         <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Inventory Hub</p>
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 leading-[0.8]">PRODUCT <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">CATALOG</span></h1>
+                    <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 leading-tight uppercase">Product <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">Catalog</span></h2>
                     <p className="text-xs font-bold text-gray-400 mt-4 uppercase tracking-[0.1em]">Manage your premium fashion collection and stock levels.</p>
                 </div>
                 <button
@@ -157,9 +157,9 @@ export default function AdminProducts() {
                         resetForm();
                         setIsAddModalOpen(true);
                     }}
-                    className="group w-full sm:w-auto flex items-center justify-center gap-3 rounded-[1.5rem] bg-gray-900 px-10 py-5 font-black text-[11px] text-white shadow-2xl shadow-gray-200 hover:bg-[#FF2C79] transition-all active:scale-95 uppercase tracking-widest"
+                    className="group w-full sm:w-auto flex items-center justify-center gap-3 rounded-[1.5rem] bg-gray-900 px-10 py-5 font-bold text-sm text-white shadow-2xl shadow-gray-200 hover:bg-[#FF2C79] transition-all active:scale-95 uppercase tracking-wide"
                 >
-                    <Plus className="h-4 w-4 transition-transform group-hover:rotate-90" />
+                    <Plus className="h-5 w-5 transition-transform group-hover:rotate-90" />
                     <span>Create New Product</span>
                 </button>
             </div>
@@ -186,7 +186,7 @@ export default function AdminProducts() {
                             suppressHydrationWarning
                         >
                             <option>All Categories</option>
-                            {categories.map(cat => (
+                            {categories.map((cat: Category) => (
                                 <option key={cat._id} value={cat.name}>{cat.name}</option>
                             ))}
                         </select>
@@ -213,7 +213,7 @@ export default function AdminProducts() {
                 <div className="overflow-x-auto">
                     <table className="w-full text-left min-w-[1100px]">
                         <thead>
-                            <tr className="text-[10px] font-black uppercase text-gray-400 tracking-[0.2em] border-b border-gray-50">
+                            <tr className="text-xs font-bold uppercase text-gray-400 tracking-wider border-b border-gray-50">
                                 <th className="py-8 px-10">IDENTIFIER</th>
                                 <th className="py-8 px-8">BRANDSCAPE</th>
                                 <th className="py-8 px-8">TAXONOMY</th>
@@ -254,14 +254,14 @@ export default function AdminProducts() {
                                                     className="object-cover transition-transform group-hover:scale-110 duration-700"
                                                 />
                                             </div>
-                                            <div>
-                                                <p className="text-xs font-black text-gray-900 uppercase tracking-tight line-clamp-1">{product.name}</p>
-                                                <p className="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-widest">UID: {product._id.slice(-8).toUpperCase()}</p>
+                                             <div>
+                                                <p className="text-sm font-bold text-gray-900 tracking-tight line-clamp-1">{product.name}</p>
+                                                <p className="text-xs font-medium text-gray-400 mt-1 uppercase tracking-wider">UID: {product._id.slice(-8).toUpperCase()}</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="py-8 px-8">
-                                        <span className="text-[11px] font-black uppercase text-gray-900 tracking-[0.1em] bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">{product.brand || 'VIBRANT'}</span>
+                                     <td className="py-8 px-8">
+                                        <span className="text-xs font-bold uppercase text-gray-900 tracking-wider bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">{product.brand || 'STYLENEST'}</span>
                                     </td>
                                     <td className="py-8 px-8">
                                         <span className="text-[11px] font-black uppercase text-gray-400 tracking-widest">{product.category}</span>

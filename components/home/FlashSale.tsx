@@ -35,7 +35,7 @@ export default function FlashSale() {
     const TimeUnit = ({ label, value }: { label: string; value: number }) => (
         <div className="flex flex-col items-center">
             <div className="bg-white text-primary rounded-lg w-14 h-14 md:w-16 md:h-16 flex items-center justify-center shadow-lg border border-primary/10">
-                <span className="text-xl md:text-2xl font-black">
+                <span className="text-xl md:text-2xl font-bold">
                     {value.toString().padStart(2, '0')}
                 </span>
             </div>
@@ -54,14 +54,14 @@ export default function FlashSale() {
                 </div>
 
                 <div className="relative z-10 max-w-xl text-center md:text-left">
-                    <div className="inline-flex items-center gap-2 bg-yellow-400 text-black px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-6 shadow-sm">
+                    <div className="inline-flex items-center gap-2 bg-yellow-400 text-black px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-6 shadow-sm">
                         <Timer className="h-3 w-3" />
                         DEAL OF THE DAY
                     </div>
 
-                    <h2 className="text-4xl md:text-6xl font-black text-white mb-4 leading-tight tracking-tighter">
+                    <h2 className="text-4xl md:text-6xl font-bold text-white mb-4 leading-tight tracking-tighter">
                         FLAT 80% OFF <br />
-                        <span className="text-yellow-300 italic">ENDS SOON!</span>
+                        <span className="text-yellow-300 uppercase">ENDS SOON!</span>
                     </h2>
 
                     <p className="text-white/90 text-sm md:text-lg mb-8 font-medium max-w-md">
@@ -70,7 +70,7 @@ export default function FlashSale() {
 
                     <Link
                         href="/shop?sale=true"
-                        className="inline-flex items-center gap-2 bg-white text-primary px-10 py-4 rounded-lg font-black uppercase tracking-wider hover:bg-gray-100 hover:scale-105 transition-all shadow-xl active:scale-95"
+                        className="inline-flex items-center gap-2 bg-white text-primary px-10 py-4 rounded-lg font-bold uppercase tracking-wider hover:bg-gray-100 hover:scale-105 transition-all shadow-xl active:scale-95"
                     >
                         <span>GO TO DEALS</span>
                         <ArrowRight className="h-4 w-4" />
@@ -82,9 +82,9 @@ export default function FlashSale() {
                     <p className="text-white text-xs font-bold uppercase tracking-widest mb-4 text-center">Hurry Up! Time Left:</p>
                     <div className="flex items-center gap-3 md:gap-4" suppressHydrationWarning>
                         <TimeUnit label="Hrs" value={mounted ? timeLeft.hours : 0} />
-                        <div className="text-white font-black text-2xl mb-6">:</div>
+                        <div className="text-white font-bold text-2xl mb-6">:</div>
                         <TimeUnit label="Min" value={mounted ? timeLeft.minutes : 0} />
-                        <div className="text-white font-black text-2xl mb-6">:</div>
+                        <div className="text-white font-bold text-2xl mb-6">:</div>
                         <TimeUnit label="Sec" value={mounted ? timeLeft.seconds : 0} />
                     </div>
                 </div>

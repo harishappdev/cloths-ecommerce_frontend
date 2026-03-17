@@ -103,7 +103,7 @@ export default function CouponsPage() {
                         <div className="h-10 w-10 rounded-2xl bg-[#FF2C79] flex items-center justify-center text-white shadow-xl shadow-pink-100">
                             <Ticket className="h-5 w-5" />
                         </div>
-                        <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tighter uppercase italic">
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 tracking-tight uppercase">
                             Discount <span className="text-[#FF2C79]">Nexus</span>
                         </h1>
                     </div>

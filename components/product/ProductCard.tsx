@@ -140,9 +140,9 @@ export default function ProductCard({ product }: ProductCardProps) {
                 {/* Quick Add Button */}
                 <button
                     onClick={handleAddToCart}
-                    className="absolute bottom-0 left-0 right-0 bg-primary/95 backdrop-blur-md text-white py-4 font-black text-[10px] uppercase tracking-[0.2em] translate-y-full group-hover:translate-y-0 transition-transform duration-500 flex items-center justify-center gap-2"
+                    className="absolute bottom-0 left-0 right-0 bg-primary/95 backdrop-blur-md text-white py-4 font-bold text-xs uppercase tracking-widest translate-y-full group-hover:translate-y-0 transition-transform duration-500 flex items-center justify-center gap-2"
                 >
-                    <ShoppingBag className="h-4 w-4" />
+                    <ShoppingBag className="h-5 w-5" />
                     Quick Add
                 </button>
             </Link>
@@ -150,7 +150,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             {/* Product Info */}
             <div className="p-3 md:p-4 space-y-1.5">
                 <div className="flex justify-between items-center">
-                    <p className="text-[10px] md:text-[11px] font-black text-gray-400 uppercase tracking-widest">
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
                         {product.brand}
                     </p>
                     <div className="flex items-center gap-0.5 px-1.5 py-0.5 bg-green-50 rounded text-green-700">
@@ -160,7 +160,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 </div>
 
                 <Link href={`/products/${product.slug}`} className="block">
-                    <h3 className="text-xs md:text-sm font-black text-gray-900 truncate tracking-tight uppercase italic">
+                    <h3 className="text-xs font-bold text-gray-900 truncate tracking-tight">
                         {product.name}
                     </h3>
                 </Link>
@@ -198,15 +198,15 @@ export default function ProductCard({ product }: ProductCardProps) {
                 )}
 
                 <div className="flex items-center gap-2 pt-1">
-                    <span className="text-sm font-bold text-gray-900">
-                        ${(product.discountPrice || product.price).toLocaleString()}
+                    <span className="text-base font-bold text-gray-900">
+                        ₹{(product.discountPrice || product.price).toLocaleString()}
                     </span>
                     {product.discountPrice && (
                         <>
-                            <span className="text-xs text-gray-400 line-through">
-                                ${product.price.toLocaleString()}
+                            <span className="text-sm text-gray-400 line-through">
+                                ₹{product.price.toLocaleString()}
                             </span>
-                            <span className="text-[10px] font-bold text-orange-500">
+                            <span className="text-[11px] font-bold text-orange-500">
                                 ({discount}% OFF)
                             </span>
                         </>

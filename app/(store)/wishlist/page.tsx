@@ -20,16 +20,16 @@ export default function WishlistPage() {
                                 <Heart className="h-3 w-3 fill-primary" />
                                 <span>Personal Collection</span>
                             </div>
-                            <h1 className="text-4xl font-black text-gray-900 uppercase italic tracking-tight">
+                            <h1 className="text-4xl font-bold text-gray-900 uppercase tracking-tight">
                                 My <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-600">Wishlist</span>
                             </h1>
-                            <p className="text-sm font-medium text-gray-500 italic">
+                            <p className="text-sm font-medium text-gray-500">
                                 {wishlist.length} {wishlist.length === 1 ? 'item' : 'items'} saved for later
                             </p>
                         </div>
                         <Link
                             href="/shop"
-                            className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-gray-400 hover:text-primary transition-colors"
+                            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400 hover:text-primary transition-colors"
                         >
                             <ArrowLeft className="h-4 w-4" />
                             Continue Shopping
@@ -57,13 +57,13 @@ export default function WishlistPage() {
                                     <ShoppingBag className="h-5 w-5" />
                                 </div>
                             </div>
-                            <h2 className="text-2xl font-black text-gray-900 uppercase italic tracking-tight mb-4">Your wishlist is empty</h2>
-                            <p className="text-sm font-medium text-gray-500 italic mb-8 max-w-sm mx-auto">
+                            <h2 className="text-2xl font-bold text-gray-900 uppercase tracking-tight mb-4">Your wishlist is empty</h2>
+                            <p className="text-sm font-medium text-gray-500 mb-8 max-w-sm mx-auto">
                                 Browsing but not ready to buy? Save your favorites here and they'll be waiting for you when you are.
                             </p>
                             <Link
                                 href="/shop"
-                                className="inline-flex items-center justify-center bg-gradient-to-r from-primary to-purple-600 text-white px-10 py-4 rounded-2xl font-black uppercase text-xs tracking-widest shadow-xl shadow-pink-100 hover:shadow-pink-200 hover:-translate-y-1 transition-all active:scale-95"
+                                className="inline-flex items-center justify-center bg-gradient-to-r from-primary to-purple-600 text-white px-10 py-4 rounded-2xl font-bold uppercase text-xs tracking-widest shadow-xl shadow-pink-100 hover:shadow-pink-200 hover:-translate-y-1 transition-all active:scale-95"
                             >
                                 Start Exploring
                             </Link>

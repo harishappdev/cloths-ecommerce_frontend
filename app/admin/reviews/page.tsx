@@ -83,7 +83,7 @@ export default function ReviewManagementPage() {
                     </div>
                     <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Voice of Customer</p>
                 </div>
-                <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tighter uppercase italic">
+                <h1 className="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight uppercase">
                     Feedback <span className="text-[#FF2C79]">Central</span>
                 </h1>
                 <p className="text-xs font-black text-gray-400 mt-4 uppercase tracking-[0.1em]">Moderate and analyze customer experience assets.</p>

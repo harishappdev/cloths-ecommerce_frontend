@@ -70,7 +70,7 @@ export default function AdminOrders() {
                         <span className="h-2 w-10 bg-gradient-to-r from-[#FF2C79] to-purple-600 rounded-full" />
                         <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Order Management</p>
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-black tracking-tighter text-gray-900 leading-[0.8] uppercase">Order <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">History</span></h1>
+                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900 leading-[0.8] uppercase">Order <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">History</span></h1>
                     <p className="text-sm font-bold text-gray-400 mt-4 uppercase tracking-[0.1em]">Manage customer orders, shipping, and payments.</p>
                 </div>
                 <div className="flex items-center gap-4 w-full sm:w-auto">

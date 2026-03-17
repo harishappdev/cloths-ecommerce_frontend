@@ -58,23 +58,19 @@ export default function AdminOverview() {
     // Dashboard cards helper
     const StatCard = ({ title, value, icon: Icon, color, loading }: any) => (
         <div className="bg-white rounded-[2.5rem] p-8 lg:p-10 shadow-sm border border-gray-100 transition-all hover:shadow-xl hover:shadow-gray-200/50 group">
-            <div className="flex items-center justify-between mb-8">
-                <div className={cn("h-14 w-14 rounded-2xl flex items-center justify-center text-white shadow-lg transition-transform group-hover:rotate-12", color)}>
+            <div className="flex items-center justify-between mb-10">
+                <div className={cn("h-14 w-14 rounded-2xl flex items-center justify-center text-white shadow-xl transition-transform group-hover:scale-110 group-hover:rotate-6", color)}>
                     <Icon className="h-6 w-6" />
                 </div>
-                <div className="text-right">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1">{title}</p>
-                    <div className="flex items-center justify-end gap-2">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                        <p className="text-[9px] font-black text-emerald-500 uppercase tracking-widest">Live Sync</p>
-                    </div>
-                </div>
             </div>
-            {loading ? (
-                <Skeleton className="h-10 w-32" />
-            ) : (
-                <h3 className="text-4xl lg:text-5xl font-black text-gray-900 tracking-tighter uppercase">{value}</h3>
-            )}
+            <div className="space-y-1">
+                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{title}</p>
+                {loading ? (
+                    <Skeleton className="h-10 w-32" />
+                ) : (
+                    <h3 className="text-4xl lg:text-5xl font-black text-gray-900 tracking-tighter uppercase leading-none">{value}</h3>
+                )}
+            </div>
         </div>
     );
 
@@ -87,7 +83,7 @@ export default function AdminOverview() {
                         <span className="h-2 w-10 bg-gradient-to-r from-[#FF2C79] to-purple-600 rounded-full" />
                         <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Admin Dashboard</p>
                     </div>
-                    <h2 className="text-5xl md:text-6xl font-black tracking-tighter text-gray-900 leading-[0.8] uppercase">Sales <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">Overview</span></h2>
+                    <h2 className="text-5xl md:text-6xl font-bold tracking-tight text-gray-900 leading-[0.8] uppercase">Sales <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">Overview</span></h2>
                     <p className="text-sm font-bold text-gray-500 mt-4 uppercase tracking-[0.1em]">Current sales and performance statistics.</p>
                 </div>
                 <div className="flex items-center gap-4 bg-white p-2 rounded-[1.5rem] border border-gray-100 shadow-sm">
