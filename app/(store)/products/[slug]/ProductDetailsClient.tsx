@@ -486,7 +486,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                                                             </div>
                                                             <span className="text-[10px] font-bold text-gray-400 uppercase">{new Date(review.createdAt).toLocaleDateString()}</span>
                                                         </div>
-                                                        <p className="text-sm text-gray-600 leading-relaxed italic">"{review.review}"</p>
+                                                        <p className="text-sm text-gray-600 leading-relaxed italic">&quot;{review.review}&quot;</p>
                                                         {review.images && review.images.length > 0 && (
                                                             <div className="flex gap-3 mt-4">
                                                                 {review.images.map((img, i) => (

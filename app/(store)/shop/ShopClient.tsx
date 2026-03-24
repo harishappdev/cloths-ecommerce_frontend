@@ -634,7 +634,7 @@ export function ShopClient() {
                                             <Clock className="h-8 w-8" />
                                         </div>
                                         <h3 className="text-xl font-bold uppercase tracking-tighter text-gray-900 mb-2">Vault <span className="text-pink-600">Reached</span></h3>
-                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">You've explored the entire active collection</p>
+                                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">You&apos;ve explored the entire active collection</p>
                                     </div>
                                 )}
                             </>
