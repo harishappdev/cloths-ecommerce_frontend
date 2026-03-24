@@ -169,7 +169,7 @@ export default function AdminOverview() {
                                     radius={[12, 12, 12, 12]}
                                     barSize={44}
                                 >
-                                    {displayData.map((entry, index) => (
+                                    {displayData.map((entry: any, index: number) => (
                                         <Cell
                                             key={`cell-${index}`}
                                             fill={index === displayData.length - 1 ? '#FF2C79' : index === displayData.length - 2 ? '#9333ea' : '#f1f5f9'}

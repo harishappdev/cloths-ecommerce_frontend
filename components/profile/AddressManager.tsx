@@ -35,7 +35,7 @@ export default function AddressManager({ onBack }: AddressManagerProps) {
         zipCode: '',
         country: 'India',
         isDefault: false,
-        type: 'home' as const
+        type: 'home' as 'home' | 'work' | 'other'
     });
 
     useEffect(() => {
@@ -67,7 +67,7 @@ export default function AddressManager({ onBack }: AddressManagerProps) {
             }
             setIsAdding(false);
             setEditingId(null);
-            setFormData({ name: '', street: '', city: '', state: '', zipCode: '', country: 'India', isDefault: false, type: 'home' });
+            setFormData({ name: '', street: '', city: '', state: '', zipCode: '', country: 'India', isDefault: false, type: 'home' as 'home' | 'work' | 'other' });
             fetchAddresses();
         } catch (error) {
             toast.error('Operation failed');
@@ -96,7 +96,7 @@ export default function AddressManager({ onBack }: AddressManagerProps) {
             zipCode: address.zipCode,
             country: address.country,
             isDefault: address.isDefault,
-            type: address.type || 'home'
+            type: (address.type || 'home') as 'home' | 'work' | 'other'
         });
         setEditingId(address._id);
         setIsAdding(true);
@@ -153,7 +153,7 @@ export default function AddressManager({ onBack }: AddressManagerProps) {
                             <div className="space-y-2">
                                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Address Type</label>
                                 <div className="flex gap-3">
-                                    {(['home', 'work', 'other'] as const).map(t => (
+                                    {(['home', 'work', 'other'] as const).map((t: 'home' | 'work' | 'other') => (
                                         <button
                                             key={t}
                                             type="button"
