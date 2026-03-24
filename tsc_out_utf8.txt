@@ -1,0 +1,7 @@
+﻿app/admin/coupons/page.tsx(197,54): error TS7006: Parameter 'coupon' implicitly has an 'any' type.
+app/admin/page.tsx(172,55): error TS7006: Parameter 'entry' implicitly has an 'any' type.
+app/admin/page.tsx(172,62): error TS7006: Parameter 'index' implicitly has an 'any' type.
+components/profile/AddressManager.tsx(99,13): error TS2322: Type '"home" | "work" | "other"' is not assignable to type '"home"'.
+  Type '"work"' is not assignable to type '"home"'.
+components/profile/AddressManager.tsx(160,86): error TS2322: Type '"home" | "work" | "other"' is not assignable to type '"home"'.
+  Type '"work"' is not assignable to type '"home"'.

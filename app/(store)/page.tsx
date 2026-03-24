@@ -38,8 +38,8 @@ export default function Home() {
                 if (bestSellersRes.status === 'success' && bestSellersRes.data?.products) {
                     setBestSellers(bestSellersRes.data.products);
                 }
-            } catch (error) {
-                console.error('Fetch error:', error);
+            } catch (error: any) {
+                console.log('Fetch error:', error?.message || 'Network Error');
             } finally {
                 setLoading(false);
             }
