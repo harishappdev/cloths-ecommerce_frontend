@@ -73,12 +73,12 @@ export default function AdminCategories() {
             <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-3">
                     <span className="h-2 w-10 bg-gradient-to-r from-[#FF2C79] to-purple-600 rounded-full" />
-                    <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Product Categories</p>
+                    <p className="text-xs font-semibold text-[#FF2C79] uppercase tracking-widest">Product Categories</p>
                 </div>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900 leading-[0.8]">
+                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 leading-tight">
                     STORE <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">SECTIONS</span>
                 </h1>
-                <p className="text-xs font-bold text-gray-400 mt-4 uppercase tracking-[0.1em]">
+                <p className="text-sm font-medium text-gray-400 mt-4 uppercase tracking-wider">
                     Organize your products into easy-to-find sections.
                 </p>
             </div>
@@ -94,10 +94,10 @@ export default function AdminCategories() {
                         <Plus className="h-6 w-6 stroke-[3px]" />
                     </div>
                     <div>
-                        <h2 className="text-xl font-black text-[#111827] uppercase tracking-tighter">
+                        <h2 className="text-xl font-bold text-[#111827] uppercase tracking-tight">
                             New Category
                         </h2>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Add to list</p>
+                        <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-1">Add to list</p>
                     </div>
                 </div>
 
@@ -109,12 +109,12 @@ export default function AdminCategories() {
                             placeholder="CATEGORY NAME..."
                             value={newCategoryName}
                             onChange={(e) => setNewCategoryName(e.target.value)}
-                            className="w-full bg-gray-50 border-none rounded-2xl py-5 pl-14 pr-6 text-sm font-black placeholder:text-gray-300 focus:ring-4 focus:ring-pink-500/5 focus:bg-white transition-all text-gray-900 uppercase tracking-widest"
+                            className="w-full bg-gray-50 border-none rounded-2xl py-5 pl-14 pr-6 text-sm font-bold placeholder:text-gray-300 focus:ring-4 focus:ring-pink-500/5 focus:bg-white transition-all text-gray-900 uppercase tracking-widest"
                         />
                     </div>
                     <button
                         type="submit"
-                        className="flex items-center justify-center rounded-2xl bg-gray-900 px-10 py-5 font-black text-[11px] text-white hover:bg-[#FF2C79] shadow-2xl shadow-gray-200 transition-all active:scale-95 uppercase tracking-[0.2em]"
+                        className="flex items-center justify-center rounded-2xl bg-gray-900 px-10 py-5 font-bold text-xs text-white hover:bg-[#FF2C79] shadow-2xl shadow-gray-200 transition-all active:scale-95 uppercase tracking-widest"
                     >
                         Add Category
                     </button>
@@ -132,7 +132,7 @@ export default function AdminCategories() {
                         <div className="bg-white h-24 w-24 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-sm">
                             <Layers className="h-10 w-10 text-gray-200" />
                         </div>
-                        <p className="text-gray-400 font-black text-xs uppercase tracking-[0.3em]">Directory is currently vacant</p>
+                        <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">Directory is currently vacant</p>
                     </div>
                 ) : categories.map((cat: Category) => (
                     <div key={cat._id} className="group relative flex flex-col justify-between rounded-[2.5rem] border border-gray-100 bg-white p-10 shadow-sm transition-all duration-500 hover:shadow-2xl hover:shadow-pink-100/50 hover:-translate-y-2 overflow-hidden min-h-[220px]">
@@ -165,25 +165,25 @@ export default function AdminCategories() {
                                 <form onSubmit={handleUpdate} className="flex flex-col gap-4">
                                     <input
                                         autoFocus
-                                        className="w-full rounded-2xl border-2 border-pink-500/10 bg-pink-50/5 px-5 py-3 text-sm font-black text-gray-900 outline-none focus:ring-4 focus:ring-pink-500/5 uppercase tracking-widest"
+                                        className="w-full rounded-2xl border-2 border-pink-500/10 bg-pink-50/5 px-5 py-3 text-sm font-bold text-gray-900 outline-none focus:ring-4 focus:ring-pink-500/5 uppercase tracking-widest"
                                         value={editName}
                                         onChange={e => setEditName(e.target.value)}
                                         onBlur={() => !editName && setEditingId(null)}
                                     />
                                     <div className="flex justify-end gap-5">
-                                        <button type="button" onClick={() => setEditingId(null)} className="text-[9px] font-black text-gray-400 hover:text-gray-600 uppercase tracking-[0.2em]">ABORT</button>
-                                        <button type="submit" className="text-[9px] font-black text-[#FF2C79] hover:text-pink-700 uppercase tracking-[0.2em]">COMMIT</button>
+                                        <button type="button" onClick={() => setEditingId(null)} className="text-[10px] font-bold text-gray-400 hover:text-gray-600 uppercase tracking-widest">ABORT</button>
+                                        <button type="submit" className="text-[10px] font-bold text-[#FF2C79] hover:text-pink-700 uppercase tracking-widest">COMMIT</button>
                                     </div>
                                 </form>
                             ) : (
-                                <h3 className="text-2xl font-black text-[#111827] leading-tight uppercase tracking-tighter group-hover:text-[#FF2C79] transition-colors">
+                                <h3 className="text-xl font-bold text-[#111827] leading-tight uppercase tracking-tight group-hover:text-[#FF2C79] transition-colors">
                                     {cat.name}
                                 </h3>
                             )}
                         </div>
 
                         <div className="mt-10 flex items-center justify-between relative z-10 border-t border-gray-50 pt-8">
-                            <p className="text-[9px] font-black text-gray-300 uppercase tracking-[0.2em] group-hover:text-gray-400 transition-colors">
+                            <p className="text-[10px] font-bold text-gray-300 uppercase tracking-widest group-hover:text-gray-400 transition-colors">
                                 STATUS: VERIFIED
                             </p>
                             <div className="flex gap-1">

@@ -32,6 +32,7 @@ export interface Product {
     images: string[];
     ratings: number;
     numReviews: number;
+    barcode?: string;
 }
 
 export interface Category {

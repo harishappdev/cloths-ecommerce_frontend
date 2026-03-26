@@ -64,11 +64,11 @@ export default function AdminOverview() {
                 </div>
             </div>
             <div className="space-y-1">
-                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">{title}</p>
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">{title}</p>
                 {loading ? (
                     <Skeleton className="h-10 w-32" />
                 ) : (
-                    <h3 className="text-4xl lg:text-5xl font-black text-gray-900 tracking-tighter uppercase leading-none">{value}</h3>
+                    <h3 className="text-3xl lg:text-4xl font-bold text-gray-900 tracking-tight uppercase leading-none">{value}</h3>
                 )}
             </div>
         </div>
@@ -83,11 +83,11 @@ export default function AdminOverview() {
                         <span className="h-2 w-10 bg-gradient-to-r from-[#FF2C79] to-purple-600 rounded-full" />
                         <p className="text-[10px] font-black text-[#FF2C79] uppercase tracking-[0.2em]">Admin Dashboard</p>
                     </div>
-                    <h2 className="text-5xl md:text-6xl font-bold tracking-tight text-gray-900 leading-[0.8] uppercase">Sales <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">Overview</span></h2>
-                    <p className="text-sm font-bold text-gray-500 mt-4 uppercase tracking-[0.1em]">Current sales and performance statistics.</p>
+                    <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 leading-tight uppercase">Sales <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF2C79] to-purple-600">Overview</span></h2>
+                    <p className="text-sm font-medium text-gray-500 mt-4 uppercase tracking-wider">Current sales and performance statistics.</p>
                 </div>
                 <div className="flex items-center gap-4 bg-white p-2 rounded-[1.5rem] border border-gray-100 shadow-sm">
-                    <button className="h-12 px-6 rounded-2xl bg-gray-900 text-white text-[10px] font-black uppercase tracking-widest shadow-xl shadow-gray-200 hover:bg-[#FF2C79] transition-all active:scale-95">Download PDF Report</button>
+                    <button className="h-12 px-6 rounded-2xl bg-gray-900 text-white text-xs font-bold uppercase tracking-widest shadow-xl shadow-gray-200 hover:bg-[#FF2C79] transition-all active:scale-95">Download PDF Report</button>
                     <button className="h-12 w-12 flex items-center justify-center rounded-2xl bg-gray-50 text-gray-400 hover:text-gray-900 transition-all"><Target className="h-5 w-5" /></button>
                 </div>
             </div>
@@ -129,15 +129,15 @@ export default function AdminOverview() {
                 <div className="lg:col-span-8 bg-white rounded-[3rem] border border-gray-100 p-8 md:p-12 shadow-sm">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8 mb-12">
                         <div>
-                            <h3 className="text-2xl font-black tracking-tighter text-gray-900 uppercase">Revenue Trends</h3>
-                            <p className="text-sm font-bold text-gray-500 mt-1 uppercase tracking-widest">Revenue tracking over time</p>
+                            <h3 className="text-xl font-bold tracking-tight text-gray-900 uppercase">Revenue Trends</h3>
+                            <p className="text-sm font-medium text-gray-500 mt-1 uppercase tracking-wider">Revenue tracking over time</p>
                         </div>
                         <div className="flex items-center gap-2 p-1.5 bg-gray-50 border border-gray-100 rounded-2xl">
                             {['7D', '30D', '90D', 'ALL'].map((tab) => (
                                 <button
                                     key={tab}
                                     className={cn(
-                                        "px-6 py-2.5 text-[10px] font-black rounded-xl transition-all uppercase tracking-widest",
+                                        "px-6 py-2.5 text-xs font-bold rounded-xl transition-all uppercase tracking-widest",
                                         tab === '30D' ? "bg-white text-[#FF2C79] shadow-sm border border-pink-100" : "text-gray-400 hover:text-gray-900"
                                     )}
                                 >
@@ -184,8 +184,8 @@ export default function AdminOverview() {
                 <div className="lg:col-span-4 space-y-8">
                     <div className="bg-gradient-to-br from-[#FF2C79] to-purple-600 rounded-[3rem] p-10 text-white shadow-2xl shadow-pink-200">
                         <TrendingUp className="h-10 w-10 mb-8 opacity-50" />
-                        <h4 className="text-2xl font-black tracking-tighter uppercase mb-4 leading-tight">Growth Goal Reached</h4>
-                        <p className="text-pink-100 text-xs font-bold uppercase tracking-widest leading-relaxed mb-10">You've surpassed the monthly user recruitment target by 15.4%. Maintain current trajectory.</p>
+                        <h4 className="text-xl font-bold tracking-tight uppercase mb-4 leading-tight">Growth Goal Reached</h4>
+                        <p className="text-pink-100 text-xs font-medium uppercase tracking-wider leading-relaxed mb-10">You've surpassed the monthly user recruitment target by 15.4%. Maintain current trajectory.</p>
                         <div className="flex items-center gap-4">
                             <div className="flex-1 h-3 bg-white/20 rounded-full overflow-hidden">
                                 <div className="h-full bg-white w-[85%] rounded-full shadow-[0_0_15px_rgba(255,255,255,0.5)]" />
@@ -218,10 +218,10 @@ export default function AdminOverview() {
             <div className="bg-white rounded-[3rem] border border-gray-100 shadow-sm overflow-hidden p-8 md:p-12">
                 <div className="flex items-center justify-between mb-12">
                     <div>
-                        <h3 className="text-2xl font-black tracking-tighter text-gray-900 uppercase">Recent Orders</h3>
-                        <p className="text-sm font-bold text-gray-500 mt-1 uppercase tracking-widest">Latest customer orders</p>
+                        <h3 className="text-xl font-bold tracking-tight text-gray-900 uppercase">Recent Orders</h3>
+                        <p className="text-sm font-medium text-gray-500 mt-1 uppercase tracking-wider">Latest customer orders</p>
                     </div>
-                    <Link href="/admin/orders" className="group h-12 px-8 flex items-center gap-3 rounded-2xl bg-gray-50 border border-gray-100 text-[10px] font-black uppercase tracking-widest text-gray-900 hover:bg-black hover:text-white transition-all">
+                    <Link href="/admin/orders" className="group h-12 px-8 flex items-center gap-3 rounded-2xl bg-gray-50 border border-gray-100 text-xs font-bold uppercase tracking-widest text-gray-900 hover:bg-black hover:text-white transition-all">
                         View All Orders <ArrowUpRight className="h-3.5 w-3.5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                     </Link>
                 </div>
@@ -229,7 +229,7 @@ export default function AdminOverview() {
                 <div className="overflow-x-auto -mx-8 px-8">
                     <table className="w-full min-w-[800px]">
                         <thead>
-                            <tr className="text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-50">
+                            <tr className="text-left text-xs font-semibold text-gray-400 uppercase tracking-wider border-b border-gray-50">
                                 <th className="pb-6 px-4">ORDER ID</th>
                                 <th className="pb-6 px-6">CUSTOMER</th>
                                 <th className="pb-6 px-6">DATE</th>
@@ -247,7 +247,7 @@ export default function AdminOverview() {
                                 ))
                             ) : (stats?.recentOrders || []).map((order: any) => (
                                 <tr key={order._id} className="group hover:bg-pink-50/10 transition-all duration-300">
-                                    <td className="py-8 px-4 text-[11px] font-black text-gray-900 tracking-tight">#{order._id.slice(-8).toUpperCase()}</td>
+                                    <td className="py-8 px-4 text-xs font-bold text-gray-900 tracking-tight">#{order._id.slice(-8).toUpperCase()}</td>
                                     <td className="py-8 px-6">
                                         <div className="flex items-center gap-4">
                                             <div className="h-10 w-10 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center border border-gray-100 shadow-sm">
@@ -258,7 +258,7 @@ export default function AdminOverview() {
                                                     height={40}
                                                 />
                                             </div>
-                                            <p className="text-xs font-black text-gray-900 uppercase tracking-tight">{(order.user as any)?.name || 'Anonymous Entity'}</p>
+                                            <p className="text-sm font-bold text-gray-900 uppercase tracking-tight">{(order.user as any)?.name || 'Anonymous Entity'}</p>
                                         </div>
                                     </td>
                                     <td className="py-8 px-6 text-[10px] font-black text-gray-400 uppercase tracking-widest">
@@ -267,7 +267,7 @@ export default function AdminOverview() {
                                     <td className="py-8 px-6 text-sm font-black text-gray-900">₹{order.totalPrice.toLocaleString()}</td>
                                     <td className="py-8 px-6">
                                         <span className={cn(
-                                            "inline-flex items-center rounded-full px-5 py-1.5 text-[9px] font-black uppercase tracking-widest border shadow-sm",
+                                            "inline-flex items-center rounded-full px-5 py-1.5 text-[10px] font-bold uppercase tracking-widest border shadow-sm",
                                             order.orderStatus === 'delivered' ? "bg-green-50 text-green-600 border-green-100" :
                                                 order.orderStatus === 'shipped' ? "bg-blue-50 text-blue-600 border-blue-100" :
                                                     order.orderStatus === 'cancelled' ? "bg-red-50 text-red-600 border-red-100" :

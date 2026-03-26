@@ -20,7 +20,8 @@ import {
     MessageSquare,
     LogOut,
     Ticket,
-    BarChart3
+    BarChart3,
+    ScanBarcode
 } from 'lucide-react';
 import { cn } from '@/utils/lib';
 import Image from 'next/image';
@@ -37,6 +38,7 @@ const sidebarLinks = [
     { name: 'Reviews', href: '/admin/reviews', icon: MessageSquare, prefetchKey: '/reviews' },
     { name: 'Coupons', href: '/admin/coupons', icon: Ticket, prefetchKey: '/coupons' },
     { name: 'Reports', href: '/admin/reports', icon: BarChart3 },
+    { name: 'Inventory', href: '/admin/inventory', icon: ScanBarcode },
     { name: 'Settings', href: '/admin/settings', icon: Settings },
 ];
 

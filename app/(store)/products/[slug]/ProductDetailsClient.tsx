@@ -16,7 +16,8 @@ import {
     CheckCircle2,
     Award,
     ChevronLeft,
-    ShoppingBag
+    ShoppingBag,
+    Barcode
 } from 'lucide-react';
 import { cn, getImageUrl } from '@/utils/lib';
 import { toast } from 'react-hot-toast';
@@ -71,7 +72,6 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
             });
             toast.success('Review submitted for moderation!', { icon: '🚀' });
             setIsReviewModalOpen(false);
-            // Re-fetch reviews to show the user (though they might need approval depending on backend settings)
             const response = await reviewService.getProductReviews(product._id);
             setReviews(response.data.reviews);
         } catch (error: any) {
@@ -82,11 +82,9 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
     useEffect(() => {
         const fetchRecommendations = async () => {
             try {
-                // Similar by Category
                 const similarRes = await productService.getAllProducts(`category=${product.category}&_id[ne]=${product._id}&limit=4`);
                 setSimilarProducts(similarRes.data.products);
 
-                // Related by Occasion
                 if (product.occasion) {
                     const relatedRes = await productService.getAllProducts(`occasion=${product.occasion}&_id[ne]=${product._id}&limit=4`);
                     setRelatedProducts(relatedRes.data.products);
@@ -115,14 +113,6 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
         fetchReviews();
     }, [activeTab, product._id]);
 
-    const handleQuantityChange = (type: 'increment' | 'decrement') => {
-        if (type === 'increment') {
-            setQuantity(prev => (prev < 10 ? prev + 1 : prev));
-        } else {
-            setQuantity(prev => (prev > 1 ? prev - 1 : prev));
-        }
-    };
-
     const handleAddToCart = async () => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -139,15 +129,15 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                         borderRadius: '16px',
                         background: '#000',
                         color: '#fff',
-                        fontSize: '12px',
-                        fontWeight: 'bold',
+                        fontSize: '14px',
+                        fontWeight: '600',
                         textTransform: 'uppercase',
-                        letterSpacing: '0.1em'
+                        letterSpacing: '0.05em'
                     },
                 });
             }
         } catch (error) {
-            // Error handling is managed in CartContext
+            // Managed in CartContext
         }
     };
 
@@ -183,7 +173,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
         <div className="bg-white min-h-screen">
             <div className="container mx-auto px-4 py-8 md:py-12">
                 {/* Breadcrumbs */}
-                <nav className="flex items-center text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-8">
+                <nav className="flex items-center text-xs font-semibold uppercase tracking-wider text-gray-500 mb-8">
                     <Link href="/" className="hover:text-primary transition-colors">Home</Link>
                     <span className="mx-2">/</span>
                     <Link href="/shop" className="hover:text-primary transition-colors">Shop</Link>
@@ -194,7 +184,6 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
                     {/* Left: Product Gallery */}
                     <div className="flex flex-col-reverse md:flex-row gap-4">
-                        {/* Thumbnails */}
                         <div className="flex md:flex-col gap-3 overflow-x-auto no-scrollbar md:w-20">
                             {product.images.map((img, index) => (
                                 <button
@@ -210,7 +199,6 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                             ))}
                         </div>
 
-                        {/* Main Image with Zoom */}
                         <div 
                             className="flex-grow relative aspect-[4/5] bg-gray-50 rounded-2xl overflow-hidden shadow-sm group cursor-zoom-in"
                             onMouseMove={handleMouseMove}
@@ -235,7 +223,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                                 />
                             </div>
                             {discountPerc && (
-                                <div className="absolute top-4 left-4 bg-primary text-white text-[10px] font-bold px-3 py-1.5 rounded-sm shadow-xl uppercase">
+                                <div className="absolute top-4 left-4 bg-primary text-white text-[10px] font-bold px-3 py-1.5 rounded-sm shadow-xl uppercase z-10">
                                     {discountPerc}% OFF
                                 </div>
                             )}
@@ -245,27 +233,36 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                     {/* Right: Product Info */}
                     <div className="flex flex-col">
                         <div className="mb-6">
-                            <p className="text-sm font-bold text-primary uppercase tracking-wider mb-2">{product.brand}</p>
-                            <h1 className="text-2xl md:text-3xl font-black text-gray-900 mb-4 tracking-tight uppercase italic">{product.name}</h1>
+                            <div className="flex items-center justify-between mb-2">
+                                <p className="text-sm font-bold text-primary uppercase tracking-wider">{product.brand}</p>
+                                {product.barcode && (
+                                    <span className="text-xs font-semibold uppercase text-gray-400 tracking-widest bg-gray-50 px-3 py-1 rounded-lg border border-gray-100">
+                                        REF: {product.barcode}
+                                    </span>
+                                )}
+                            </div>
+                            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 tracking-tight leading-tight">
+                                {product.name}
+                            </h1>
 
                             <div className="flex items-center gap-4 mb-6">
                                 <div className="flex items-center gap-1.5 px-2 py-1 bg-green-50 text-green-700 rounded border border-green-100">
                                     <span className="text-sm font-bold">{product.ratings}</span>
                                     <Star className="h-4 w-4 fill-green-700" />
                                 </div>
-                                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">{product.numReviews} Reviews</span>
+                                <span className="text-xs font-semibold text-gray-400 uppercase tracking-widest">{product.numReviews} Reviews</span>
                             </div>
 
-                            <div className="flex items-baseline gap-4 py-4 border-y border-gray-100 mb-6">
-                                <span className="text-3xl font-black text-gray-900">
-                                    ${(product.discountPrice || product.price).toLocaleString()}
+                            <div className="flex items-baseline gap-4 py-6 border-y border-gray-100 mb-6">
+                                <span className="text-3xl font-bold text-gray-900 tracking-tight">
+                                    ₹{(product.discountPrice || product.price).toLocaleString()}
                                 </span>
                                 {product.discountPrice && (
                                     <>
                                         <span className="text-lg text-gray-400 line-through">
-                                            ${product.price.toLocaleString()}
+                                            ₹{product.price.toLocaleString()}
                                         </span>
-                                        <span className="text-lg font-black text-orange-500">
+                                        <span className="text-lg font-bold text-primary">
                                             ({discountPerc}% OFF)
                                         </span>
                                     </>
@@ -273,9 +270,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                             </div>
                         </div>
 
-                        {/* Variants and CTA */}
                         <div className="space-y-8">
-                            {/* Color Selection */}
                             <div className="space-y-4">
                                 <span className="text-xs font-bold text-gray-900 uppercase tracking-wider">Select Color — {selectedColor}</span>
                                 <div className="flex flex-wrap gap-3">
@@ -293,11 +288,10 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                                 </div>
                             </div>
 
-                            {/* Size Selection */}
                             <div className="space-y-4">
                                 <div className="flex justify-between">
                                     <span className="text-xs font-bold text-gray-900 uppercase tracking-wider">Select Size</span>
-                                    <button className="text-[11px] font-bold text-primary uppercase underline">Size Chart</button>
+                                    <button className="text-xs font-bold text-primary uppercase underline">Size Chart</button>
                                 </div>
                                 <div className="grid grid-cols-4 sm:grid-cols-6 gap-2">
                                     {['S', 'M', 'L', 'XL', '2XL', '3XL'].map(size => (
@@ -317,45 +311,42 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                                 </div>
                             </div>
 
-                            {/* Actions */}
                             <div className="pt-6 space-y-4">
                                 <div className="flex gap-4">
                                     <button
                                         onClick={handleAddToCart}
-                                        className="flex-grow bg-primary text-white h-14 rounded-lg font-black uppercase tracking-wider hover:bg-vital shadow-xl transition-vibrant active:scale-95 flex items-center justify-center gap-3"
+                                        className="flex-grow bg-primary text-white h-14 rounded-xl font-bold uppercase tracking-widest hover:bg-[#E62E63] shadow-xl transition-vibrant active:scale-95 flex items-center justify-center gap-3"
                                     >
                                         <ShoppingBag className="h-5 w-5" />
                                         ADD TO BAG
                                     </button>
-                                    <button className="h-14 w-14 rounded-lg border-2 border-gray-100 flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary transition-vibrant">
+                                    <button className="h-14 w-14 rounded-xl border-2 border-gray-100 flex items-center justify-center text-gray-400 hover:text-primary hover:border-primary transition-vibrant">
                                         <Heart className="h-6 w-6" />
                                     </button>
                                 </div>
                                 <button
                                     onClick={handleBuyNow}
-                                    className="w-full h-14 bg-gray-900 text-white rounded-lg font-black uppercase tracking-wider hover:bg-black shadow-lg transition-vibrant active:scale-95"
+                                    className="w-full h-14 bg-gray-900 text-white rounded-xl font-bold uppercase tracking-widest hover:bg-black shadow-lg transition-vibrant active:scale-95"
                                 >
                                     BUY IT NOW
                                 </button>
                             </div>
 
-                            {/* Benefits */}
                             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100">
                                 <div className="flex items-center gap-3">
                                     <Truck className="h-5 w-5 text-gray-400" />
-                                    <div className="text-[11px] font-bold text-gray-500 uppercase">Fast Free Delivery</div>
+                                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Fast Free Delivery</div>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <RefreshCw className="h-5 w-5 text-gray-400" />
-                                    <div className="text-[11px] font-bold text-gray-500 uppercase">Easy 30 Days Returns</div>
+                                    <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Easy 30 Days Returns</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Refined Tabs Section */}
-                <div className="mt-32 md:mt-48">
+                <div className="mt-24 md:mt-32">
                     <div className="flex gap-8 border-b border-gray-100 mb-12 overflow-x-auto no-scrollbar">
                         {tabs.map(tab => (
                             <button
@@ -367,50 +358,44 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                                 )}
                             >
                                 {tab.label}
-                                {activeTab === tab.id && <div className="absolute bottom-[-1px] left-0 right-0 h-1 bg-primary rounded-full shadow-[0_0_8px_rgba(255,44,121,0.5)]" />}
+                                {activeTab === tab.id && <div className="absolute bottom-[-1px] left-0 right-0 h-1 bg-primary rounded-full" />}
                             </button>
                         ))}
                     </div>
 
-                    <div className="max-w-4xl py-6">
+                    <div className="max-w-4xl">
                         {activeTab === 'description' && (
-                            <div className="space-y-8 animate-vibrant-in">
+                            <div className="space-y-8">
                                 <div className="space-y-4">
-                                    <h2 className="text-xl font-black tracking-tight text-gray-900 uppercase">Product Description</h2>
-                                    <p className="text-sm font-medium text-gray-600 leading-relaxed">
-                                        {product.description || "The ultimate statement piece for your wardrobe. Engineered for comfort and designed for style, this garment features premium craftsmanship and high-quality materials that stand the test of time."}
+                                    <h2 className="text-xl font-bold text-gray-900 tracking-tight">Product Description</h2>
+                                    <p className="text-base text-gray-600 leading-relaxed">
+                                        {product.description || "Premium craftsmanship and high-quality materials."}
                                     </p>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                     <div className="space-y-4">
-                                        <h4 className="text-xs font-black uppercase tracking-widest text-gray-900">Key Highlights</h4>
+                                        <h4 className="text-xs font-bold uppercase tracking-widest text-gray-900">Key Highlights</h4>
                                         <ul className="space-y-3">
-                                            {[
-                                                'Premium breathable fabric',
-                                                'Reinforced stitching for durability',
-                                                'Modern comfort-fit silhouette',
-                                                'Easy-care material'
-                                            ].map(item => (
-                                                <li key={item} className="flex items-center gap-3 text-xs font-bold text-gray-600">
+                                            {['Premium breathable fabric', 'Reinforced stitching', 'Modern silhouette', 'Easy-care'].map(item => (
+                                                <li key={item} className="flex items-center gap-3 text-sm text-gray-600">
                                                     <CheckCircle2 className="h-4 w-4 text-green-500" />
                                                     {item}
                                                 </li>
                                             ))}
                                         </ul>
                                     </div>
-                                    <div className="bg-gray-50 rounded-xl p-6 border border-gray-100">
-                                        <h4 className="text-xs font-black uppercase tracking-widest text-gray-900 mb-4">Specifications</h4>
+                                    <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                                        <h4 className="text-xs font-bold uppercase tracking-widest text-gray-900 mb-4">Specifications</h4>
                                         <div className="space-y-4">
                                             {[
                                                 ['Material', product.fabric || 'Cotton Blend'],
                                                 ['Occasion', product.occasion || 'Casual'],
-                                                ['Origin', 'Imported'],
-                                                ['Fit', 'Regular Fit'],
-                                                ['Season', 'All Season']
+                                                ['Barcode', product.barcode || 'N/A'],
+                                                ['Origin', 'Imported']
                                             ].map(([label, value]) => (
                                                 <div key={label} className="flex justify-between items-center py-2 border-b border-gray-200 last:border-0">
-                                                    <span className="text-[11px] font-bold uppercase text-gray-400">{label}</span>
-                                                    <span className="text-[11px] font-bold text-gray-900">{value}</span>
+                                                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">{label}</span>
+                                                    <span className="text-xs font-bold text-gray-900">{value}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -420,32 +405,30 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                         )}
 
                         {activeTab === 'reviews' && (
-                            <div className="space-y-12 animate-vibrant-in">
-                                <div className="flex flex-col md:flex-row gap-12 items-start">
-                                    {/* Rating Summary */}
+                            <div className="space-y-12">
+                                <div className="flex flex-col md:flex-row gap-12">
                                     <div className="w-full md:w-64 space-y-6">
                                         <div className="text-center md:text-left">
-                                            <div className="text-6xl font-black text-gray-900 mb-2">{product.ratings}</div>
+                                            <div className="text-5xl font-bold text-gray-900 mb-2">{product.ratings}</div>
                                             <div className="flex justify-center md:justify-start gap-1 mb-2">
                                                 {[1, 2, 3, 4, 5].map(s => (
                                                     <Star key={s} className={cn("h-5 w-5", s <= Math.floor(product.ratings) ? "fill-yellow-400 text-yellow-400" : "text-gray-200")} />
                                                 ))}
                                             </div>
-                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Based on {product.numReviews} Reviews</p>
+                                            <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest">Based on {product.numReviews} Reviews</p>
                                         </div>
 
-                                        {/* Review Bars */}
                                         <div className="space-y-3">
                                             {[5, 4, 3, 2, 1].map(star => {
                                                 const count = product.ratingDistribution?.[star as keyof typeof product.ratingDistribution] || 0;
                                                 const perc = product.numReviews > 0 ? (count / product.numReviews) * 100 : 0;
                                                 return (
                                                     <div key={star} className="flex items-center gap-3">
-                                                        <span className="text-[10px] font-black w-3">{star}</span>
-                                                        <div className="flex-grow h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                                                        <span className="text-xs font-bold w-3">{star}</span>
+                                                        <div className="flex-grow h-1.5 bg-gray-100 rounded-full">
                                                             <div className="h-full bg-primary rounded-full" style={{ width: `${perc}%` }} />
                                                         </div>
-                                                        <span className="text-[10px] font-bold text-gray-400 w-8">{count}</span>
+                                                        <span className="text-xs font-semibold text-gray-400 w-8">{count}</span>
                                                     </div>
                                                 );
                                             })}
@@ -453,23 +436,22 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
                                         <button
                                             onClick={() => setIsReviewModalOpen(true)}
-                                            className="w-full py-4 bg-gray-900 text-white text-[11px] font-black uppercase tracking-widest rounded-xl hover:bg-black transition-all shadow-lg"
+                                            className="w-full py-4 bg-gray-900 text-white text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-black transition-all"
                                         >
                                             Write A Review
                                         </button>
                                     </div>
 
-                                    {/* Review List */}
                                     <div className="flex-grow space-y-8">
                                         {isReviewLoading ? (
                                             <div className="flex flex-col items-center gap-4 py-20">
                                                 <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-                                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Loading Feedback...</p>
+                                                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Loading Feedback...</p>
                                             </div>
                                         ) : reviews.length === 0 ? (
                                             <div className="bg-gray-50 rounded-3xl p-12 text-center border border-dashed border-gray-200">
                                                 <p className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2">No Reviews Yet</p>
-                                                <p className="text-xs text-gray-400">Be the first to share your thoughts about this product.</p>
+                                                <p className="text-xs text-gray-400">Be the first to share your thoughts.</p>
                                             </div>
                                         ) : (
                                             <div className="space-y-8">
@@ -482,15 +464,15 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                                                                         <Star key={s} className={cn("h-3 w-3", s <= review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-200")} />
                                                                     ))}
                                                                 </div>
-                                                                <p className="text-xs font-black text-gray-900 uppercase tracking-tight">{review.user.name}</p>
+                                                                <p className="text-sm font-bold text-gray-900">{review.user.name}</p>
                                                             </div>
-                                                            <span className="text-[10px] font-bold text-gray-400 uppercase">{new Date(review.createdAt).toLocaleDateString()}</span>
+                                                            <span className="text-xs text-gray-400 uppercase">{new Date(review.createdAt).toLocaleDateString()}</span>
                                                         </div>
-                                                        <p className="text-sm text-gray-600 leading-relaxed italic">&quot;{review.review}&quot;</p>
+                                                        <p className="text-base text-gray-600 leading-relaxed italic">&quot;{review.review}&quot;</p>
                                                         {review.images && review.images.length > 0 && (
                                                             <div className="flex gap-3 mt-4">
                                                                 {review.images.map((img, i) => (
-                                                                    <div key={i} className="relative h-16 w-16 rounded-lg overflow-hidden border border-gray-100">
+                                                                    <div key={i} className="relative h-16 w-16 rounded-xl overflow-hidden border border-gray-100">
                                                                         <Image src={getImageUrl(img)} alt="Review" fill className="object-cover" />
                                                                     </div>
                                                                 ))}
@@ -507,36 +489,17 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                     </div>
                 </div>
 
-                {/* Similar Products Grid */}
-                {similarProducts.length > 0 && (
-                    <div className="mt-24 border-t border-gray-100 pt-16">
-                        <div className="flex items-center justify-between mb-12">
-                            <h2 className="text-2xl md:text-3xl font-black text-gray-900 uppercase italic tracking-tight">Similar Pieces</h2>
-                            <Link href="/shop" className="text-xs font-bold text-primary uppercase hover:underline">
-                                View All
-                            </Link>
-                        </div>
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-                            {similarProducts.map(p => (
-                                <ProductCard key={p._id} product={p} />
-                            ))}
-                        </div>
+                <div className="mt-24 border-t border-gray-100 pt-16">
+                    <div className="flex items-center justify-between mb-12">
+                        <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Similar Pieces</h2>
+                        <Link href="/shop" className="text-xs font-bold text-primary uppercase hover:underline">View All</Link>
                     </div>
-                )}
-
-                {/* Related Products Grid */}
-                {relatedProducts.length > 0 && (
-                    <div className="mt-24 border-t border-gray-100 pt-16">
-                        <div className="flex items-center justify-between mb-12">
-                            <h2 className="text-2xl md:text-3xl font-black text-gray-900 uppercase italic tracking-tight">You may also like</h2>
-                        </div>
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-                            {relatedProducts.map(p => (
-                                <ProductCard key={p._id} product={p} />
-                            ))}
-                        </div>
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                        {similarProducts.map(p => (
+                            <ProductCard key={p._id} product={p} />
+                        ))}
                     </div>
-                )}
+                </div>
             </div>
 
             <ReviewModal
@@ -548,22 +511,3 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
         </div>
     );
 }
-
-function Tag({ className }: { className?: string }) {
-    return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className={className}
-        >
-            <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z" />
-            <path d="M7 7h.01" />
-        </svg>
-    );
-}
-
