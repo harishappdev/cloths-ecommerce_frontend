@@ -210,32 +210,47 @@ export default function InventoryPage() {
 
                             <form onSubmit={handleUpdateStock} className="bg-gray-50/50 border border-gray-100 rounded-2xl p-5 space-y-5 shadow-sm">
                                 <h4 className="font-bold text-sm text-gray-900 border-b border-gray-100 pb-2">Manage Stock</h4>
-                                <div className="flex gap-2 p-1.5 bg-gray-100/50 border border-gray-200 rounded-xl">
+                                <div className="relative flex gap-2 p-1.5 bg-gray-100/80 border border-gray-200/50 rounded-[1.25rem] overflow-hidden">
+                                    {/* Sliding Background Highlight */}
+                                    <div 
+                                        className={cn(
+                                            "absolute top-1.5 bottom-1.5 w-[calc(50%-6px)] rounded-xl transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] shadow-md border border-gray-100/50",
+                                            stockAction === 'add' ? "left-1.5 bg-white" : "left-[calc(50%+3px)] bg-white"
+                                        )}
+                                    />
+                                    
                                     <button
                                         type="button"
                                         onClick={() => setStockAction('add')}
                                         className={cn(
-                                            "flex-1 py-2.5 text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2",
-                                            stockAction === 'add' ? "bg-white text-gray-900 shadow-sm border border-gray-200" : "text-gray-500 hover:text-gray-700"
+                                            "relative z-10 flex-1 py-3 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-3 uppercase tracking-widest",
+                                            stockAction === 'add' ? "text-emerald-600" : "text-gray-400 hover:text-gray-600"
                                         )}
                                     >
-                                        <div className={cn("w-6 h-6 rounded-full flex items-center justify-center", stockAction === 'add' ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400')}>
-                                            <Plus className="w-3.5 h-3.5" />
+                                        <div className={cn(
+                                            "w-7 h-7 rounded-full flex items-center justify-center transition-all duration-500",
+                                            stockAction === 'add' ? 'bg-emerald-100 scale-110 rotate-90' : 'bg-gray-100'
+                                        )}>
+                                            <Plus className="w-4 h-4" />
                                         </div>
-                                        Add Stock
+                                        <span>Add Stock</span>
                                     </button>
+                                    
                                     <button
                                         type="button"
                                         onClick={() => setStockAction('remove')}
                                         className={cn(
-                                            "flex-1 py-2.5 text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2",
-                                            stockAction === 'remove' ? "bg-white text-gray-900 shadow-sm border border-gray-200" : "text-gray-500 hover:text-gray-700"
+                                            "relative z-10 flex-1 py-3 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-3 uppercase tracking-widest",
+                                            stockAction === 'remove' ? "text-rose-600" : "text-gray-400 hover:text-gray-600"
                                         )}
                                     >
-                                        <div className={cn("w-6 h-6 rounded-full flex items-center justify-center", stockAction === 'remove' ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-400')}>
-                                            <Minus className="w-3.5 h-3.5" />
+                                        <div className={cn(
+                                            "w-7 h-7 rounded-full flex items-center justify-center transition-all duration-500",
+                                            stockAction === 'remove' ? 'bg-rose-100 scale-110' : 'bg-gray-100'
+                                        )}>
+                                            <Minus className="w-4 h-4" />
                                         </div>
-                                         Remove Stock
+                                        <span>Remove Stock</span>
                                     </button>
                                 </div>
 

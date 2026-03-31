@@ -246,10 +246,10 @@ export default function AdminProducts() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Product Portfolio</h1>
-                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-2 flex items-center gap-2">
+                    <div className="text-xs font-semibold text-gray-400 uppercase tracking-widest mt-2 flex items-center gap-2">
                         <div className="w-1.5 h-1.5 rounded-full bg-[#FF2C79]" />
                         Registry Management System
-                    </p>
+                    </div>
                 </div>
                 <button
                     onClick={() => {
@@ -364,7 +364,7 @@ export default function AdminProducts() {
                                     </td>
                                 </tr>
                             ) : products.map((product: Product) => (
-                                <tr key={product._id} className="group hover:bg-pink-50/10 transition-all duration-300">
+                                <tr key={product._id} className="group hover:bg-pink-50/10 transition-all duration-500 hover:scale-[1.01] hover:shadow-2xl hover:shadow-gray-200/50 relative z-0 hover:z-10">
                                     <td className="py-8 px-10">
                                         <div className="flex items-center gap-6">
                                             <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-[1.25rem] border border-gray-100 bg-gray-50 shadow-sm transition-transform group-hover:rotate-2">
@@ -392,45 +392,60 @@ export default function AdminProducts() {
                                         ₹{product.price.toLocaleString()}
                                     </td>
                                     <td className="py-8 px-8">
-                                        <div className="w-32 space-y-3">
-                                            <div className="flex justify-between items-center text-[9px] font-black uppercase tracking-widest">
+                                        <div className={cn(
+                                            "inline-flex items-center gap-3 px-4 py-2 rounded-2xl backdrop-blur-md border shadow-sm transition-all duration-500",
+                                            (product.stock ?? 0) < 10 ? "bg-red-50/50 border-red-100 text-red-600 shadow-red-100/50" :
+                                            (product.stock ?? 0) < 50 ? "bg-amber-50/50 border-amber-100 text-amber-600 shadow-amber-100/50" :
+                                            "bg-emerald-50/50 border-emerald-100 text-emerald-600 shadow-emerald-100/50"
+                                        )}>
+                                            <div className="relative flex h-2 w-2">
                                                 <span className={cn(
-                                                    (product.stock ?? 0) < 10 ? "text-[#FF2C79]" : "text-gray-900"
-                                                )}>{product.stock ?? 0} UNITS</span>
-                                                <span className="text-gray-300">{(product.stock ?? 0) > 100 ? '99%+' : 'OK'}</span>
+                                                    "animate-ping absolute inline-flex h-full w-full rounded-full opacity-75",
+                                                    (product.stock ?? 0) < 10 ? "bg-red-400" : (product.stock ?? 0) < 50 ? "bg-amber-400" : "bg-emerald-400"
+                                                )}></span>
+                                                <span className={cn(
+                                                    "relative inline-flex rounded-full h-2 w-2",
+                                                    (product.stock ?? 0) < 10 ? "bg-red-500" : (product.stock ?? 0) < 50 ? "bg-amber-500" : "bg-emerald-500"
+                                                )}></span>
                                             </div>
-                                            <div className="h-1.5 w-full bg-gray-50 rounded-full overflow-hidden border border-gray-100/50">
-                                                <div
-                                                    className={cn(
-                                                        "h-full rounded-full transition-all duration-1000",
-                                                        (product.stock ?? 0) < 10 ? "bg-[#FF2C79]" :
-                                                            (product.stock ?? 0) < 50 ? "bg-purple-500" : "bg-gray-900"
-                                                    )}
-                                                    style={{ width: `${Math.min(((product.stock ?? 0) / 200) * 100, 100)}%` }}
-                                                />
-                                            </div>
+                                            <span className="text-[10px] font-black uppercase tracking-[0.1em]">
+                                                {product.stock ?? 0} UNITS <span className="opacity-40 mx-1">|</span> {(product.stock ?? 0) < 10 ? 'CRITICAL' : (product.stock ?? 0) < 50 ? 'LOW' : 'STABLE'}
+                                            </span>
                                         </div>
                                     </td>
                                     <td className="py-8 px-8">
                                         {(product as any).barcode ? (
-                                            <div className="flex items-center gap-4 group/barcode">
-                                                <div className="p-1.5 bg-white rounded-xl border border-gray-100 shadow-sm group-hover/barcode:border-pink-200 group-hover/barcode:shadow-md transition-all">
+                                            <div className="flex items-center gap-4 group/barcode relative">
+                                                <div className="relative p-2 bg-white rounded-xl border-2 border-gray-50 shadow-sm group-hover/barcode:border-pink-200 group-hover/barcode:shadow-xl group-hover/barcode:-rotate-1 transition-all duration-500 overflow-hidden">
+                                                    {/* Laser Scan Animation */}
+                                                    <div className="absolute inset-0 z-10 pointer-events-none opacity-0 group-hover/barcode:opacity-100 transition-opacity duration-300">
+                                                        <div className="w-full h-[2px] bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)] absolute top-0 left-0 animate-[scan_2s_linear_infinite]" />
+                                                    </div>
+                                                    
                                                     <img 
                                                         src={`https://bwipjs-api.metafloor.com/?bcid=code128&text=${(product as any).barcode}&scale=1.5&rotate=N&includetext`} 
                                                         alt={(product as any).barcode}
-                                                        className="h-10 w-auto min-w-[100px] object-contain"
+                                                        className="h-10 w-auto min-w-[100px] object-contain relative z-0"
                                                     />
                                                 </div>
                                                 <button
                                                     onClick={() => copyToClipboard((product as any).barcode, product._id)}
-                                                    className="h-10 w-10 flex items-center justify-center rounded-xl bg-white border border-gray-100 text-gray-400 hover:text-[#FF2C79] hover:border-pink-200 transition-all active:scale-90"
+                                                    className="h-10 w-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 hover:text-[#FF2C79] hover:bg-white hover:border-pink-200 transition-all active:scale-90 border border-transparent shadow-sm"
                                                     title="Copy Barcode"
                                                 >
                                                     {copiedId === product._id ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
                                                 </button>
+
+                                                {/* Hidden Keyframes for Scanline */}
+                                                <style dangerouslySetInnerHTML={{ __html: `
+                                                    @keyframes scan {
+                                                        0% { transform: translateY(0); }
+                                                        100% { transform: translateY(40px); }
+                                                    }
+                                                `}} />
                                             </div>
                                         ) : (
-                                            <span className="text-[9px] font-black uppercase text-gray-300 italic tracking-widest">No Label</span>
+                                            <span className="text-[9px] font-black uppercase text-gray-300 italic tracking-widest bg-gray-50 px-3 py-1 rounded-lg">Unlabeled Asset</span>
                                         )}
                                     </td>
                                     <td className="py-8 px-10 text-right">
